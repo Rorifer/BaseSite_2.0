@@ -1,0 +1,66 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.engineeringforyou.basesite.MapsActivity">
+    <item
+        android:id="@+id/action_radius"
+        android:orderInCategory="100"
+        android:title="@string/radius" />
+    <item
+
+        android:title="@string/operarators"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/MTS_oper"
+                    android:title="@string/MTS"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/MGF_oper"
+                    android:title="@string/MGF"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/VMK_oper"
+                    android:title="@string/VMK"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/TEL_oper"
+                    android:title="@string/TELE"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/ALL_oper"
+                    android:title="@string/ALL"
+                    app:showAsAction="never" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:title="Тип карты"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/standartMap"
+                    android:title="Схема"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/hybridMap"
+                    android:title="Гибрид"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/satelitMap"
+                    android:title="Спутник"
+                    app:showAsAction="never" />
+            </group>
+        </menu>
+
+    </item>
+</menu>
