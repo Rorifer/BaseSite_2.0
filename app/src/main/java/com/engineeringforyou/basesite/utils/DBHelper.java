@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite;
+package com.engineeringforyou.basesite.utils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.engineeringforyou.basesite.presentation.main.MainActivity;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,13 +16,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-class DBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
     private static String DB_PATH; // полный путь к базе данных
     final private static String DB_NAME = "DB_SITE_05.db";
     private static final int DATABASE_VERSION = 1; // версия базы данных
     private Context myContext;
 
-    DBHelper(Context context) {
+    public DBHelper(Context context) {
         super(context, DB_NAME, null, DATABASE_VERSION);
         this.myContext = context;
         DB_PATH = context.getFilesDir().getPath() + DB_NAME;
@@ -38,7 +40,7 @@ class DBHelper extends SQLiteOpenHelper {
         Log.v("LogForMe", "Попытка обновить БД");
     }
 
-    Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
+    public Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
 
         if (bDoperatorName == null) {
             Log.v("LogForMe", "В siteSearch передали пустую bDoperatorName, siteQuery = " + siteQuery);
@@ -122,7 +124,7 @@ class DBHelper extends SQLiteOpenHelper {
         return userCursor;
     }
 
-    void create_db() {
+    public void create_db() {
         InputStream myInput;
         OutputStream myOutput;
         try {
@@ -150,7 +152,7 @@ class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    SQLiteDatabase open() throws SQLException {
+    public SQLiteDatabase open() throws SQLException {
         return SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READONLY);
     }
 }

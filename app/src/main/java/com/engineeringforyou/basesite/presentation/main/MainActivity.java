@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite;
+package com.engineeringforyou.basesite.presentation.main;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.engineeringforyou.basesite.MapsActivity;
+import com.engineeringforyou.basesite.R;
+import com.engineeringforyou.basesite.SiteChoice;
+import com.engineeringforyou.basesite.SiteInfo;
+import com.engineeringforyou.basesite.utils.DBHelper;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.HashMap;
@@ -25,13 +30,13 @@ public class MainActivity extends AppCompatActivity implements TextView.OnEditor
     private EditText siteView1, siteView2;
     private Spinner spinner;
     private Map<String, String> operatorsMap = new HashMap<>(3);
-    final static String DB_OPERATOR_MTS = "MTS_Site_Base";
-    final static String DB_OPERATOR_MGF = "MGF_Site_Base";
-    final static String DB_OPERATOR_VMK = "VMK_Site_Base";
-    final static String DB_OPERATOR_TEL = "TELE_Site_Base";
-    final static String DB_OPERATOR_ALL = "ALL_Site_Base";
+    public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
+    public final static String DB_OPERATOR_MGF = "MGF_Site_Base";
+    public final static String DB_OPERATOR_VMK = "VMK_Site_Base";
+    public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
+    public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
 
-    static String operator;
+    public static String operator;
     private static String operatorBD = DB_OPERATOR_MTS;
     private static final String APP_PREFERENCES = "mysettings";
     private static final String APP_PREFERENCES_BD = "nameBD";
@@ -216,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements TextView.OnEditor
         startActivity(intent);
     }
 
-    static String getOperatorBD() {
+    public static String getOperatorBD() {
         if (operatorBD != null) {
             return operatorBD;
         } else {
@@ -225,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements TextView.OnEditor
         }
     }
 
-    static void setOperatorBD(String oper) {
+    public static void setOperatorBD(String oper) {
         operatorBD = oper;
         operatorBDinPreferences();
         switch (oper) {

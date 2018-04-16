@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.engineeringforyou.basesite.presentation.main.MainActivity;
+import com.engineeringforyou.basesite.utils.DBHelper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,7 +40,7 @@ import static android.location.LocationManager.PASSIVE_PROVIDER;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
-    static final int MAP_BS_HERE = 1;
+    public static final int MAP_BS_HERE = 1;
     static final int MAP_BS_SITE = 2;
     static final int MAP_BS_ONE = 3;
     static final int MAP_BS_MAP = 4;
