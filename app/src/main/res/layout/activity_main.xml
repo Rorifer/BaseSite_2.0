@@ -1,141 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBack"
-    tools:context="com.engineeringforyou.basesite.presentation.main.MainActivity">
+    android:background="@color/colorPrimary"
+    android:focusableInTouchMode="true"
+    tools:context=".presentation.main.MainActivity">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
-        android:text="@string/title"
-        android:textSize="18sp"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.032"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/holo_blue_dark"
+        android:isScrollContainer="true"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/poweredBy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/powered_by"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/title"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
 
-    <EditText
-        android:id="@+id/siteNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="120dp"
-        android:background="@android:color/holo_blue_bright"
-        android:ems="10"
-        android:hint="@string/site"
-        android:inputType="number"
-        android:textSize="24sp"
-        android:maxLength="10"
-        android:imeOptions="actionSearch"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_alignTop="@+id/button"
-        tools:ignore="RtlHardcoded" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginRight="8dp"
-        android:onClick="onClick"
-        android:text="@string/search"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="0dp"
-        android:layout_marginTop="43dp"
-        android:layout_below="@+id/button2"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
 
-    <EditText
-        android:id="@+id/siteAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="120dp"
-        android:background="@android:color/holo_blue_bright"
-        android:inputType="text"
-        android:ems="10"
-        android:hint="@string/address"
-        android:textSize="24sp"
-        android:maxLength="50"
-        android:imeOptions="actionSearch"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_alignTop="@+id/button2"/>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/site_number_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/site_number_btn"
+                android:layout_toStartOf="@id/site_number_btn"
+                android:hint="@string/site"
+                app:errorTextAppearance="@style/ErrorText">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginRight="8dp"
-        android:onClick="onClick"
-        android:text="@string/search"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="0dp"
-        android:layout_marginTop="38dp"
-        android:layout_below="@+id/textView2"
-        android:layout_alignStart="@+id/button"
-        android:layout_alignLeft="@+id/button" />
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/site_number"
+                    style="@style/TextInputCustom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:textSize="20sp" />
+            </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/searchHere"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:onClick="onClick"
-        android:text="@string/searchHere"
-        android:layout_below="@+id/progressBar"
-        android:layout_centerHorizontal="true" />
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/site_number_btn"
+                style="@style/CustomButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/site_number_layout"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/site_number_layout"
+                android:text="@string/search" />
 
-    <Spinner
-        android:id="@+id/operators"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginTop="18dp"
-        android:textSize="28sp"
-        android:entries="@array/operatorsStrings"
-        android:popupBackground="@android:color/holo_blue_bright"
-        android:background="#0cffeb"
-        android:gravity="right"
-        android:layout_below="@+id/siteNumber"
-        android:layout_alignEnd="@+id/button"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_alignRight="@+id/button" />
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/site_address_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/site_number_layout"
+                android:layout_toLeftOf="@id/site_number_btn"
+                android:layout_toStartOf="@id/site_number_btn"
+                android:hint="@string/address"
+                app:errorTextAppearance="@style/ErrorText">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_alignTop="@+id/operators"
-        android:layout_centerHorizontal="true" />
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/site_address"
+                    style="@style/TextInputCustom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLength="50"
+                    android:textSize="20sp" />
+            </android.support.design.widget.TextInputLayout>
 
-</RelativeLayout>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/site_address_btn"
+                style="@style/CustomButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/site_address_layout"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/site_address_layout"
+                android:text="@string/search" />
+
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/search_here"
+            style="@style/CustomButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onClick"
+            android:text="@string/searchHere" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <RadioGroup
+            android:id="@+id/operators_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/radio_mts"
+                style="@style/RadioButton"
+                android:checked="true"
+                android:text="@string/MTS" />
+
+            <RadioButton
+                android:id="@+id/radio_vmk"
+                style="@style/RadioButton"
+                android:text="@string/VMK" />
+
+            <RadioButton
+                android:id="@+id/radio_mgf"
+                style="@style/RadioButton"
+                android:text="@string/MGF" />
+
+            <RadioButton
+                android:id="@+id/radio_tele"
+                style="@style/RadioButton"
+                android:text="@string/TELE" />
+        </RadioGroup>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/progress_with_background"
+        android:visibility="gone" />
+</FrameLayout>

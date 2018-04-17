@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity implements TextView.OnEditor
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        siteView1 = findViewById(R.id.siteNumber);
-        siteView2 = findViewById(R.id.siteAddress);
-        spinner = findViewById(R.id.operators);
+        siteView1 = findViewById(R.id.site_number);
+        siteView2 = findViewById(R.id.site_address);
+     //   spinner = findViewById(R.id.operators);
 
         siteView1.setOnEditorActionListener(this);
         siteView2.setOnEditorActionListener(this);
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements TextView.OnEditor
         operatorBDinPreferences();
 
         switch (view.getId()) {
-            case R.id.button:
+            case R.id.site_number_btn:
                 //siteNumber = Integer.parseInt(siteView.getText().toString());
                 String siteNumber = (siteView1.getText().toString());
                 Log.v("LogForMe", "siteNumber = -" + siteNumber + "-");
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements TextView.OnEditor
                 fireBase ("1","siteNumber", siteNumber+"  "+ operatorBD);
                 break;
 
-            case R.id.button2:
+            case R.id.site_address_btn:
                 String siteAddress = (siteView2.getText().toString());
                 Log.v("LogForMe", "siteAddress= -" + siteAddress + "+");
                 if (siteAddress.length() == 0) {
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements TextView.OnEditor
 
                 break;
 
-            case R.id.searchHere:
+            case R.id.search_here:
                 Log.v("LogForMe", "btnSearchNear");
                 Intent intent = new Intent(this, MapsActivity.class);
                 intent.putExtra("next", MapsActivity.MAP_BS_HERE);
@@ -274,31 +274,31 @@ public class MainActivity extends AppCompatActivity implements TextView.OnEditor
         super.onResume();
         operatorBDoutPreferences();
 
-        switch (operatorBD) {
-            case DB_OPERATOR_MTS:
-                spinner.setSelection(0);
-                break;
-            case DB_OPERATOR_VMK:
-                spinner.setSelection(1);
-                break;
-            case DB_OPERATOR_MGF:
-                spinner.setSelection(2);
-                break;
-            case DB_OPERATOR_TEL:
-                spinner.setSelection(3);
-                break;
-        }
+//        switch (operatorBD) {
+//            case DB_OPERATOR_MTS:
+//                spinner.setSelection(0);
+//                break;
+//            case DB_OPERATOR_VMK:
+//                spinner.setSelection(1);
+//                break;
+//            case DB_OPERATOR_MGF:
+//                spinner.setSelection(2);
+//                break;
+//            case DB_OPERATOR_TEL:
+//                spinner.setSelection(3);
+//                break;
+//        }
     }
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         Log.v("LogForMe", "onEditorAction  " + actionId);
         switch (v.getId()) {
-            case R.id.siteAddress:
-                onClick(findViewById(R.id.button2));
+            case R.id.site_address:
+                onClick(findViewById(R.id.site_address_btn));
                 return true;
-            case R.id.siteNumber:
-                onClick(findViewById(R.id.button));
+            case R.id.site_number:
+                onClick(findViewById(R.id.site_number_btn));
                 return true;
             default:
                 return false;

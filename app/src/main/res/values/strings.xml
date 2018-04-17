@@ -3,7 +3,7 @@
     <string name="site">  № БС</string>
     <string name="address">  Адрес </string>
     <string name="powered_by">Powered by EngineeringForYou</string>
-    <string name="title">Ввод параметров поиска БС:</string>
+    <string name="title">Поиск базвых станций\nв Москве и Московской области:</string>
     <string name="search">ПОИСК</string>
     <string name="Check">Помотреть на карте</string>
     <string name="title_activity_maps">Карта</string>
