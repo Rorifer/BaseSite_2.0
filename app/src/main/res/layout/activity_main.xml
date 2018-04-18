@@ -7,12 +7,11 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:focusableInTouchMode="true"
-    tools:context=".presentation.main.MainActivity">
+    tools:context=".presentation.searchsite.SearchSiteActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/holo_blue_dark"
         android:isScrollContainer="true"
         android:orientation="vertical">
 
@@ -37,19 +36,21 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="24dp">
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/site_number_layout"
+                android:id="@+id/site_search_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/site_number_btn"
-                android:layout_toStartOf="@id/site_number_btn"
-                android:hint="@string/site"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_toLeftOf="@id/site_search_btn"
+                android:layout_toStartOf="@id/site_search_btn"
+                android:hint="@string/site_search"
                 app:errorTextAppearance="@style/ErrorText">
 
                 <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/site_number"
+                    android:id="@+id/site_search"
                     style="@style/TextInputCustom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -60,46 +61,18 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/site_number_btn"
+                android:id="@+id/site_search_btn"
                 style="@style/CustomButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/site_number_layout"
+                android:layout_alignBottom="@id/site_search_layout"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@id/site_number_layout"
-                android:text="@string/search" />
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/site_address_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/site_number_layout"
-                android:layout_toLeftOf="@id/site_number_btn"
-                android:layout_toStartOf="@id/site_number_btn"
-                android:hint="@string/address"
-                app:errorTextAppearance="@style/ErrorText">
-
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/site_address"
-                    style="@style/TextInputCustom"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:maxLength="50"
-                    android:textSize="20sp" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/site_address_btn"
-                style="@style/CustomButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/site_address_layout"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@id/site_address_layout"
+                android:layout_alignTop="@id/site_search_layout"
+                android:drawableLeft="@drawable/ic_search_24dp"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_search_24dp"
+                android:padding="16dp"
                 android:text="@string/search" />
 
         </RelativeLayout>
@@ -115,7 +88,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:onClick="onClick"
+            android:drawableLeft="@drawable/ic_map_24dp"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_map_24dp"
+            android:padding="16dp"
             android:text="@string/searchHere" />
 
         <Space

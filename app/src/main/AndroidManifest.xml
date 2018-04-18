@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.engineeringforyou.basesite.presentation.main.MainActivity"
+        <activity android:name="com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity"
             android:theme="@style/SignTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

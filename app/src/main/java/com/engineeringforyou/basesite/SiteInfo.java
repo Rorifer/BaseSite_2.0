@@ -130,7 +130,7 @@ public class SiteInfo extends Activity {
                 Log.v("LogForMe", "btnSearchNear  MAP_BS_SITE");
                 intent.putExtra("next", MapsActivity.MAP_BS_SITE_ONE);
                 break;
-            case R.id.site_number_btn:
+            case R.id.site_search_btn:
                 Log.v("LogForMe", "button");
                 intent.putExtra("next", MapsActivity.MAP_BS_ONE);
                 Log.v("LogForMe", "MAP_BS_ONE ++++++ = " + siteNumber);

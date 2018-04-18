@@ -21,7 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.engineeringforyou.basesite.presentation.main.MainActivity;
+import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
 import com.engineeringforyou.basesite.utils.DBHelper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -80,7 +80,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             lat = extras.getDouble("lat");
             lng = extras.getDouble("lng");
             siteNumber = extras.getString("site");
-            startBD = MainActivity.getOperatorBD();
+            startBD = SearchSiteActivity.getOperatorBD();
         }
         setContentView(R.layout.activity_maps);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -108,21 +108,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.v("LogForMe", "onCreateOptionsMenu ");
         getMenuInflater().inflate(R.menu.menu_map, menu);
-        String operatorBD = MainActivity.getOperatorBD();
+        String operatorBD = SearchSiteActivity.getOperatorBD();
         switch (operatorBD) {
-            case (MainActivity.DB_OPERATOR_MTS):
+            case (SearchSiteActivity.DB_OPERATOR_MTS):
                 menu.findItem(R.id.MTS_oper).setChecked(true);
                 break;
-            case (MainActivity.DB_OPERATOR_MGF):
+            case (SearchSiteActivity.DB_OPERATOR_MGF):
                 menu.findItem(R.id.MGF_oper).setChecked(true);
                 break;
-            case (MainActivity.DB_OPERATOR_VMK):
+            case (SearchSiteActivity.DB_OPERATOR_VMK):
                 menu.findItem(R.id.VMK_oper).setChecked(true);
                 break;
-                case (MainActivity.DB_OPERATOR_TEL):
+                case (SearchSiteActivity.DB_OPERATOR_TEL):
                 menu.findItem(R.id.TEL_oper).setChecked(true);
                 break;
-            case (MainActivity.DB_OPERATOR_ALL):
+            case (SearchSiteActivity.DB_OPERATOR_ALL):
                 menu.findItem(R.id.ALL_oper).setChecked(true);
                 break;
         }
@@ -146,34 +146,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, SearchSiteActivity.class));
                 return true;
             case R.id.action_radius:
                 new DialogRadius().show(getFragmentManager(), "dialog");
                 return true;
             case R.id.MTS_oper:
                 item.setChecked(true);
-                MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_MTS);
+                SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_MTS);
                 fillOldMap();
                 return true;
             case R.id.MGF_oper:
                 item.setChecked(true);
-                MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_MGF);
+                SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_MGF);
                 fillOldMap();
                 return true;
             case R.id.VMK_oper:
                 item.setChecked(true);
-                MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_VMK);
+                SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_VMK);
                 fillOldMap();
                 return true;
             case R.id.TEL_oper:
                 item.setChecked(true);
-                MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_TEL);
+                SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_TEL);
                 fillOldMap();
                 return true;
             case R.id.ALL_oper:
                 item.setChecked(true);
-                MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_ALL);
+                SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_ALL);
                 fillOldMap();
                 return true;
 
@@ -226,7 +226,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapType = mSettings.getInt(APP_PREFERENCES_MAP_TYPE, 1);
             Log.v("LogForMe", "Тип карты из насторек:  " + mapType);
 
-            MainActivity.getOperatorBD();
+            SearchSiteActivity.getOperatorBD();
         }
         mAdView.resume();
     }
@@ -267,16 +267,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.clear();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, scale));
 
-        if (MainActivity.getOperatorBD().equals(MainActivity.DB_OPERATOR_ALL)) {
-            MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_MTS);
+        if (SearchSiteActivity.getOperatorBD().equals(SearchSiteActivity.DB_OPERATOR_ALL)) {
+            SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_MTS);
             fillMap();
-            MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_MGF);
+            SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_MGF);
             fillMap();
-            MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_VMK);
+            SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_VMK);
             fillMap();
-            MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_TEL);
+            SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_TEL);
             fillMap();
-            MainActivity.setOperatorBD(MainActivity.DB_OPERATOR_ALL);
+            SearchSiteActivity.setOperatorBD(SearchSiteActivity.DB_OPERATOR_ALL);
         } else {
             fillMap();
         }
@@ -351,7 +351,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Cursor userCursor;
         SQLiteDatabase sqld;
         String query;
-        String DB_NAME = MainActivity.getOperatorBD();
+        String DB_NAME = SearchSiteActivity.getOperatorBD();
         double latMax,
                 latMin,
                 lngMax,
@@ -383,24 +383,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, "Здесь БС не найдено!", Toast.LENGTH_SHORT).show();
         } else {
 
-            String oper = MainActivity.getOperatorBD();
+            String oper = SearchSiteActivity.getOperatorBD();
             String title = null;
 
             float colorPoint = 0;
             switch (oper) {
-                case MainActivity.DB_OPERATOR_MTS:
+                case SearchSiteActivity.DB_OPERATOR_MTS:
                     colorPoint = 0.0F; // red
                     title = "МТС";
                     break;
-                case MainActivity.DB_OPERATOR_MGF:
+                case SearchSiteActivity.DB_OPERATOR_MGF:
                     colorPoint = 120.0F; // green+
                     title = "Мегафон";
                     break;
-                case MainActivity.DB_OPERATOR_VMK:
+                case SearchSiteActivity.DB_OPERATOR_VMK:
                     colorPoint = 60.0F; // YELLOW
                     title = "Билайн";
                     break;
-                case MainActivity.DB_OPERATOR_TEL:
+                case SearchSiteActivity.DB_OPERATOR_TEL:
                     colorPoint = 270.0F; // HUE_VIOLET
                     title = "Теле2";
                     break;
@@ -439,7 +439,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onInfoWindowClick(Marker marker) {
         String oper = (String) marker.getTag();
         Log.v("LogForMe", " Tag из маркера = " + oper);
-        MainActivity.setOperatorBD(oper);
+        SearchSiteActivity.setOperatorBD(oper);
         siteData(new DBHelper(getApplicationContext()).
                 siteSearch(oper, marker.getTitle(), 1));
     }
@@ -520,7 +520,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.v("LogForMe", "Колонки не существует -" + headers[i]);
             }
             if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
-            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + MainActivity.operator + ")";
+            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + SearchSiteActivity.operator + ")";
         }
         lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');
         lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');
