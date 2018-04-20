@@ -10,5 +10,5 @@ public interface SearchSitePresenter {
 
     void checkSavedOperator();
 
-    void searchSite(String operator, String search);
+    void searchSite(int operatorIndex, String search);
 }
