@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
+import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,7 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (bDoperatorName == null) {
             Log.v("LogForMe", "В siteSearch передали пустую bDoperatorName, siteQuery = " + siteQuery);
-            bDoperatorName = SearchSiteActivity.getOperatorBD();
+            bDoperatorName = SearchSitePresenterImpl.getOperatorBD();
         }
         DBHelper db = null;
         Cursor userCursor = null;

@@ -11,7 +11,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
+import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.utils.DBHelper;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class SiteChoice extends Activity {
                 Cursor cursor = new DBHelper
                         (getApplicationContext()).
                         siteSearch
-                                (SearchSiteActivity.getOperatorBD(), String.valueOf(id[pos]), 3);
+                                (SearchSitePresenterImpl.getOperatorBD(), String.valueOf(id[pos]), 3);
                 if (cursor == null || cursor.getCount() == 0) {
                     Toast.makeText(getApplicationContext(), "Ошибка в БД", Toast.LENGTH_SHORT).show();
                     Log.v("LogForMe", "Ошибка в Курсоре ");
@@ -75,7 +75,7 @@ public class SiteChoice extends Activity {
                         Log.v("LogForMe", "Колонки не существует -" + headers[i]);
                     }
                     if (text[i] == null||text[i].equals("") ) text[i] = "нет данных";
-                    if (headers[i].equals("SITE")) text[i] = text[i] + " (" + SearchSiteActivity.operator + ")";
+                    if (headers[i].equals("SITE")) text[i] = text[i] + " (" + SearchSitePresenterImpl.operator + ")";
                 }
                 lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');
                 lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');

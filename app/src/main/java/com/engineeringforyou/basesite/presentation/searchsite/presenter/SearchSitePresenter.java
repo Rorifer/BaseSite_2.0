@@ -8,7 +8,7 @@ public interface SearchSitePresenter {
 
     void unbindView();
 
-    void checkSavedOperator();
+    void setupOperator();
 
     void searchSite(int operatorIndex, String search);
 }
