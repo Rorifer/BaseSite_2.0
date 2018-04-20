@@ -28,7 +28,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="ErrorText">
-        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textColor">@android:color/holo_orange_light</item>
     </style>
 
     <style name="TextInputCustom" parent="Widget.AppCompat.EditText">

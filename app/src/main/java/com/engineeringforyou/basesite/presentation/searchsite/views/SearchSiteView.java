@@ -17,4 +17,6 @@ public interface SearchSiteView {
     void toSiteInfo(Cursor cursor);
 
     void toSiteChoice(Cursor cursor, int count);
+
+    void hideError();
 }

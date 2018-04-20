@@ -112,6 +112,7 @@
                 style="@style/RadioButton"
                 android:checked="true"
                 android:drawableRight="@drawable/ic_mts"
+                android:drawablePadding="30dp"
                 android:text="@string/MTS"
                 android:drawableEnd="@drawable/ic_mts" />
 

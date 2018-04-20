@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -34,6 +35,8 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @BindView(R.id.site_search)
     EditText mSearch;
+    @BindView(R.id.site_search_layout)
+    TextInputLayout mSearchLayout;
     @BindView(R.id.operators_group)
     RadioGroup mOperators;
     @BindView(R.id.progress_bar)
@@ -48,6 +51,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         ButterKnife.bind(this);
         mPresenter = new SearchSitePresenterImpl(this);
         mPresenter.bind(this);
+        mPresenter.watchChanges(mSearch);
     }
 
     @Override
@@ -83,7 +87,12 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @Override
     public void showError(int textRes) {
-        mSearch.setError(getString(textRes));
+        mSearchLayout.setError(getString(textRes));
+    }
+
+    @Override
+    public void hideError() {
+        mSearchLayout.setError(null);
     }
 
     @Override

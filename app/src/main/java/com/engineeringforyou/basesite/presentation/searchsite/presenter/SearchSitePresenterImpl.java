@@ -1,12 +1,15 @@
 package com.engineeringforyou.basesite.presentation.searchsite.presenter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.widget.EditText;
 
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView;
 import com.engineeringforyou.basesite.utils.DBHelper;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,13 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     public void bind(SearchSiteView view) {
         mView = view;
         init();
+    }
+
+    @SuppressLint("CheckResult")
+    @Override
+    public void watchChanges(EditText view) {
+        RxTextView.textChanges(view)
+                .subscribe(event -> mView.hideError());
     }
 
     private void init() {
@@ -184,6 +194,6 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
 
     @Override
     public void unbindView() {
-   //     mView = null;
+        //     mView = null;
     }
 }
