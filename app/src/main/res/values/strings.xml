@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Базовые станции</string>
     <string name="site_search">№ БС или адрес</string>
-    <string name="title">Поиск базовых станций\nв Москве и Московской области:</string>
+    <string name="title">Поиск базовых станций\nМосквы и Московской области</string>
     <string name="search">ПОИСК</string>
     <string name="Check">Помотреть на карте</string>
     <string name="title_activity_maps">Карта</string>
