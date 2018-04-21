@@ -80,8 +80,6 @@
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_search_24dp"
                     android:padding="16dp"
-                    android:paddingEnd="20dp"
-                    android:paddingRight="20dp"
                     android:text="@string/search" />
 
             </RelativeLayout>
@@ -118,22 +116,12 @@
                 android:orientation="vertical">
 
                 <RadioButton
-                    android:id="@+id/radio_mts"
                     style="@style/RadioButton"
-                    android:checked="true"
                     android:drawableEnd="@drawable/ic_mts"
                     android:drawableRight="@drawable/ic_mts"
                     android:text="@string/MTS" />
 
                 <RadioButton
-                    android:id="@+id/radio_vmk"
-                    style="@style/RadioButton"
-                    android:drawableEnd="@drawable/ic_beeline"
-                    android:drawableRight="@drawable/ic_beeline"
-                    android:text="@string/VMK" />
-
-                <RadioButton
-                    android:id="@+id/radio_mgf"
                     style="@style/RadioButton"
                     android:drawableEnd="@drawable/ic_megafon"
                     android:drawablePadding="16dp"
@@ -141,7 +129,12 @@
                     android:text="@string/MGF" />
 
                 <RadioButton
-                    android:id="@+id/radio_tele"
+                    style="@style/RadioButton"
+                    android:drawableEnd="@drawable/ic_beeline"
+                    android:drawableRight="@drawable/ic_beeline"
+                    android:text="@string/VMK" />
+
+                <RadioButton
                     style="@style/RadioButton"
                     android:drawableEnd="@drawable/ic_tele2"
                     android:drawableRight="@drawable/ic_tele2"

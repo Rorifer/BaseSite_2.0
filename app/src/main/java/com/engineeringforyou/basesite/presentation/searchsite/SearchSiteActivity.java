@@ -20,7 +20,6 @@ import com.engineeringforyou.basesite.SiteInfo;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView;
-import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,8 +61,9 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @OnClick(R.id.site_search_btn)
     public void searchSite() {
-        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
-        mPresenter.searchSite(getOperator(), mSearch.getText().toString().trim());
+//        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
+        mPresenter.saveOperator(getOperator());
+        mPresenter.searchSite(mSearch.getText().toString().trim());
     }
 
     private int getOperator() {
@@ -72,8 +72,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @Override
     public void setOperator(int operatorIndex) {
-        int index = (operatorIndex < mOperators.getChildCount()) ? operatorIndex : 0;
-        mOperators.check(mOperators.getChildAt(index).getId());
+        mOperators.check(mOperators.getChildAt(operatorIndex).getId());
     }
 
     @OnEditorAction(R.id.site_search)
@@ -98,7 +97,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     @Override
     public void showResult(@StringRes int textRes) {
         //TODO
-        Toast.makeText(this,getString(textRes),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(textRes), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -177,6 +176,8 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @OnClick(R.id.search_in_map)
     public void toMapActivity() {
+        mPresenter.saveOperator(getOperator());
+
 //        startActivity(new Intent(this, MapsActivity.class));
 //        //TODO добавить анимацию
 

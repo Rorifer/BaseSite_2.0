@@ -12,7 +12,9 @@ public interface SearchSitePresenter {
 
     void setupOperator();
 
-    void searchSite(int operatorIndex, String search);
+    void searchSite(String search);
 
     void watchChanges(EditText view);
+
+    void saveOperator(int operatorIndex);
 }

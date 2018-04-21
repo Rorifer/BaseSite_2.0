@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.engineeringforyou.basesite.R;
@@ -14,6 +15,10 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class SearchSitePresenterImpl implements SearchSitePresenter {
 
@@ -73,25 +78,29 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         operatorBDoutPreferences();
 
         switch (operatorBD) {
-            case DB_OPERATOR_MTS:
-                mView.setOperator(0);
-                break;
-            case DB_OPERATOR_VMK:
+            case DB_OPERATOR_MGF:
                 mView.setOperator(1);
                 break;
-            case DB_OPERATOR_MGF:
+            case DB_OPERATOR_VMK:
                 mView.setOperator(2);
                 break;
             case DB_OPERATOR_TEL:
                 mView.setOperator(3);
                 break;
+            default:
+            case DB_OPERATOR_MTS:
+                mView.setOperator(0);
+                break;
         }
     }
 
     @Override
-    public void searchSite(int operatorIndex, String search) {
-        operatorBD = operatorsList.get(operatorIndex);
-        operatorBDinPreferences();
+    public void saveOperator(int operatorIndex) {
+        setOperatorBD(operatorsList.get(operatorIndex));
+    }
+
+    @Override
+    public void searchSite(String search) {
 
         if (search.length() == 0) {
             mView.showError(R.string.error_search_empty);
@@ -101,14 +110,29 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         mView.showProgress();
 
         if (Pattern.matches("[0-9-]*", search)) {
-            siteData(new DBHelper(mContext.getApplicationContext()).
-                    siteSearch(operatorBD, search, 1));
+            DBHelper hh = new DBHelper(mContext.getApplicationContext());
+
+            Single.fromCallable(() -> new DBHelper(mContext.getApplicationContext()).siteSearch(operatorBD, search, 1))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::siteData);
+
+
+//            siteData(new DBHelper(mContext.getApplicationContext()).
+//                    siteSearch(operatorBD, search, 1));
         } else {
-            siteData(new DBHelper(mContext.getApplicationContext()).
-                    siteSearch(operatorBD, search, 2));
+
+            Single.fromCallable(() -> new DBHelper(mContext.getApplicationContext()).siteSearch(operatorBD, search, 2))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::siteData);
+
+
+//            siteData(new DBHelper(mContext.getApplicationContext()).
+//                    siteSearch(operatorBD, search, 2));
         }
 
-        mView.hideProgress();
+//        mView.hideProgress();
     }
 
     public static String getOperatorBD() {
@@ -144,7 +168,9 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     }
 
     private void siteData(Cursor cursor) {
+        if (mView == null) return;
         if (cursor == null) {
+            mView.hideProgress();
             mView.showResult(R.string.error);
             return;
         }
@@ -172,6 +198,7 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
                     }
                 }
         }
+        mView.hideProgress();
     }
 
     private static void operatorBDinPreferences() {
@@ -181,6 +208,8 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putString(APP_PREFERENCES_BD, operatorBD);
         editor.apply();
+        Log.v("LogForMe", "in = " + operatorBD);
+
     }
 
     static void operatorBDoutPreferences() {
@@ -189,11 +218,12 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         }
         if (mSettings.contains(APP_PREFERENCES_BD)) {
             operatorBD = mSettings.getString(APP_PREFERENCES_BD, DB_OPERATOR_MTS);
+            Log.v("LogForMe", "out = " + operatorBD);
         }
     }
 
     @Override
     public void unbindView() {
-        //     mView = null;
+        mView = null;
     }
 }
