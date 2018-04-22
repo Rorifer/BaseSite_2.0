@@ -13,7 +13,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
     private static final String TAG = DatabaseHelper.class.getSimpleName();
     private static String DB_PATH; // полный путь к базе данных
-    private static final String DATABASE_NAME ="DB_SITE_05.db";
+    private static final String DATABASE_NAME ="DB_SITE_06.db";
     private static final int DATABASE_VERSION = 1;
 
     //ссылки на DAO соответсвующие сущностям, хранимым в БД

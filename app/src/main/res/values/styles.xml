@@ -44,7 +44,10 @@
         <item name="elevation">2dp</item>
     </style>
 
-    <style name="RadioButton" >
+    <style name="SearchSiteSearchBtn" parent="CustomButton" />
+    <style name="SearchSiteMapBtn" parent="CustomButton" />
+
+    <style name="RadioButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">18sp</item>

@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static String DB_PATH; // полный путь к базе данных
-    final private static String DB_NAME = "DB_SITE_05.db";
+    final private static String DB_NAME = "DB_SITE_06.db";
     private static final int DATABASE_VERSION = 1; // версия базы данных
     private Context myContext;
 
