@@ -1,6 +1,7 @@
 package com.engineeringforyou.basesite;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
+import static com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl.operatorBD;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
@@ -69,6 +71,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedPreferences mSettings;
     private AdView mAdView;
     private static boolean startMessage = true;
+
+    public static void start(Activity activity) {
+
+//        startActivity(new Intent(this, MapsActivity.class));
+//        //TODO добавить анимацию
+
+        Intent intent = new Intent(activity, MapsActivity.class);
+        intent.putExtra("next", MapsActivity.MAP_BS_HERE);
+        intent.putExtra("operatorBD", operatorBD);
+        activity.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

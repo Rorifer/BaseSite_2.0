@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Базовые станции</string>
+    <!--<string name="app_name">Базовые станции</string>-->
     <string name="site_search">№ БС или адрес</string>
     <string name="title">Поиск базовых станций\nМосквы и Московской области</string>
     <string name="search">ПОИСК</string>

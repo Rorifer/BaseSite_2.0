@@ -17,9 +17,32 @@ import com.engineeringforyou.basesite.utils.DBHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl.operator;
+
 public class SiteChoice extends Activity {
     String[] param1, param2, id;
     ListView listView;
+
+    public static void start(Activity activity, Cursor cursor , int count){
+        cursor.moveToFirst();
+        String[] headers = new String[]{"SITE", "Addres"};
+//        String[] headers = getResources().getStringArray(R.array.columnsChoice);
+        String[] param1 = new String[count];
+        String[] param2 = new String[count];
+        String[] id = new String[count];
+        for (int i = 0; i < count; i++) {
+            param1[i] = cursor.getString(cursor.getColumnIndex(headers[0])) + " (" + operator + ")";
+            param2[i] = cursor.getString(cursor.getColumnIndex(headers[1]));
+            id[i] = cursor.getString(cursor.getColumnIndex("_id"));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        Intent intent = new Intent(activity, SiteChoice.class);
+        intent.putExtra("param1", param1);
+        intent.putExtra("param2", param2);
+        intent.putExtra("id", id);
+        activity.startActivity(intent);
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SearchSitePresenterImpl implements SearchSitePresenter {
@@ -40,6 +41,7 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
 
     private SearchSiteView mView;
     private Context mContext;
+    private CompositeDisposable mDisposable;
 
     public SearchSitePresenterImpl(Context context) {
         mContext = context;
@@ -70,6 +72,8 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         operatorsList.add(DB_OPERATOR_MGF);
         operatorsList.add(DB_OPERATOR_VMK);
         operatorsList.add(DB_OPERATOR_TEL);
+
+        mDisposable = new CompositeDisposable();
     }
 
 
@@ -108,24 +112,25 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         }
 
         mView.showProgress();
+        mDisposable.clear();
 
         if (Pattern.matches("[0-9-]*", search)) {
             DBHelper hh = new DBHelper(mContext.getApplicationContext());
 
-            Single.fromCallable(() -> new DBHelper(mContext.getApplicationContext()).siteSearch(operatorBD, search, 1))
+            mDisposable.add(Single.fromCallable(() -> new DBHelper(mContext.getApplicationContext()).siteSearch(operatorBD, search, 1))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::siteData);
+                    .subscribe(this::siteData));
 
 
 //            siteData(new DBHelper(mContext.getApplicationContext()).
 //                    siteSearch(operatorBD, search, 1));
         } else {
 
-            Single.fromCallable(() -> new DBHelper(mContext.getApplicationContext()).siteSearch(operatorBD, search, 2))
+            mDisposable.add(Single.fromCallable(() -> new DBHelper(mContext.getApplicationContext()).siteSearch(operatorBD, search, 2))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::siteData);
+                    .subscribe(this::siteData));
 
 
 //            siteData(new DBHelper(mContext.getApplicationContext()).
@@ -225,5 +230,6 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     @Override
     public void unbindView() {
         mView = null;
+        mDisposable.dispose();
     }
 }

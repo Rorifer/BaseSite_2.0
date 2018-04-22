@@ -3,6 +3,7 @@ package com.engineeringforyou.basesite;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -19,6 +20,8 @@ import com.google.android.gms.ads.AdView;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl.operator;
+
 public class SiteInfo extends Activity {
     String siteNumber;
     double lat, lng;
@@ -27,6 +30,36 @@ public class SiteInfo extends Activity {
     ArrayAdapter<String> adapter;
 
     private AdView mAdView;
+
+
+    public static void start(Activity activity, Cursor cursor) {
+
+        cursor.moveToFirst();
+        double lat, lng;
+        String[] headers =  activity.getResources().getStringArray(R.array.columns);
+        String[] text = new String[headers.length];
+        for (int i = 0; i < text.length; i++) {
+
+            if (cursor.getColumnIndex(headers[i]) != -1) {
+                text[i] = cursor.
+                        getString(cursor.getColumnIndex(headers[i]));
+            }
+            if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
+            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator + ")";
+        }
+
+        lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');
+        lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');
+        String site = cursor.getString(cursor.getColumnIndex("SITE"));
+
+        cursor.close();
+        Intent intent = new Intent(activity, SiteInfo.class);
+        intent.putExtra("lines", text);
+        intent.putExtra("lat", lat);
+        intent.putExtra("lng", lng);
+        intent.putExtra("site", site);
+        activity.startActivity(intent);
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         Log.v("LogForMe", "SiteInfo onCreate");
