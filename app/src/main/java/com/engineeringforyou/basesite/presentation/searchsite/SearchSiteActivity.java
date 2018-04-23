@@ -2,7 +2,6 @@ package com.engineeringforyou.basesite.presentation.searchsite;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.engineeringforyou.basesite.MapsActivity;
 import com.engineeringforyou.basesite.R;
@@ -88,12 +86,6 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     @Override
     public void hideError() {
         mSearchLayout.setError(null);
-    }
-
-    @Override
-    public void showResult(@StringRes int textRes) {
-        //TODO
-        Toast.makeText(this, getString(textRes), Toast.LENGTH_SHORT).show();
     }
 
     @Override

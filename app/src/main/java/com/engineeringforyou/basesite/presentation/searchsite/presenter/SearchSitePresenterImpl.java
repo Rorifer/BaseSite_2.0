@@ -176,7 +176,7 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         if (mView == null) return;
         if (cursor == null) {
             mView.hideProgress();
-            mView.showResult(R.string.error);
+            mView.showError(R.string.error);
             return;
         }
         int count;
@@ -184,21 +184,21 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
 
         switch (count) {
             case 0:
-                mView.showResult(R.string.error_no_succes);
+                mView.showError(R.string.error_no_succes);
                 break;
             case 1:
                 mView.toSiteInfo(cursor);
                 break;
             default:
                 if (count > 50) {
-                    mView.showResult(R.string.error_many_success);
+                    mView.showError(R.string.error_many_success);
                     break;
                 } else {
                     if (count > 1) {
                         mView.toSiteChoice(cursor, count);
                         break;
                     } else {
-                        mView.showResult(R.string.error);
+                        mView.showError(R.string.error);
                         break;
                     }
                 }

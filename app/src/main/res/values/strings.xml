@@ -54,7 +54,7 @@
     <!--<string name="banner_ad_unit_id">ca-app-pub-3809842406726636~9510522814</string>-->
 
     <string name="error_search_empty">Поле поиска не заполнено</string>
-    <string name="error">Ошибка</string>
+    <string name="error">Ошибка!</string>
     <string name="error_no_succes">Совпадений не найдено</string>
     <string name="error_many_success">Слишком много совпадений. Уточните запрос</string>
 

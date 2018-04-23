@@ -8,8 +8,6 @@ public interface SearchSiteView {
 
     void showError(@StringRes int textRes);
 
-    void showResult(@StringRes int textRes);
-
     void showProgress();
 
     void hideProgress();
