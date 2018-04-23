@@ -55,7 +55,6 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @OnClick(R.id.site_search_btn)
     public void searchSite() {
-//        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
         mPresenter.saveOperator(getOperator());
         mPresenter.searchSite(mSearch.getText().toString().trim());
     }
@@ -99,12 +98,6 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mPresenter.unbindView();
-    }
-
-    @Override
     public void toSiteInfo(Cursor cursor) {
         SiteInfo.start(this, cursor);
     }
@@ -118,5 +111,11 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     public void toMapActivity() {
         mPresenter.saveOperator(getOperator());
         MapsActivity.start(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.unbindView();
     }
 }
