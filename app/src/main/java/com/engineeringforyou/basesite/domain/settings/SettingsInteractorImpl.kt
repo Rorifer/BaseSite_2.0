@@ -1,7 +1,11 @@
+package com.engineeringforyou.basesite.domain.settings
+
 import android.content.Context
 import com.engineeringforyou.basesite.models.Operator
+import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
+import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
 
-class SettingsInteractorImpl(context: Context) : SettingsInteractor {
+public class SettingsInteractorImpl(context: Context) : SettingsInteractor {
 
     private val settingsRepository: SettingsRepository
 

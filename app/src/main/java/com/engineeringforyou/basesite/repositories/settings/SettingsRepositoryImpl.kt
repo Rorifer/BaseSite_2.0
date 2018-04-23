@@ -1,3 +1,5 @@
+package com.engineeringforyou.basesite.repositories.settings
+
 import android.content.Context
 import android.preference.PreferenceManager
 import com.engineeringforyou.basesite.models.Operator

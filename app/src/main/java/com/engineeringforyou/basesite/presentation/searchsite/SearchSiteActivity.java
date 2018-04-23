@@ -55,8 +55,12 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @OnClick(R.id.site_search_btn)
     public void searchSite() {
-        mPresenter.saveOperator(getOperator());
-        mPresenter.searchSite(mSearch.getText().toString().trim());
+        mPresenter.searchSite(getOperator(), mSearch.getText().toString().trim());
+    }
+
+    @OnClick(R.id.search_in_map)
+    public void toMapActivity() {
+        mPresenter.showMap(getOperator());
     }
 
     private int getOperator() {
@@ -107,9 +111,8 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         SiteChoice.start(this, cursor, count);
     }
 
-    @OnClick(R.id.search_in_map)
-    public void toMapActivity() {
-        mPresenter.saveOperator(getOperator());
+    @Override
+    public void toMap() {
         MapsActivity.start(this);
     }
 

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 
 import java.io.File;
@@ -40,7 +41,8 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.v("LogForMe", "Попытка обновить БД");
     }
 
-    public Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
+    public Cursor siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
+//    public Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
 
         if (bDoperatorName == null) {
             Log.v("LogForMe", "В siteSearch передали пустую bDoperatorName, siteQuery = " + siteQuery);

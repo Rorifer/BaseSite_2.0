@@ -579,4 +579,50 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //       fillMap();
         fillOldMap();
     }
+
+
+    public static String getOperatorBD() {
+        if (operatorBD != null) {
+            return operatorBD;
+        } else {
+            operatorBDoutPreferences();
+            return operatorBD;
+        }
+    }
+
+    public static void setOperatorBD(String oper) {
+        operatorBD = oper;
+        operatorBDinPreferences(); // TODO
+
+
+        switch (oper) {
+            case DB_OPERATOR_MTS:
+                operator = "МТС";
+                break;
+            case DB_OPERATOR_MGF:
+                operator = "МегаФон";
+                break;
+            case DB_OPERATOR_VMK:
+                operator = "Билайн";
+                break;
+            case DB_OPERATOR_TEL:
+                operator = "Теле2";
+                break;
+            case DB_OPERATOR_ALL:
+                operator = "Все";
+                break;
+            default:
+        }
+    }
+
+
+    public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
+    public final static String DB_OPERATOR_MGF = "MGF_Site_Base";
+    public final static String DB_OPERATOR_VMK = "VMK_Site_Base";
+    public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
+    public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
+
+    public static String operator;
+    public static String operatorBD = DB_OPERATOR_MTS;
+
 }
