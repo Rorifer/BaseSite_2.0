@@ -1,6 +1,5 @@
 package com.engineeringforyou.basesite.presentation.searchsite;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +13,12 @@ import com.engineeringforyou.basesite.MapsActivity;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.SiteChoice;
 import com.engineeringforyou.basesite.SiteInfo;
+import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,12 +56,12 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
     @OnClick(R.id.site_search_btn)
-    public void searchSite() {
+    public void clickSearchBtn() {
         mPresenter.searchSite(getOperator(), mSearch.getText().toString().trim());
     }
 
     @OnClick(R.id.search_in_map)
-    public void toMapActivity() {
+    public void clickMapBtn() {
         mPresenter.showMap(getOperator());
     }
 
@@ -75,7 +77,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     @OnEditorAction(R.id.site_search)
     public boolean search(int actionId) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-            searchSite();
+            clickSearchBtn();
             return true;
         }
         return false;
@@ -102,17 +104,17 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
     @Override
-    public void toSiteInfo(Cursor cursor) {
-        SiteInfo.start(this, cursor);
+    public void toSiteInfo(Site site) {
+        SiteInfo.start(this, site);
     }
 
     @Override
-    public void toSiteChoice(Cursor cursor, int count) {
-        SiteChoice.start(this, cursor, count);
+    public void toSiteChoice(List<Site> list) {
+        SiteChoice.start(this, list);
     }
 
     @Override
-    public void toMap() {
+    public void openMap() {
         MapsActivity.start(this);
     }
 

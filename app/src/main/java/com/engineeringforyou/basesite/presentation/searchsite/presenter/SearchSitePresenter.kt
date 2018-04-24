@@ -1,7 +1,6 @@
 package com.engineeringforyou.basesite.presentation.searchsite.presenter
 
 import android.widget.EditText
-
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView
 
 interface SearchSitePresenter {

@@ -11,17 +11,23 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.utils.DBHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl.operator;
 
 public class SiteChoice extends Activity {
     String[] param1, param2, id;
     ListView listView;
+
+    public static void start(Activity activity, List<Site> list){
+
+    }
 
     public static void start(Activity activity, Cursor cursor , int count){
         cursor.moveToFirst();

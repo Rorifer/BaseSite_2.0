@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.engineeringforyou.basesite.models.Operator;
+import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static String DB_PATH; // полный путь к базе данных
@@ -41,7 +43,8 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.v("LogForMe", "Попытка обновить БД");
     }
 
-    public Cursor siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
+//    public Cursor siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
+    public List<Site> siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
 //    public Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
 
         if (bDoperatorName == null) {

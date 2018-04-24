@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.engineeringforyou.basesite.models.Site;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -31,6 +32,8 @@ public class SiteInfo extends Activity {
 
     private AdView mAdView;
 
+    public static void start(Activity activity, Site site) {
+    }
 
     public static void start(Activity activity, Cursor cursor) {
 

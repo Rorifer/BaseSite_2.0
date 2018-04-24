@@ -2,45 +2,43 @@ package com.engineeringforyou.basesite.presentation.searchsite.presenter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.widget.EditText;
 
 import com.engineeringforyou.basesite.R;
-import com.engineeringforyou.basesite.domain.settings.SettingsInteractor;
-import com.engineeringforyou.basesite.domain.settings.SettingsInteractorImpl;
+import com.engineeringforyou.basesite.domain.searchsite.SearchSiteInteractor;
+import com.engineeringforyou.basesite.domain.searchsite.SearchSiteInteractorImpl;
+import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView;
-import com.engineeringforyou.basesite.utils.DBHelper;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SearchSitePresenterImpl implements SearchSitePresenter {
 
-    private Context mContext;
     private SearchSiteView mView;
     private CompositeDisposable mDisposable;
-    private SettingsInteractor mSettingsInteractor;
+    private SearchSiteInteractor mInteractor;
 
     public SearchSitePresenterImpl(Context context) {
-        mContext = context;
         mDisposable = new CompositeDisposable();
-        mSettingsInteractor = new SettingsInteractorImpl(mContext);
+        mInteractor = new SearchSiteInteractorImpl(context);
     }
 
     @Override
-    public void bind(SearchSiteView view) {
+    public void bind(@NonNull SearchSiteView view) {
         mView = view;
     }
 
     @SuppressLint("CheckResult")
     @Override
-    public void watchChanges(EditText view) {
+    public void watchChanges(@NonNull EditText view) {
         RxTextView.textChanges(view)
                 .subscribe(event -> mView.hideError());
     }
@@ -53,21 +51,21 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
 
     @Override
     public void saveOperator(int operatorIndex) {
-        mSettingsInteractor.saveOperator(Operator.values()[operatorIndex]);
+        mInteractor.saveOperator(Operator.values()[operatorIndex]);
     }
 
-    private Operator getOperator(){
-        return  mSettingsInteractor.getOperator();
+    private Operator getOperator() {
+        return mInteractor.getOperator();
     }
 
     @Override
     public void showMap(int operatorIndex) {
         saveOperator(operatorIndex);
-        mView.toMap();
+        mView.openMap();
     }
 
     @Override
-    public void searchSite(int operatorIndex, String search) {
+    public void searchSite(int operatorIndex, @NonNull String search) {
         saveOperator(operatorIndex);
 
         if (search.length() == 0) {
@@ -78,52 +76,40 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         mView.showProgress();
         mDisposable.clear();
         if (Pattern.matches("[0-9-]*", search)) {
-            mDisposable.add(Single.fromCallable(() ->
-                    new DBHelper(mContext).siteSearch(getOperator(), search, 1))
+
+            mDisposable.add(mInteractor.searchSitesByNumber(search)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::siteData));
+                    .subscribe(this::searchSuccess));
         } else {
-            mDisposable.add(Single.fromCallable(() ->
-                    new DBHelper(mContext).siteSearch(getOperator(), search, 2))
+            mDisposable.add(mInteractor.searchSitesByAddress(search)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::siteData));
+                    .subscribe(this::searchSuccess));
         }
     }
 
-    private void siteData(Cursor cursor) {
-        if (mView == null) return;
-        if (cursor == null) {
+    private void searchSuccess(List<Site> siteList) {
+        if (mView != null) {
             mView.hideProgress();
-            mView.showError(R.string.error);
-            return;
-        }
-        int count;
-        count = cursor.getCount();
-
-        switch (count) {
-            case 0:
-                mView.showError(R.string.error_no_succes);
-                break;
-            case 1:
-                mView.toSiteInfo(cursor);
-                break;
-            default:
-                if (count > 50) {
-                    mView.showError(R.string.error_many_success);
+            int count = siteList.size();
+            switch (count) {
+                case 0:
+                    mView.showError(R.string.error_no_succes);
                     break;
-                } else {
-                    if (count > 1) {
-                        mView.toSiteChoice(cursor, count);
+                case 1:
+                    mView.toSiteInfo(siteList.get(0));
+                    break;
+                default:
+                    if (count > 50) {
+                        mView.showError(R.string.error_many_success);
                         break;
                     } else {
-                        mView.showError(R.string.error);
+                        mView.toSiteChoice(siteList);
                         break;
                     }
-                }
+            }
         }
-        mView.hideProgress();
     }
 
     @Override

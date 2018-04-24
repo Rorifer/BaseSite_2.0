@@ -1,7 +1,7 @@
 package com.engineeringforyou.basesite.presentation.searchsite.views
 
-import android.database.Cursor
 import android.support.annotation.StringRes
+import com.engineeringforyou.basesite.models.Site
 
 interface SearchSiteView {
 
@@ -9,15 +9,16 @@ interface SearchSiteView {
 
     fun showError(@StringRes textRes: Int)
 
+    fun hideError()
+
     fun showProgress()
 
     fun hideProgress()
 
-    fun toSiteInfo(cursor: Cursor)
+    fun toSiteInfo(site: Site)
 
-    fun toSiteChoice(cursor: Cursor, count: Int)
+    fun toSiteChoice(list: List<Site>)
 
-    fun hideError()
-    fun toMap()
+    fun openMap()
 
 }
