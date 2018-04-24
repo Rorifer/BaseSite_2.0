@@ -8,8 +8,8 @@ import android.widget.EditText;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.domain.searchsite.SearchSiteInteractor;
 import com.engineeringforyou.basesite.domain.searchsite.SearchSiteInteractorImpl;
-import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.Operator;
+import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 

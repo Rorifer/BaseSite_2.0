@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.engineeringforyou.basesite.SiteInfo"
+            android:name="com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity"
             android:label="Карточка данных" />
         <activity
             android:name="com.engineeringforyou.basesite.SiteChoice"

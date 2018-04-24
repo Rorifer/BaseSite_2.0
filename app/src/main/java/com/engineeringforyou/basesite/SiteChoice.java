@@ -13,13 +13,14 @@ import android.widget.Toast;
 
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
+import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.utils.DBHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl.operator;
+import static com.engineeringforyou.basesite.MapsActivity.operator;
 
 public class SiteChoice extends Activity {
     String[] param1, param2, id;
@@ -104,14 +105,14 @@ public class SiteChoice extends Activity {
                         Log.v("LogForMe", "Колонки не существует -" + headers[i]);
                     }
                     if (text[i] == null||text[i].equals("") ) text[i] = "нет данных";
-                    if (headers[i].equals("SITE")) text[i] = text[i] + " (" + SearchSitePresenterImpl.operator + ")";
+                    if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator + ")";
                 }
                 lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');
                 lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');
                 String site = cursor.getString(cursor.getColumnIndex("SITE"));
                 Log.v("LogForMe", "SITE  ==" + site);
                 cursor.close();
-                Intent intent = new Intent(getApplicationContext(), SiteInfo.class);
+                Intent intent = new Intent(getApplicationContext(), SiteDetailsActivity.class);
                 intent.putExtra("lines", text);
                 intent.putExtra("lat", lat);
                 intent.putExtra("lng", lng);

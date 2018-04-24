@@ -44,8 +44,19 @@
         <item name="elevation">2dp</item>
     </style>
 
+    <style name="CustomButtonPrimary" parent="@style/Widget.AppCompat.Button.Colored">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/roundrect_custom_button</item>
+        <item name="elevation">2dp</item>
+    </style>
+
     <style name="SearchSiteSearchBtn" parent="CustomButton" />
     <style name="SearchSiteMapBtn" parent="CustomButton" />
+
+    <style name="SiteDetailsMapBtn" parent="CustomButtonPrimary" />
+    <style name="SiteDetailsDriveBtn" parent="CustomButtonPrimary" />
+
 
     <style name="RadioButton">
         <item name="android:layout_width">match_parent</item>

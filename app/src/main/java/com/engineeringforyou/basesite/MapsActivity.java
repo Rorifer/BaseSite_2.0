@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
+import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.utils.DBHelper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -45,9 +46,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public static final int MAP_BS_HERE = 1;
     static final int MAP_BS_SITE = 2;
-    static final int MAP_BS_ONE = 3;
+    public static final int MAP_BS_ONE = 3;
     static final int MAP_BS_MAP = 4;
-    static final int MAP_BS_SITE_ONE = 5;
+    public static final int MAP_BS_SITE_ONE = 5;
 
     private double boundsLat1=54.489509;
     private double boundsLat2=56.953235;
@@ -110,7 +111,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        mAdView = findViewById(R.id.adView);
+        mAdView = findViewById(R.id.ad_mob);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("5A69AA056907078C6954C3CC63DEE957")
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
@@ -542,7 +543,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v("LogForMe", "SITE  ==" + site);
         cursor.close();
         Log.v("LogForMe", "Вся БД закрылась-2");
-        Intent intent = new Intent(this, SiteInfo.class);
+        Intent intent = new Intent(this, SiteDetailsActivity.class);
         intent.putExtra("lines", text);
         intent.putExtra("lat", lat);
         intent.putExtra("lng", lng);

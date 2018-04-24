@@ -6,7 +6,7 @@
     <string name="Check">Помотреть на карте</string>
     <string name="title_activity_maps">Карта</string>
     <string name="searchHere">Искать БС на карте</string>
-    <string name="nearestBS">ближайшие БС</string>
+    <string name="nearestBS">ближайшие БС Оператора</string>
     <string-array name="columns">
         <item>"SITE"</item>
         <item>"Addres"</item>
@@ -57,5 +57,6 @@
     <string name="error">Внутренняя ошибка</string>
     <string name="error_no_succes">Совпадений не найдено</string>
     <string name="error_many_success">Слишком много совпадений. Уточните запрос</string>
+    <string name="bs_number">БC № </string>
 
 </resources>

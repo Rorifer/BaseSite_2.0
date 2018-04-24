@@ -10,7 +10,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/adView"
+        android:layout_above="@+id/ad_mob"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         tools:context="com.engineeringforyou.basesite.MapsActivity">

@@ -13,5 +13,15 @@
         <item name="android:drawablePadding">8dp</item>
     </style>
 
+    <style name="SiteDetailsMapBtn" parent="CustomButtonPrimary" >
+        <item name="android:drawableLeft">@drawable/ic_map_white</item>
+        <item name="android:drawableStart">@drawable/ic_map_white</item>
+    </style>
+
+    <style name="SiteDetailsDriveBtn" parent="CustomButtonPrimary" >
+        <item name="android:drawableLeft">@drawable/ic_drive_white</item>
+        <item name="android:drawableStart">@drawable/ic_drive_white</item>
+    </style>
+
 
 </resources>
