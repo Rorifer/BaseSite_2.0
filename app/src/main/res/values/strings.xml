@@ -58,5 +58,11 @@
     <string name="error_no_succes">Совпадений не найдено</string>
     <string name="error_many_success">Слишком много совпадений. Уточните запрос</string>
     <string name="bs_number">БC №</string>
+    <string name="bs_address">Адрес:</string>
+    <string name="no_data">нет данных</string>
+    <string name="bs_coordinates">Координаты:</string>
+    <string name="bs_object">Объект:</string>
+    <string name="bs_address_auto">Адрес по\nкоординатам:</string>
+    <string name="edit">Редактировать</string>
 
 </resources>
