@@ -6,4 +6,6 @@ interface SiteDetailsView {
 
     fun hideProgress()
 
+    fun setAddressFromCoordinates(address: String)
+
 }

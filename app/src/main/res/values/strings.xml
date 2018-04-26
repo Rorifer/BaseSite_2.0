@@ -64,5 +64,7 @@
     <string name="bs_object">Объект:</string>
     <string name="bs_address_auto">Адрес по\nкоординатам:</string>
     <string name="edit">Редактировать</string>
+    <string name="bs_status">Статус:</string>
+    <string name="status_active">действующая</string>
 
 </resources>

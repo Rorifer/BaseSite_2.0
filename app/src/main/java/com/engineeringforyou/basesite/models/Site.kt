@@ -9,15 +9,17 @@ data class Site(
         val number: String,
         val latitude: Double,
         val longitude: Double,
-        val address: String,
-        val obj: String,
-        val description: String
+        val status: Status = Status.ACTIVE,
+        val address: String = "нет данных",
+        val obj: String = "нет данных",
+        val description: String = "нет данных"
 ) : Parcelable {
     constructor(source: Parcel) : this(
             Operator.values()[source.readInt()],
             source.readString(),
             source.readDouble(),
             source.readDouble(),
+            Status.values()[source.readInt()],
             source.readString(),
             source.readString(),
             source.readString()
@@ -30,6 +32,7 @@ data class Site(
         writeString(number)
         writeDouble(latitude)
         writeDouble(longitude)
+        writeInt(status.ordinal)
         writeString(address)
         writeString(obj)
         writeString(description)

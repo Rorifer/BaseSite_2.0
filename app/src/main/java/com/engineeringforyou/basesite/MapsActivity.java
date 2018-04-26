@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
@@ -82,6 +83,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         intent.putExtra("next", MapsActivity.MAP_BS_HERE);
         intent.putExtra("operatorBD", operatorBD);
         activity.startActivity(intent);
+    }
+
+    public static void start(SiteDetailsActivity siteDetailsActivity, Site site) {
+
     }
 
     @Override
@@ -625,5 +630,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public static String operator;
     public static String operatorBD = DB_OPERATOR_MTS;
+
 
 }

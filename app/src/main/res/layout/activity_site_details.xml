@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".presentation.sitedetails.SiteDetailsActivity">
 
     <LinearLayout
         android:id="@+id/button_layout"
@@ -13,34 +15,24 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/site_search_btn"
+            android:id="@+id/map_btn"
             style="@style/SiteDetailsMapBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingEnd="24dp"
             android:paddingRight="24dp"
             android:text="@string/Check"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"/>
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnSearchNear"
-            style="@style/SiteDetailsMapBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="24dp"
-            android:paddingRight="24dp"
-            android:text="@string/nearestBS"
-            tools:ignore="RtlSymmetry" />
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnRoute"
+            android:id="@+id/route_btn"
             style="@style/SiteDetailsDriveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingEnd="24dp"
             android:paddingRight="24dp"
             android:text="@string/route"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -55,7 +47,7 @@
                 android:layout_marginRight="8dp"
                 android:text="@string/bs_number"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/site_number"
@@ -63,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
-                tools:text="77-1333 (Мегафон)" />
+                tools:text="77-1333 (Мегафон)"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -90,7 +82,7 @@
                     android:layout_marginRight="8dp"
                     android:text="@string/bs_address"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/site_address"
@@ -99,12 +91,12 @@
                     android:text="@string/no_data"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    tools:text=",kagbfn.ln.slgм п а а па п а араmn прюло ырдплбитод жл ориоп  прлабрп а ссдл прлдбютпюодбрюжобрьт.ю" />
+                    tools:text=",kagbfn.ln.slgм п а а па п а араmn прюло ырдплбитод жл ориоп  прлабрп а ссдл прлдбютпюодбрюжобрьт.ю"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/object_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:visibility="gone"
@@ -117,7 +109,7 @@
                     android:layout_marginRight="8dp"
                     android:text="@string/bs_object"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/site_object"
@@ -126,11 +118,11 @@
                     android:text="@string/no_data"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    tools:text="Центральная полликлинника" />
+                    tools:text="Центральная полликлинника"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
 
@@ -141,7 +133,7 @@
                     android:layout_marginRight="8dp"
                     android:text="@string/bs_coordinates"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/site_coordinates"
@@ -150,11 +142,34 @@
                     android:text="@string/no_data"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    tools:text="55.123 СД,\n33.123 ВД" />
+                    tools:text="55.123 СД,\n33.123 ВД"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="@string/bs_status"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/site_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/status_active"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
 
@@ -165,7 +180,7 @@
                     android:layout_marginRight="8dp"
                     android:text="@string/bs_address_auto"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/site_address_auto"
@@ -174,7 +189,7 @@
                     android:text="@string/no_data"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    tools:text=",kagbfn.ln.slgм п а а па п а араmn прюло ырдплбитод жл ориоп  прлабрп а ссдл прлдбютпюодбрюжобрьт.ю" />
+                    tools:text=",kagbfn.ln.slgм п а а па п а араmn прюло ырдплбитод жл ориоп  прлабрп а ссдл прлдбютпюодбрюжобрьт.ю"/>
             </LinearLayout>
 
             <android.support.v7.widget.AppCompatButton
@@ -186,7 +201,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/custom_button_selector"
                 android:enabled="false"
-                android:text="@string/edit" />
+                android:text="@string/edit"/>
 
         </LinearLayout>
     </ScrollView>
@@ -197,12 +212,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id" />
+        ads:adUnitId="@string/banner_ad_unit_id"/>
 
     <include
         layout="@layout/progress_with_background"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -1,10 +1,8 @@
 package com.engineeringforyou.basesite.presentation.sitedetails.presenter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
@@ -12,22 +10,20 @@ import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetails
 import java.io.IOException;
 import java.util.ArrayList;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
 
-    private SiteDetailsView mView;
+    private Context mContext;
     private CompositeDisposable mDisposable;
-//    private DetailsSiteInteractor mInteractor;
+    private SiteDetailsView mView;
 
     public SiteDetailsPresenterImpl(Context context) {
+        mContext = context;
         mDisposable = new CompositeDisposable();
-//        mInteractor = new SearchSiteInteractorImpl(context);
-
-
-        GeocoderTask geocoderTask = new GeocoderTask();
-        geocoderTask.execute();
-
     }
 
     @Override
@@ -35,37 +31,30 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
         mView = view;
     }
 
+    @Override
+    public void loadAddressFromCoordinates(double latitude, double longitude) {
+        mDisposable.add(loadAddress(latitude, longitude)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::loadAddressSuccess));
+    }
 
+    private void loadAddressSuccess(String address) {
+        mView.setAddressFromCoordinates(address);
+    }
 
-
-    @SuppressLint("StaticFieldLeak")
-    class GeocoderTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            Geocoder geocoder = new Geocoder(getApplication());  //  Функция определения адреса по координатам
+    private Single<String> loadAddress(double latitude, double longitude) {
+        return Single.fromCallable(() -> {
+            Geocoder geocoder = new Geocoder(mContext);
             ArrayList<Address> list = null;
             try {
-                list = (ArrayList<Address>) geocoder.getFromLocation(lat, lng, 1);
+                list = (ArrayList<Address>) geocoder.getFromLocation(latitude, longitude, 1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (list != null) {
-                String addres = list.get(0).getAddressLine(0);
-                addres = "Адрес по координатам: " + addres;
-                text.add(addres);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            adapter.notifyDataSetChanged();
-        }
+            return list != null ? list.get(0).getAddressLine(0) : "нет данных";
+        });
     }
-
-
 
     @Override
     public void unbindView() {

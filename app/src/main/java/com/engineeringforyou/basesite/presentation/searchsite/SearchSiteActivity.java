@@ -55,7 +55,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         mPresenter.setupOperator();
     }
 
-    @OnClick(R.id.site_search_btn)
+    @OnClick(R.id.map_btn)
     public void clickSearchBtn() {
         mPresenter.searchSite(getOperator(), mSearch.getText().toString().trim());
     }

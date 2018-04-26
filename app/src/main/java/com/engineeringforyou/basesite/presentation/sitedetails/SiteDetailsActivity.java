@@ -5,19 +5,24 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 
 import com.engineeringforyou.basesite.MapsActivity;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
+import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import org.jetbrains.annotations.NotNull;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SiteDetailsActivity extends AppCompatActivity implements SiteDetailsView {
 
@@ -27,16 +32,21 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     AdView mAdMobView;
     @BindView(R.id.progress_bar)
     FrameLayout mProgress;
-    @BindView(R.id.descriptions)
-    ListView lvMain;
+    @BindView(R.id.site_number)
+    AppCompatTextView siteNumber;
+    @BindView(R.id.site_address)
+    AppCompatTextView siteAddress;
+    @BindView(R.id.site_object)
+    AppCompatTextView siteObject;
+    @BindView(R.id.site_coordinates)
+    AppCompatTextView siteCoordinates;
+    @BindView(R.id.site_status)
+    AppCompatTextView siteStatus;
+    @BindView(R.id.site_address_auto)
+    AppCompatTextView siteAddressAuto;
 
+    private SiteDetailsPresenter mPresenter;
     private Site mSite;
-
-    String siteNumber;
-    double lat, lng;
-//    ArrayList<String> text;
-//    String[] text1;
-//    ArrayAdapter<String> adapter;
 
     public static void start(Activity activity, Site site) {
         Intent intent = new Intent(activity, SiteDetailsActivity.class);
@@ -49,25 +59,34 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_site_details);
         ButterKnife.bind(this);
-        initAdMob();
-
-        mSite = getIntent().getParcelableExtra(KEY_SITE);
-
-//            text1 = extras.getStringArray("lines");
-//
-//            text = new ArrayList<>();
-//            for (String txt : text1) {
-//                text.add(txt);
-//            }
-//        }
-////        ListView lvMain = findViewById(R.id.descriptions);
-//
-//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, text);
-//        lvMain.setAdapter(adapter);
-
+        mPresenter = new SiteDetailsPresenterImpl(this);
+        mPresenter.bind(this);
+        init();
     }
 
-    private void initAdMob(){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdMobView.resume();
+    }
+
+    private void init() {
+        initAdMob();
+        mSite = getIntent().getParcelableExtra(KEY_SITE);
+        siteNumber.setText(String.format("%s (%s)", mSite.getNumber(), mSite.getOperator()));
+        siteAddress.setText(mSite.getAddress());
+        siteObject.setText(mSite.getObj());
+        siteCoordinates.setText(String.format("%s° С.Ш.\n%s° В.Д.", mSite.getLatitude(), mSite.getLongitude()));
+        siteStatus.setText(mSite.getStatus().getDescription());
+        mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
+    }
+
+    @Override
+    public void setAddressFromCoordinates(@NotNull String address) {
+        siteAddressAuto.setText(address);
+    }
+
+    private void initAdMob() {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("5A69AA056907078C6954C3CC63DEE957")
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
@@ -75,33 +94,28 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         mAdMobView.loadAd(adRequest);
     }
 
+    @OnClick(R.id.map_btn)
+    public void clickMapBtn() {
+        MapsActivity.start(this, mSite);
+    }
 
-    public void onClick2(View view) {
-        Intent intent = new Intent(this, MapsActivity.class);
-        intent.putExtra("lat", lat);
-        intent.putExtra("lng", lng);
-        intent.putExtra("site", siteNumber);
-
-        switch (view.getId()) {
-            case R.id.btnSearchNear:
-                intent.putExtra("next", MapsActivity.MAP_BS_SITE_ONE);
-                break;
-            case R.id.site_search_btn:
-                intent.putExtra("next", MapsActivity.MAP_BS_ONE);
-                break;
-            case R.id.btnRoute:
-                intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("google.navigation:q=" + lat + "," + lng));
-                // добавить выбор навигатора (Яндекс-навигатор)
-                break;
-        }
-        startActivity(intent);
+    @OnClick(R.id.route_btn)
+    public void clickRouteBtn() {
+        startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse(String.format("qeo=%s,%s", mSite.getLatitude(), mSite.getLongitude()))));
+        //       Uri.parse("qeo=" + mSite.getLatitude() + "," + mSite.getLongitude())));
+        //  Uri.parse("google.navigation:q=" + mSite.getLatitude() + "," + mSite.getLongitude())));
+        // добавить выбор навигатора (Яндекс-навигатор)
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mAdMobView.resume();
+    public void showProgress() {
+        mProgress.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgress.setVisibility(View.GONE);
     }
 
     @Override
@@ -114,15 +128,6 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     protected void onDestroy() {
         mAdMobView.destroy();
         super.onDestroy();
-    }
-
-    @Override
-    public void showProgress() {
-        mProgress.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgress() {
-        mProgress.setVisibility(View.GONE);
+        mPresenter.unbindView();
     }
 }
