@@ -7,15 +7,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.engineeringforyou.basesite.MapsActivity;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
-import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,13 +44,17 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.v("LogForMe", "Попытка обновить БД");
     }
 
-//    public Cursor siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
-    public List<Site> siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
-//    public Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
+    public List<Site> siteSearch2(Operator bDoperatorName, String siteQuery, int mode) {
+        return new ArrayList<>();
+    }
+
+ //       public Cursor siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
+  //  public List<Site> siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
+    public Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
 
         if (bDoperatorName == null) {
             Log.v("LogForMe", "В siteSearch передали пустую bDoperatorName, siteQuery = " + siteQuery);
-            bDoperatorName = SearchSitePresenterImpl.getOperatorBD();
+            bDoperatorName = MapsActivity.getOperatorBD3(myContext);
         }
         DBHelper db = null;
         Cursor userCursor = null;
@@ -123,7 +128,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Log.v("LogForMe", "Количество строк совпадений = " + count);
 //        assert db != null;
-       if (db != null) db.close();
+        if (db != null) db.close();
         // userCursor.close();
         Log.v("LogForMe", "Вся БД закрылась-3");
         return userCursor;

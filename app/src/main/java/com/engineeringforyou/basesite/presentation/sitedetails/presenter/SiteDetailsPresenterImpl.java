@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -32,8 +32,8 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     }
 
     @Override
-    public void loadAddressFromCoordinates(double latitude, double longitude) {
-        mDisposable.add(loadAddress(latitude, longitude)
+    public void loadAddressFromCoordinates(double lat, double lng) {
+        mDisposable.add(loadAddress(lat, lng)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::loadAddressSuccess));
@@ -43,12 +43,11 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
         mView.setAddressFromCoordinates(address);
     }
 
-    private Single<String> loadAddress(double latitude, double longitude) {
+    private Single<String> loadAddress(double lat, double lng) {
         return Single.fromCallable(() -> {
-            Geocoder geocoder = new Geocoder(mContext);
-            ArrayList<Address> list = null;
+            List<Address> list = null;
             try {
-                list = (ArrayList<Address>) geocoder.getFromLocation(latitude, longitude, 1);
+                list = new Geocoder(mContext).getFromLocation(lat, lng, 1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -58,7 +57,7 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
 
     @Override
     public void unbindView() {
-        mView = null;
         mDisposable.dispose();
+        mView = null;
     }
 }

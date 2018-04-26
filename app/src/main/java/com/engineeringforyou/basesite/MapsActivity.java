@@ -22,10 +22,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
-import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
+import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
 import com.engineeringforyou.basesite.utils.DBHelper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -41,7 +42,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
-import static com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl.operatorBD;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
@@ -51,10 +51,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     static final int MAP_BS_MAP = 4;
     public static final int MAP_BS_SITE_ONE = 5;
 
-    private double boundsLat1=54.489509;
-    private double boundsLat2=56.953235;
-    private double boundsLng1=35.127559;
-    private double boundsLng2=40.250872;
+    private double boundsLat1 = 54.489509;
+    private double boundsLat2 = 56.953235;
+    private double boundsLng1 = 35.127559;
+    private double boundsLng2 = 40.250872;
 
     static float radius = 3; // ралиус "квадрата" в километрах
     private float scale = 14;
@@ -100,7 +100,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             lat = extras.getDouble("lat");
             lng = extras.getDouble("lng");
             siteNumber = extras.getString("site");
-            startBD = SearchSitePresenterImpl.getOperatorBD();
+            startBD = getOperatorBD();
         }
         setContentView(R.layout.activity_maps);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -128,21 +128,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.v("LogForMe", "onCreateOptionsMenu ");
         getMenuInflater().inflate(R.menu.menu_map, menu);
-        String operatorBD = SearchSitePresenterImpl.getOperatorBD();
+        String operatorBD = getOperatorBD();
         switch (operatorBD) {
-            case (SearchSitePresenterImpl.DB_OPERATOR_MTS):
+            case (DB_OPERATOR_MTS):
                 menu.findItem(R.id.MTS_oper).setChecked(true);
                 break;
-            case (SearchSitePresenterImpl.DB_OPERATOR_MGF):
+            case (DB_OPERATOR_MGF):
                 menu.findItem(R.id.MGF_oper).setChecked(true);
                 break;
-            case (SearchSitePresenterImpl.DB_OPERATOR_VMK):
+            case (DB_OPERATOR_VMK):
                 menu.findItem(R.id.VMK_oper).setChecked(true);
                 break;
-                case (SearchSitePresenterImpl.DB_OPERATOR_TEL):
+            case (DB_OPERATOR_TEL):
                 menu.findItem(R.id.TEL_oper).setChecked(true);
                 break;
-            case (SearchSitePresenterImpl.DB_OPERATOR_ALL):
+            case (DB_OPERATOR_ALL):
                 menu.findItem(R.id.ALL_oper).setChecked(true);
                 break;
         }
@@ -173,27 +173,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;
             case R.id.MTS_oper:
                 item.setChecked(true);
-                SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_MTS);
+                setOperatorBD(DB_OPERATOR_MTS);
                 fillOldMap();
                 return true;
             case R.id.MGF_oper:
                 item.setChecked(true);
-                SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_MGF);
+                setOperatorBD(DB_OPERATOR_MGF);
                 fillOldMap();
                 return true;
             case R.id.VMK_oper:
                 item.setChecked(true);
-                SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_VMK);
+                setOperatorBD(DB_OPERATOR_VMK);
                 fillOldMap();
                 return true;
             case R.id.TEL_oper:
                 item.setChecked(true);
-                SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_TEL);
+                setOperatorBD(DB_OPERATOR_TEL);
                 fillOldMap();
                 return true;
             case R.id.ALL_oper:
                 item.setChecked(true);
-                SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_ALL);
+                setOperatorBD(DB_OPERATOR_ALL);
                 fillOldMap();
                 return true;
 
@@ -229,10 +229,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v("LogForMe", "Запись радиуса в настройки:  " + radius);
         editor.putInt(APP_PREFERENCES_MAP_TYPE, mapType);
         editor.apply();
-        Log.v("LogForMe", getClass().getName()+" Запись типа карты в настройки:  " + mapType);
+        Log.v("LogForMe", getClass().getName() + " Запись типа карты в настройки:  " + mapType);
         super.onPause();
     }
-
 
 
     @Override
@@ -246,14 +245,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapType = mSettings.getInt(APP_PREFERENCES_MAP_TYPE, 1);
             Log.v("LogForMe", "Тип карты из насторек:  " + mapType);
 
-            SearchSitePresenterImpl.getOperatorBD();
+            getOperatorBD();
         }
         mAdView.resume();
     }
 
     @Override
     protected void onDestroy() {
-        Log.v("LogForMe", getClass()+"onDestroy");
+        Log.v("LogForMe", getClass() + "onDestroy");
         mAdView.destroy();
         super.onDestroy();
     }
@@ -272,13 +271,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mLocationPermissionGranted) {
             mMap.setMyLocationEnabled(true);
         }
-        mMap.setLatLngBoundsForCameraTarget( new LatLngBounds(new LatLng(boundsLat1, boundsLng1), new LatLng(boundsLat2, boundsLng2)));
+        mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(boundsLat1, boundsLng1), new LatLng(boundsLat2, boundsLng2)));
         fillMap();
     }
 
     private void fillOldMap() {
 //        if (nextStep == MAP_BS_ONE) return;
-        if (nextStep != MAP_BS_SITE  && nextStep !=MAP_BS_MAP) nextStep = MAP_BS_SITE;
+        if (nextStep != MAP_BS_SITE && nextStep != MAP_BS_MAP) nextStep = MAP_BS_SITE;
 
         scale = mMap.getCameraPosition().zoom;
         LatLng position = mMap.getCameraPosition().target;
@@ -287,16 +286,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.clear();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, scale));
 
-        if (SearchSitePresenterImpl.getOperatorBD().equals(SearchSitePresenterImpl.DB_OPERATOR_ALL)) {
-            SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_MTS);
+        if (getOperatorBD().equals(DB_OPERATOR_ALL)) {
+            setOperatorBD(DB_OPERATOR_MTS);
             fillMap();
-            SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_MGF);
+            setOperatorBD(DB_OPERATOR_MGF);
             fillMap();
-            SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_VMK);
+            setOperatorBD(DB_OPERATOR_VMK);
             fillMap();
-            SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_TEL);
+            setOperatorBD(DB_OPERATOR_TEL);
             fillMap();
-            SearchSitePresenterImpl.setOperatorBD(SearchSitePresenterImpl.DB_OPERATOR_ALL);
+            setOperatorBD(DB_OPERATOR_ALL);
         } else {
             fillMap();
         }
@@ -317,11 +316,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                     location = locationManager != null ? locationManager.getLastKnownLocation(PASSIVE_PROVIDER) : null;
                 }
-                if (location != null ) {
+                if (location != null) {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
 
-                    if (latitude < boundsLat1 || latitude > boundsLat2 || longitude <  boundsLng1 || longitude >  boundsLng2 ){
+                    if (latitude < boundsLat1 || latitude > boundsLat2 || longitude < boundsLng1 || longitude > boundsLng2) {
                         Log.v("LogForMe", "Текущие координаты за пределами границ карты");
                         startingMap();
                         break;
@@ -371,7 +370,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Cursor userCursor;
         SQLiteDatabase sqld;
         String query;
-        String DB_NAME = SearchSitePresenterImpl.getOperatorBD();
+        String DB_NAME = getOperatorBD();
         double latMax,
                 latMin,
                 lngMax,
@@ -403,24 +402,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, "Здесь БС не найдено!", Toast.LENGTH_SHORT).show();
         } else {
 
-            String oper = SearchSitePresenterImpl.getOperatorBD();
+            String oper = getOperatorBD();
             String title = null;
 
             float colorPoint = 0;
             switch (oper) {
-                case SearchSitePresenterImpl.DB_OPERATOR_MTS:
+                case DB_OPERATOR_MTS:
                     colorPoint = 0.0F; // red
                     title = "МТС";
                     break;
-                case SearchSitePresenterImpl.DB_OPERATOR_MGF:
+                case DB_OPERATOR_MGF:
                     colorPoint = 120.0F; // green+
                     title = "Мегафон";
                     break;
-                case SearchSitePresenterImpl.DB_OPERATOR_VMK:
+                case DB_OPERATOR_VMK:
                     colorPoint = 60.0F; // YELLOW
                     title = "Билайн";
                     break;
-                case SearchSitePresenterImpl.DB_OPERATOR_TEL:
+                case DB_OPERATOR_TEL:
                     colorPoint = 270.0F; // HUE_VIOLET
                     title = "Теле2";
                     break;
@@ -459,7 +458,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onInfoWindowClick(Marker marker) {
         String oper = (String) marker.getTag();
         Log.v("LogForMe", " Tag из маркера = " + oper);
-        SearchSitePresenterImpl.setOperatorBD(oper);
+        setOperatorBD(oper);
         siteData(new DBHelper(getApplicationContext()).
                 siteSearch(oper, marker.getTitle(), 1));
     }
@@ -540,7 +539,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.v("LogForMe", "Колонки не существует -" + headers[i]);
             }
             if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
-            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + SearchSitePresenterImpl.operator + ")";
+            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator + ")";
         }
         lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');
         lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');
@@ -586,41 +585,68 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         fillOldMap();
     }
 
+    private String getOperatorBD() {
+        return  getOperatorBD3(this);
+    }
 
-    public static String getOperatorBD() {
+
+        public static String getOperatorBD3(Context context) {
         if (operatorBD != null) {
             return operatorBD;
         } else {
-            operatorBDoutPreferences();
-            return operatorBD;
+            //  operatorBDoutPreferences();
+            Operator oper = new SettingsRepositoryImpl(context).getOperator();
+
+            switch (oper) {
+                case ALL:
+                    return DB_OPERATOR_ALL;
+                case MEGAFON:
+                    return DB_OPERATOR_MGF;
+                case VIMPELCOM:
+                    return DB_OPERATOR_VMK;
+                case TELE2:
+                    return DB_OPERATOR_TEL;
+                default:
+                case MTS:
+                    return DB_OPERATOR_MTS;
+
+            }
+            //     return operatorBD;
         }
     }
 
-    public static void setOperatorBD(String oper) {
+    public void setOperatorBD(String oper) {
         operatorBD = oper;
-        operatorBDinPreferences(); // TODO
+        //operatorBDinPreferences(); // TODO
 
 
         switch (oper) {
             case DB_OPERATOR_MTS:
                 operator = "МТС";
+                new SettingsRepositoryImpl(this).saveOperator(Operator.MTS);
                 break;
             case DB_OPERATOR_MGF:
                 operator = "МегаФон";
+                new SettingsRepositoryImpl(this).saveOperator(Operator.MEGAFON);
+
                 break;
             case DB_OPERATOR_VMK:
                 operator = "Билайн";
+                new SettingsRepositoryImpl(this).saveOperator(Operator.VIMPELCOM);
+
                 break;
             case DB_OPERATOR_TEL:
                 operator = "Теле2";
+                new SettingsRepositoryImpl(this).saveOperator(Operator.TELE2);
+
                 break;
             case DB_OPERATOR_ALL:
                 operator = "Все";
+                new SettingsRepositoryImpl(this).saveOperator(Operator.ALL);
                 break;
             default:
         }
     }
-
 
     public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
     public final static String DB_OPERATOR_MGF = "MGF_Site_Base";

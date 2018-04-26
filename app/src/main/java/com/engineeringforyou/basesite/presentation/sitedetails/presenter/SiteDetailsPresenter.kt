@@ -8,6 +8,6 @@ interface SiteDetailsPresenter {
 
     fun unbindView()
 
-    fun loadAddressFromCoordinates(latitude: Double, longitude: Double)
+    fun loadAddressFromCoordinates(lat: Double, lng: Double)
 
 }

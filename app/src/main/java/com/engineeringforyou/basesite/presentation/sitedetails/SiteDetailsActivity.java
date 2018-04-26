@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.engineeringforyou.basesite.MapsActivity;
 import com.engineeringforyou.basesite.R;
@@ -44,6 +45,8 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     AppCompatTextView siteStatus;
     @BindView(R.id.site_address_auto)
     AppCompatTextView siteAddressAuto;
+    @BindView(R.id.address_auto_layout)
+    LinearLayout addressAutoLayout;
 
     private SiteDetailsPresenter mPresenter;
     private Site mSite;
@@ -83,6 +86,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @Override
     public void setAddressFromCoordinates(@NotNull String address) {
+        addressAutoLayout.setVisibility(View.VISIBLE);
         siteAddressAuto.setText(address);
     }
 

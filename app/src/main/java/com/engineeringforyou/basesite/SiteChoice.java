@@ -12,7 +12,6 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.engineeringforyou.basesite.models.Site;
-import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.utils.DBHelper;
 
@@ -83,7 +82,7 @@ public class SiteChoice extends Activity {
                 Cursor cursor = new DBHelper
                         (getApplicationContext()).
                         siteSearch
-                                (SearchSitePresenterImpl.getOperatorBD(), String.valueOf(id[pos]), 3);
+                                (MapsActivity.getOperatorBD3(SiteChoice.this), String.valueOf(id[pos]), 3);
                 if (cursor == null || cursor.getCount() == 0) {
                     Toast.makeText(getApplicationContext(), "Ошибка в БД", Toast.LENGTH_SHORT).show();
                     Log.v("LogForMe", "Ошибка в Курсоре ");

@@ -62,7 +62,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/adView"
+        android:layout_above="@id/ad_mob"
         android:layout_below="@id/button_layout">
 
         <LinearLayout
@@ -95,12 +95,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/object_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:layout_marginTop="8dp">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
@@ -169,9 +166,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/address_auto_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
@@ -207,7 +207,7 @@
     </ScrollView>
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
+        android:id="@+id/ad_mob"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

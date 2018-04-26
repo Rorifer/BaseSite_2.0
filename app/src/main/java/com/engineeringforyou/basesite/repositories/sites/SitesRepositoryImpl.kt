@@ -9,8 +9,8 @@ import io.reactivex.Single
 class SitesRepositoryImpl(private val context: Context) : SitesRepository {
 
     override fun searchSitesByNumber(operator: Operator, search: String): Single<List<Site>> =
-            Single.fromCallable { DBHelper(context).siteSearch(operator, search, 1) }
+            Single.fromCallable { DBHelper(context).siteSearch2(operator, search, 1) }
 
     override fun searchSitesByAddress(operator: Operator, search: String): Single<List<Site>> =
-            Single.fromCallable { DBHelper(context).siteSearch(operator, search, 2) }
+            Single.fromCallable { DBHelper(context).siteSearch2(operator, search, 2) }
 }
