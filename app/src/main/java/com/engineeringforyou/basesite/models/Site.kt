@@ -5,36 +5,39 @@ import android.os.Parcelable
 
 
 data class Site(
+        val id: String,
         val operator: Operator,
         val number: String,
         val latitude: Double,
         val longitude: Double,
-        val status: Status = Status.ACTIVE,
         val address: String = "нет данных",
         val obj: String = "нет данных",
+        val status: Status = Status.ACTIVE,
         val description: String = "нет данных"
 ) : Parcelable {
     constructor(source: Parcel) : this(
+            source.readString(),
             Operator.values()[source.readInt()],
             source.readString(),
             source.readDouble(),
             source.readDouble(),
+            source.readString(),
+            source.readString(),
             Status.values()[source.readInt()],
-            source.readString(),
-            source.readString(),
             source.readString()
     )
 
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(id)
         writeInt(operator.ordinal)
         writeString(number)
         writeDouble(latitude)
         writeDouble(longitude)
-        writeInt(status.ordinal)
         writeString(address)
         writeString(obj)
+        writeInt(status.ordinal)
         writeString(description)
     }
 

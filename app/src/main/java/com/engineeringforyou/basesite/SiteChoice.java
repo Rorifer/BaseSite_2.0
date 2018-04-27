@@ -27,6 +27,23 @@ public class SiteChoice extends Activity {
 
     public static void start(Activity activity, List<Site> list){
 
+
+        String[] param1 = new String[list.size()];
+        String[] param2 = new String[list.size()];
+        String[] id = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            param1[i] = list.get(i).getNumber() + " (" + operator + ")";
+            param2[i] = list.get(i).getAddress();
+           id[i] =  list.get(i).getId();
+        }
+
+
+        Intent intent = new Intent(activity, SiteChoice.class);
+        intent.putExtra("param1", param1);
+        intent.putExtra("param2", param2);
+        intent.putExtra("id", id);
+        activity.startActivity(intent);
+
     }
 
     public static void start(Activity activity, Cursor cursor , int count){

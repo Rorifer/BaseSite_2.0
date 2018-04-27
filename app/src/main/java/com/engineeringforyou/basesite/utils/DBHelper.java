@@ -7,9 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.engineeringforyou.basesite.MapsActivity;
+import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.models.Status;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,6 +20,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.engineeringforyou.basesite.MapsActivity.getOperatorBD3;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static String DB_PATH; // полный путь к базе данных
@@ -44,17 +47,50 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.v("LogForMe", "Попытка обновить БД");
     }
 
-    public List<Site> siteSearch2(Operator bDoperatorName, String siteQuery, int mode) {
-        return new ArrayList<>();
+    public static List<Site> mapToSiteList(Cursor cursor, Operator operator, Context context) {
+        if (cursor == null) {
+            return null;
+        }
+
+        int count = cursor.getCount();
+        List<Site> list = new ArrayList<>();
+
+        cursor.moveToFirst();
+        String[] headers = context.getResources().getStringArray(R.array.columns);
+
+        for (int i = 0; i < count; i++) {
+            list.add(new Site(
+                    cursor.getString(cursor.getColumnIndex("_id")),
+                    operator,
+                    cursor.getString(cursor.getColumnIndex(headers[0])),
+                    cursor.getDouble(cursor.getColumnIndex(headers[3])),
+                    cursor.getDouble(cursor.getColumnIndex(headers[4])),
+                    cursor.getString(cursor.getColumnIndex(headers[1])),
+                    cursor.getString(cursor.getColumnIndex(headers[2])),
+                    Status.ACTIVE,
+                    ""));
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return list;
     }
 
- //       public Cursor siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
-  //  public List<Site> siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
+    public List<Site> siteSearch2(Operator operator, String siteQuery, int mode) {
+
+        Cursor cursor = siteSearch(getOperatorBD3(myContext), siteQuery, mode);
+
+
+        return mapToSiteList(cursor, operator, myContext);
+    }
+
+    //       public Cursor siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
+    //  public List<Site> siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
     public Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
 
         if (bDoperatorName == null) {
             Log.v("LogForMe", "В siteSearch передали пустую bDoperatorName, siteQuery = " + siteQuery);
-            bDoperatorName = MapsActivity.getOperatorBD3(myContext);
+            bDoperatorName = getOperatorBD3(myContext);
         }
         DBHelper db = null;
         Cursor userCursor = null;
@@ -167,3 +203,4 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 }
 
+// https://stackoverflow.com/questions/2528489/no-such-table-android-metadata-whats-the-problem

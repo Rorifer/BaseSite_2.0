@@ -545,14 +545,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');
         String site = cursor.getString(cursor.getColumnIndex("SITE"));
         Log.v("LogForMe", "SITE  ==" + site);
-        cursor.close();
+      //  cursor.close();
         Log.v("LogForMe", "Вся БД закрылась-2");
+
         Intent intent = new Intent(this, SiteDetailsActivity.class);
         intent.putExtra("lines", text);
         intent.putExtra("lat", lat);
         intent.putExtra("lng", lng);
         intent.putExtra("site", site);
         startActivity(intent);
+
+//        Site siteS = new Site(
+//                new SettingsRepositoryImpl(this).getOperator(),
+//                site,
+//                lat,
+//                lng,
+//
+//        )
+
+        Site siteS = DBHelper.mapToSiteList(cursor, new SettingsRepositoryImpl(this).getOperator(), this).get(0);
+
+        SiteDetailsActivity.start(this, siteS);
     }
 
     @Override
@@ -586,11 +599,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private String getOperatorBD() {
-        return  getOperatorBD3(this);
+        return getOperatorBD3(this);
     }
 
 
-        public static String getOperatorBD3(Context context) {
+    public static String getOperatorBD3(Context context) {
         if (operatorBD != null) {
             return operatorBD;
         } else {
