@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
+import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
 import com.engineeringforyou.basesite.utils.DBHelper;
 
 import java.util.ArrayList;
@@ -21,20 +23,20 @@ import java.util.List;
 
 import static com.engineeringforyou.basesite.MapsActivity.operator;
 
-public class SiteChoice extends Activity {
+public class SiteChoice extends AppCompatActivity {
     String[] param1, param2, id;
     ListView listView;
 
-    public static void start(Activity activity, List<Site> list){
+    public static void start(Activity activity, List<Site> list) {
 
 
         String[] param1 = new String[list.size()];
         String[] param2 = new String[list.size()];
         String[] id = new String[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            param1[i] = list.get(i).getNumber() + " (" + operator + ")";
+            param1[i] = list.get(i).getNumber() + " (" + list.get(i).getOperator().getLabel() + ")";
             param2[i] = list.get(i).getAddress();
-           id[i] =  list.get(i).getId();
+            id[i] = list.get(i).getId();
         }
 
 
@@ -46,7 +48,7 @@ public class SiteChoice extends Activity {
 
     }
 
-    public static void start(Activity activity, Cursor cursor , int count){
+    public static void start(Activity activity, Cursor cursor, int count) {
         cursor.moveToFirst();
         String[] headers = new String[]{"SITE", "Addres"};
 //        String[] headers = getResources().getStringArray(R.array.columnsChoice);
@@ -120,20 +122,24 @@ public class SiteChoice extends Activity {
                     } else {
                         Log.v("LogForMe", "Колонки не существует -" + headers[i]);
                     }
-                    if (text[i] == null||text[i].equals("") ) text[i] = "нет данных";
+                    if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
                     if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator + ")";
                 }
                 lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');
                 lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');
                 String site = cursor.getString(cursor.getColumnIndex("SITE"));
                 Log.v("LogForMe", "SITE  ==" + site);
-                cursor.close();
-                Intent intent = new Intent(getApplicationContext(), SiteDetailsActivity.class);
-                intent.putExtra("lines", text);
-                intent.putExtra("lat", lat);
-                intent.putExtra("lng", lng);
-                intent.putExtra("site", site);
-                startActivity(intent);
+            //    cursor.close();
+
+                SiteDetailsActivity.start(SiteChoice.this, DBHelper.mapToSiteList(
+                        cursor, new SettingsRepositoryImpl(SiteChoice.this).getOperator(), SiteChoice.this).get(0));
+
+//                Intent intent = new Intent(getApplicationContext(), SiteDetailsActivity.class);
+//                intent.putExtra("lines", text);
+//                intent.putExtra("lat", lat);
+//                intent.putExtra("lng", lng);
+//                intent.putExtra("site", site);
+//                startActivity(intent);
             }
         });
     }

@@ -11,7 +11,6 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         private const val KEY = "key_operator"
     }
 
-
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     override fun getOperator(): Operator {

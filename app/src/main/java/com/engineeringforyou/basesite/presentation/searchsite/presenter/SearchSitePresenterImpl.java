@@ -80,12 +80,12 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
             mDisposable.add(mInteractor.searchSitesByNumber(search)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::searchSuccess));
+                    .subscribe(this::searchSuccess, this::searchError));
         } else {
             mDisposable.add(mInteractor.searchSitesByAddress(search)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::searchSuccess));
+                    .subscribe(this::searchSuccess, this::searchError));
         }
     }
 
@@ -112,7 +112,14 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         }
     }
 
-    @Override
+    private void searchError(Throwable throwable) {
+        if (mView != null) {
+            mView.hideProgress();
+            mView.showError(R.string.error);
+        }
+    }
+
+        @Override
     public void unbindView() {
         mView = null;
         mDisposable.dispose();

@@ -81,11 +81,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Intent intent = new Intent(activity, MapsActivity.class);
         intent.putExtra("next", MapsActivity.MAP_BS_HERE);
-        intent.putExtra("operatorBD", operatorBD);
+        intent.putExtra("operatorBD", getOperatorBD3(activity));
         activity.startActivity(intent);
     }
 
-    public static void start(SiteDetailsActivity siteDetailsActivity, Site site) {
+    public static void start(Activity activity, Site site) {
 
     }
 
@@ -555,13 +555,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         intent.putExtra("site", site);
         startActivity(intent);
 
-//        Site siteS = new Site(
-//                new SettingsRepositoryImpl(this).getOperator(),
-//                site,
-//                lat,
-//                lng,
-//
-//        )
 
         Site siteS = DBHelper.mapToSiteList(cursor, new SettingsRepositoryImpl(this).getOperator(), this).get(0);
 
@@ -604,9 +597,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     public static String getOperatorBD3(Context context) {
-        if (operatorBD != null) {
-            return operatorBD;
-        } else {
+//        if (operatorBD != null) {
+//            return operatorBD;
+//        } else {
             //  operatorBDoutPreferences();
             Operator oper = new SettingsRepositoryImpl(context).getOperator();
 
@@ -625,7 +618,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
             //     return operatorBD;
-        }
+        //}
     }
 
     public void setOperatorBD(String oper) {
@@ -668,7 +661,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
 
     public static String operator;
-    public static String operatorBD = DB_OPERATOR_MTS;
+    public static String operatorBD = null;
 
 
 }

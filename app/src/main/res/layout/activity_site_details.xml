@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/map_btn"
+            android:id="@+id/button_search"
             style="@style/SiteDetailsMapBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -128,18 +128,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:text="@string/bs_coordinates"
+                    android:text="@string/bs_status"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"/>
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/site_coordinates"
+                    android:id="@+id/site_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/no_data"
+                    android:text="@string/status_active"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    tools:text="55.123 СД,\n33.123 ВД"/>
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -152,17 +151,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:text="@string/bs_status"
+                    android:text="@string/bs_coordinates"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"/>
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/site_status"
+                    android:id="@+id/site_coordinates"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/status_active"
+                    android:text="@string/no_data"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    tools:text="55.123 СД,\n33.123 ВД"/>
             </LinearLayout>
 
             <LinearLayout

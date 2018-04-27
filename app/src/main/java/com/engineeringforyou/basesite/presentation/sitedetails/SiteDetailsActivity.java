@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.presentation.sitedetails;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -73,15 +74,18 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         mAdMobView.resume();
     }
 
+    @SuppressLint("DefaultLocale")
     private void init() {
         initAdMob();
         mSite = getIntent().getParcelableExtra(KEY_SITE);
-        siteNumber.setText(String.format("%s (%s)", mSite.getNumber(), mSite.getOperator()));
-        siteAddress.setText(mSite.getAddress());
-        siteObject.setText(mSite.getObj());
-        siteCoordinates.setText(String.format("%s° С.Ш.\n%s° В.Д.", mSite.getLatitude(), mSite.getLongitude()));
-        siteStatus.setText(mSite.getStatus().getDescription());
-        mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
+        if (mSite != null) {
+            siteNumber.setText(String.format("%s (%s)", mSite.getNumber(), mSite.getOperator().getLabel()));
+            siteAddress.setText(mSite.getAddress());
+            siteObject.setText(mSite.getObj());
+            siteCoordinates.setText(String.format("%.6f° С.Ш.\n%.6f° В.Д.", mSite.getLatitude(), mSite.getLongitude()));
+            siteStatus.setText(mSite.getStatus().getDescription());
+            mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
+        }
     }
 
     @Override
@@ -98,18 +102,16 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         mAdMobView.loadAd(adRequest);
     }
 
-    @OnClick(R.id.map_btn)
+    @OnClick(R.id.button_search)
     public void clickMapBtn() {
         MapsActivity.start(this, mSite);
     }
 
     @OnClick(R.id.route_btn)
     public void clickRouteBtn() {
-        startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.parse(String.format("qeo=%s,%s", mSite.getLatitude(), mSite.getLongitude()))));
-        //       Uri.parse("qeo=" + mSite.getLatitude() + "," + mSite.getLongitude())));
-        //  Uri.parse("google.navigation:q=" + mSite.getLatitude() + "," + mSite.getLongitude())));
-        // добавить выбор навигатора (Яндекс-навигатор)
+        Double lat = mSite.getLatitude();
+        Double lng = mSite.getLongitude();
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("geo:%s,%s?q=%s,%s", lat, lng, lat, lng))));
     }
 
     @Override

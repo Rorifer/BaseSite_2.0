@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.text.TextUtils.isEmpty;
 import static com.engineeringforyou.basesite.MapsActivity.getOperatorBD3;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -48,15 +49,20 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public static List<Site> mapToSiteList(Cursor cursor, Operator operator, Context context) {
+        List<Site> list = new ArrayList<>();
+
         if (cursor == null) {
-            return null;
+            return list;
         }
 
         int count = cursor.getCount();
-        List<Site> list = new ArrayList<>();
+        if (count == 0) return list;
 
         cursor.moveToFirst();
         String[] headers = context.getResources().getStringArray(R.array.columns);
+
+        String obj = cursor.getString(cursor.getColumnIndex(headers[2]));
+        if (isEmpty(obj)) obj = "нет данных";
 
         for (int i = 0; i < count; i++) {
             list.add(new Site(
@@ -66,9 +72,9 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getDouble(cursor.getColumnIndex(headers[3])),
                     cursor.getDouble(cursor.getColumnIndex(headers[4])),
                     cursor.getString(cursor.getColumnIndex(headers[1])),
-                    cursor.getString(cursor.getColumnIndex(headers[2])),
+                    obj,
                     Status.ACTIVE,
-                    ""));
+                    "нет данных"));
             cursor.moveToNext();
         }
         cursor.close();

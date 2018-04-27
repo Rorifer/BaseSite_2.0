@@ -23,7 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity"
+        <activity
+            android:name="com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity"
             android:theme="@style/SignTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +33,7 @@
         </activity>
         <activity
             android:name="com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity"
-            android:label="Карточка данных" />
+            android:theme="@style/SignTheme" />
         <activity
             android:name="com.engineeringforyou.basesite.SiteChoice"
             android:label="Выбор БС" />

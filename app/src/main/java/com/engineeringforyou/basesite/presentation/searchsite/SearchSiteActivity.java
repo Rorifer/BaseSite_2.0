@@ -17,6 +17,7 @@ import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView;
+import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 
 import java.util.List;
 
@@ -55,12 +56,12 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         mPresenter.setupOperator();
     }
 
-    @OnClick(R.id.map_btn)
+    @OnClick(R.id.button_search)
     public void clickSearchBtn() {
         mPresenter.searchSite(getOperator(), mSearch.getText().toString().trim());
     }
 
-    @OnClick(R.id.search_in_map)
+    @OnClick(R.id.button_search_in_map)
     public void clickMapBtn() {
         mPresenter.showMap(getOperator());
     }
@@ -110,11 +111,13 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @Override
     public void toSiteChoice(List<Site> list) {
+        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
         SiteChoice.start(this, list);
     }
 
     @Override
     public void openMap() {
+        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
         MapsActivity.start(this);
     }
 
