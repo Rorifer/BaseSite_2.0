@@ -1,6 +1,7 @@
 package com.engineeringforyou.basesite.presentation.searchsite;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -105,20 +106,24 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
     @Override
-    public void toSiteInfo(Site site) {
+    public void toSiteInfo(@NonNull Site site) {
         SiteDetailsActivity.start(this, site);
     }
 
     @Override
-    public void toSiteChoice(List<Site> list) {
-        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
+    public void toSiteChoice(@NonNull List<Site> list) {
+        hideKeyboard();
         SiteChoice.start(this, list);
     }
 
     @Override
     public void openMap() {
-        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
+        hideKeyboard();
         MapsActivity.start(this);
+    }
+
+    private void hideKeyboard() {
+        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
     }
 
     @Override

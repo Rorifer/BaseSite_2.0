@@ -62,7 +62,9 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] headers = context.getResources().getStringArray(R.array.columns);
 
         String obj = cursor.getString(cursor.getColumnIndex(headers[2]));
+        String adres = cursor.getString(cursor.getColumnIndex(headers[1]));
         if (isEmpty(obj)) obj = "нет данных";
+        if (isEmpty(adres)) adres = "нет данных";
 
         for (int i = 0; i < count; i++) {
             list.add(new Site(
@@ -71,7 +73,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(headers[0])),
                     cursor.getDouble(cursor.getColumnIndex(headers[3])),
                     cursor.getDouble(cursor.getColumnIndex(headers[4])),
-                    cursor.getString(cursor.getColumnIndex(headers[1])),
+                    adres,
                     obj,
                     Status.ACTIVE,
                     "нет данных"));
