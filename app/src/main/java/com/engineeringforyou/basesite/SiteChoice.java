@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.engineeringforyou.basesite.MapsActivity.operator;
-
 public class SiteChoice extends AppCompatActivity {
     String[] param1, param2, id;
     ListView listView;
@@ -49,24 +47,24 @@ public class SiteChoice extends AppCompatActivity {
     }
 
     public static void start(Activity activity, Cursor cursor, int count) {
-        cursor.moveToFirst();
-        String[] headers = new String[]{"SITE", "Addres"};
-//        String[] headers = getResources().getStringArray(R.array.columnsChoice);
-        String[] param1 = new String[count];
-        String[] param2 = new String[count];
-        String[] id = new String[count];
-        for (int i = 0; i < count; i++) {
-            param1[i] = cursor.getString(cursor.getColumnIndex(headers[0])) + " (" + operator + ")";
-            param2[i] = cursor.getString(cursor.getColumnIndex(headers[1]));
-            id[i] = cursor.getString(cursor.getColumnIndex("_id"));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        Intent intent = new Intent(activity, SiteChoice.class);
-        intent.putExtra("param1", param1);
-        intent.putExtra("param2", param2);
-        intent.putExtra("id", id);
-        activity.startActivity(intent);
+//        cursor.moveToFirst();
+//        String[] headers = new String[]{"SITE", "Addres"};
+////        String[] headers = getResources().getStringArray(R.array.columnsChoice);
+//        String[] param1 = new String[count];
+//        String[] param2 = new String[count];
+//        String[] id = new String[count];
+//        for (int i = 0; i < count; i++) {
+//            param1[i] = cursor.getString(cursor.getColumnIndex(headers[0])) + " (" + operator_lable + ")";
+//            param2[i] = cursor.getString(cursor.getColumnIndex(headers[1]));
+//            id[i] = cursor.getString(cursor.getColumnIndex("_id"));
+//            cursor.moveToNext();
+//        }
+//        cursor.close();
+//        Intent intent = new Intent(activity, SiteChoice.class);
+//        intent.putExtra("param1", param1);
+//        intent.putExtra("param2", param2);
+//        intent.putExtra("id", id);
+//        activity.startActivity(intent);
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,27 +106,27 @@ public class SiteChoice extends AppCompatActivity {
                     return;
                 }
 
-                double lat, lng;
-                cursor.moveToFirst();
-                String[] headers = getResources().getStringArray(R.array.columns);
-                String[] text = new String[headers.length];
-                for (int i = 0; i < text.length; i++) {
-                    Log.v("LogForMe", i + " " + headers[i]);
-
-                    if (cursor.getColumnIndex(headers[i]) != -1) {
-                        text[i] = cursor.
-                                getString(cursor.getColumnIndex(headers[i]));
-                        Log.v("LogForMe", i + " " + text[i]);
-                    } else {
-                        Log.v("LogForMe", "Колонки не существует -" + headers[i]);
-                    }
-                    if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
-                    if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator + ")";
-                }
-                lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');
-                lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');
-                String site = cursor.getString(cursor.getColumnIndex("SITE"));
-                Log.v("LogForMe", "SITE  ==" + site);
+//                double lat, lng;
+//                cursor.moveToFirst();
+//                String[] headers = getResources().getStringArray(R.array.columns);
+//                String[] text = new String[headers.length];
+//                for (int i = 0; i < text.length; i++) {
+//                    Log.v("LogForMe", i + " " + headers[i]);
+//
+//                    if (cursor.getColumnIndex(headers[i]) != -1) {
+//                        text[i] = cursor.
+//                                getString(cursor.getColumnIndex(headers[i]));
+//                        Log.v("LogForMe", i + " " + text[i]);
+//                    } else {
+//                        Log.v("LogForMe", "Колонки не существует -" + headers[i]);
+//                    }
+//                    if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
+//                    if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator_lable + ")";
+//                }
+//                lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');
+//                lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');
+//                String site = cursor.getString(cursor.getColumnIndex("SITE"));
+//                Log.v("LogForMe", "SITE  ==" + site);
             //    cursor.close();
 
                 SiteDetailsActivity.start(SiteChoice.this, DBHelper.mapToSiteList(

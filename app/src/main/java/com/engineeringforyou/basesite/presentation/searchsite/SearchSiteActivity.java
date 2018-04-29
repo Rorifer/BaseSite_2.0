@@ -13,11 +13,11 @@ import android.widget.RadioGroup;
 import com.engineeringforyou.basesite.MapsActivity;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.SiteChoice;
-import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView;
+import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 
 import java.util.List;

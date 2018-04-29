@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/button_search"
+            android:id="@+id/button_map"
             style="@style/SiteDetailsMapBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             tools:ignore="RtlSymmetry"/>
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/route_btn"
+            android:id="@+id/button_route"
             style="@style/SiteDetailsDriveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

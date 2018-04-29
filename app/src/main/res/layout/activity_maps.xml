@@ -10,16 +10,12 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ad_mob"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_above="@id/ad_mob_map"
         tools:context="com.engineeringforyou.basesite.MapsActivity">
-
-
     </fragment>
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/ad_mob"
+        android:id="@+id/ad_mob_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

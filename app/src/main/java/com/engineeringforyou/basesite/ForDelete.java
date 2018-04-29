@@ -6,7 +6,7 @@ import android.database.Cursor;
 
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 
-import static com.engineeringforyou.basesite.MapsActivity.operator;
+import static com.engineeringforyou.basesite.MapsActivity.operator_lable;
 
 public class ForDelete {
 
@@ -23,7 +23,7 @@ public class ForDelete {
                         getString(cursor.getColumnIndex(headers[i]));
             }
             if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
-            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator + ")";
+            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator_lable + ")";
         }
 
         lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');

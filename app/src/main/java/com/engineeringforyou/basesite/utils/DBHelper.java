@@ -61,12 +61,13 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         String[] headers = context.getResources().getStringArray(R.array.columns);
 
-        String obj = cursor.getString(cursor.getColumnIndex(headers[2]));
-        String adres = cursor.getString(cursor.getColumnIndex(headers[1]));
-        if (isEmpty(obj)) obj = "нет данных";
-        if (isEmpty(adres)) adres = "нет данных";
-
         for (int i = 0; i < count; i++) {
+
+            String obj = cursor.getString(cursor.getColumnIndex(headers[2]));
+            String adres = cursor.getString(cursor.getColumnIndex(headers[1]));
+            if (isEmpty(obj)) obj = "нет данных";
+            if (isEmpty(adres)) adres = "нет данных";
+
             list.add(new Site(
                     cursor.getString(cursor.getColumnIndex("_id")),
                     operator,
@@ -87,6 +88,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<Site> siteSearch2(Operator operator, String siteQuery, int mode) {
 
         Cursor cursor = siteSearch(getOperatorBD3(myContext), siteQuery, mode);
+
 
 
         return mapToSiteList(cursor, operator, myContext);

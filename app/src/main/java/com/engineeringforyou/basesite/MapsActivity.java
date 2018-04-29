@@ -57,7 +57,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double boundsLng2 = 40.250872;
 
     static float radius = 3; // ралиус "квадрата" в километрах
-    private float scale = 14;
+    private float scale = 16;
     private int mapType = GoogleMap.MAP_TYPE_NORMAL;
     private LatLng lastLatLng;
     private String startBD;
@@ -87,6 +87,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public static void start(Activity activity, Site site) {
 
+        Intent intent = new Intent(activity, MapsActivity.class);
+        intent.putExtra("lat", site.getLatitude());
+        intent.putExtra("lng", site.getLongitude());
+        intent.putExtra("site", site.getNumber());
+        intent.putExtra("next", MapsActivity.MAP_BS_SITE_ONE);
+        activity.startActivity(intent);
     }
 
     @Override
@@ -116,7 +122,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        mAdView = findViewById(R.id.ad_mob);
+        mAdView = findViewById(R.id.ad_mob_map);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("5A69AA056907078C6954C3CC63DEE957")
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
@@ -371,6 +377,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SQLiteDatabase sqld;
         String query;
         String DB_NAME = getOperatorBD();
+        if (DB_NAME.equals(DB_OPERATOR_ALL)) return;
         double latMax,
                 latMin,
                 lngMax,
@@ -458,12 +465,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onInfoWindowClick(Marker marker) {
         String oper = (String) marker.getTag();
         Log.v("LogForMe", " Tag из маркера = " + oper);
-        setOperatorBD(oper);
+        //  setOperatorBD(oper);
+        Operator operator;
+        switch (oper) {
+            case DB_OPERATOR_MTS:
+                operator = Operator.MTS;
+                break;
+            case DB_OPERATOR_VMK:
+                operator = Operator.VIMPELCOM;
+                break;
+            case DB_OPERATOR_MGF:
+                operator = Operator.MEGAFON;
+                break;
+            case DB_OPERATOR_TEL:
+                operator = Operator.TELE2;
+                break;
+            default:
+                return;
+        }
+
         siteData(new DBHelper(getApplicationContext()).
-                siteSearch(oper, marker.getTitle(), 1));
+                siteSearch(oper, marker.getTitle(), 1), operator);
     }
 
-    private void siteData(Cursor cursor) {
+    private void siteData(Cursor cursor, Operator operator) {
         Log.v("LogForMe", " MapsActivity siteData ");
         if (cursor == null) {
             Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
@@ -479,10 +504,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Toast.makeText(this, "Совпадений не найдено", Toast.LENGTH_LONG).show();
                 break;
             case 1:
-                toSiteInfo(cursor);
+                new SettingsRepositoryImpl(this).saveOperator(operator);
+                toSiteInfo(cursor, operator);
                 break;
             default:
                 if (count > 1) {
+                    new SettingsRepositoryImpl(this).saveOperator(operator);
+
                     Toast.makeText(this, "Количество  совпадений = " + count, Toast.LENGTH_SHORT).show();
                     Log.v("LogForMe", "default");
 
@@ -516,47 +544,41 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void toSiteInfo(Cursor cursor) {
+    private void toSiteInfo(Cursor cursor, Operator operator) {
 
         if (cursor == null) {
-            Log.v("LogForMe", "NULL -1");
             return;
         }
-        cursor.moveToFirst();
-        double lat, lng;
-        String[] headers = getResources().getStringArray(R.array.columns);
-        String[] text = new String[headers.length];
-        Log.v("LogForMe", "headers.length " + headers.length);
-        Log.v("LogForMe", "text.length " + text.length);
-        for (int i = 0; i < text.length; i++) {
-            Log.v("LogForMe", i + " " + headers[i]);
-
-            if (cursor.getColumnIndex(headers[i]) != -1) {
-                text[i] = cursor.
-                        getString(cursor.getColumnIndex(headers[i]));
-                Log.v("LogForMe", i + " " + text[i]);
-            } else {
-                Log.v("LogForMe", "Колонки не существует -" + headers[i]);
-            }
-            if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
-            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator + ")";
-        }
-        lat = cursor.getDouble(cursor.getColumnIndex("GPS_Latitude"));//.replace(',', '.');
-        lng = cursor.getDouble(cursor.getColumnIndex("GPS_Longitude"));//.replace(',', '.');
-        String site = cursor.getString(cursor.getColumnIndex("SITE"));
-        Log.v("LogForMe", "SITE  ==" + site);
-      //  cursor.close();
-        Log.v("LogForMe", "Вся БД закрылась-2");
-
-        Intent intent = new Intent(this, SiteDetailsActivity.class);
-        intent.putExtra("lines", text);
-        intent.putExtra("lat", lat);
-        intent.putExtra("lng", lng);
-        intent.putExtra("site", site);
-        startActivity(intent);
+//        cursor.moveToFirst();
+//        String[] headers = getResources().getStringArray(R.array.columns);
+//        String[] text = new String[headers.length];
+//        for (int i = 0; i < text.length; i++) {
+//            Log.v("LogForMe", i + " " + headers[i]);
+//
+//            if (cursor.getColumnIndex(headers[i]) != -1) {
+//                text[i] = cursor.
+//                        getString(cursor.getColumnIndex(headers[i]));
+//                Log.v("LogForMe", i + " " + text[i]);
+//            } else {
+//                Log.v("LogForMe", "Колонки не существует -" + headers[i]);
+//            }
+//            if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
+//            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator_lable + ")";
+//        }
+        //  cursor.close();
+//        Log.v("LogForMe", "Вся БД закрылась-2");
+//
+//        Intent intent = new Intent(this, SiteDetailsActivity.class);
+//        intent.putExtra("lines", text);
+//        intent.putExtra("lat", lat);
+//        intent.putExtra("lng", lng);
+//        intent.putExtra("site", site);
+//        startActivity(intent);
 
 
-        Site siteS = DBHelper.mapToSiteList(cursor, new SettingsRepositoryImpl(this).getOperator(), this).get(0);
+        Site siteS = DBHelper.mapToSiteList(cursor, operator, this).get(0);
+        //неправильно для all
+
 
         SiteDetailsActivity.start(this, siteS);
     }
@@ -600,24 +622,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        if (operatorBD != null) {
 //            return operatorBD;
 //        } else {
-            //  operatorBDoutPreferences();
-            Operator oper = new SettingsRepositoryImpl(context).getOperator();
+        //  operatorBDoutPreferences();
+        Operator oper = new SettingsRepositoryImpl(context).getOperator();
 
-            switch (oper) {
-                case ALL:
-                    return DB_OPERATOR_ALL;
-                case MEGAFON:
-                    return DB_OPERATOR_MGF;
-                case VIMPELCOM:
-                    return DB_OPERATOR_VMK;
-                case TELE2:
-                    return DB_OPERATOR_TEL;
-                default:
-                case MTS:
-                    return DB_OPERATOR_MTS;
+        switch (oper) {
+            case ALL:
+                return DB_OPERATOR_ALL;
+            case MEGAFON:
+                return DB_OPERATOR_MGF;
+            case VIMPELCOM:
+                return DB_OPERATOR_VMK;
+            case TELE2:
+                return DB_OPERATOR_TEL;
+            default:
+            case MTS:
+                return DB_OPERATOR_MTS;
 
-            }
-            //     return operatorBD;
+        }
+        //     return operatorBD;
         //}
     }
 
@@ -628,26 +650,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         switch (oper) {
             case DB_OPERATOR_MTS:
-                operator = "МТС";
+                operator_lable = "МТС";
                 new SettingsRepositoryImpl(this).saveOperator(Operator.MTS);
                 break;
             case DB_OPERATOR_MGF:
-                operator = "МегаФон";
+                operator_lable = "МегаФон";
                 new SettingsRepositoryImpl(this).saveOperator(Operator.MEGAFON);
-
                 break;
             case DB_OPERATOR_VMK:
-                operator = "Билайн";
+                operator_lable = "Билайн";
                 new SettingsRepositoryImpl(this).saveOperator(Operator.VIMPELCOM);
-
                 break;
             case DB_OPERATOR_TEL:
-                operator = "Теле2";
+                operator_lable = "Теле2";
                 new SettingsRepositoryImpl(this).saveOperator(Operator.TELE2);
-
                 break;
             case DB_OPERATOR_ALL:
-                operator = "Все";
+                operator_lable = "Все";
                 new SettingsRepositoryImpl(this).saveOperator(Operator.ALL);
                 break;
             default:
@@ -660,7 +679,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
     public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
 
-    public static String operator;
+    public static String operator_lable;
     public static String operatorBD = null;
 
 

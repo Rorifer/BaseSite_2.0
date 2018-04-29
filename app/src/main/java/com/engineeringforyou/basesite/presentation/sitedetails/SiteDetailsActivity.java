@@ -102,12 +102,12 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         mAdMobView.loadAd(adRequest);
     }
 
-    @OnClick(R.id.button_search)
+    @OnClick(R.id.button_map)
     public void clickMapBtn() {
         MapsActivity.start(this, mSite);
     }
 
-    @OnClick(R.id.route_btn)
+    @OnClick(R.id.button_route)
     public void clickRouteBtn() {
         Double lat = mSite.getLatitude();
         Double lng = mSite.getLongitude();

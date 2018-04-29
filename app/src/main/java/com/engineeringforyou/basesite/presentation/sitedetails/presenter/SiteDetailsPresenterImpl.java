@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -51,7 +52,27 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return list != null ? list.get(0).getAddressLine(0) : "нет данных";
+
+            if (list != null) {
+                Address address = list.get(0);
+                List<String> details = new ArrayList<>();
+                details.add(address.getAdminArea());
+                details.add(address.getSubAdminArea());
+                details.add(address.getLocality());
+                details.add(address.getThoroughfare());
+                details.add(address.getFeatureName());
+
+                String prev = "";
+                String addressText = "";
+                for (String detail : details) {
+                    if (detail != null && !detail.equals(prev)) {
+                        if (!addressText.equals("")) addressText += ", ";
+                        addressText += detail;
+                        prev = detail;
+                    }
+                }
+                return addressText;
+            } else return "нет данных";
         });
     }
 
