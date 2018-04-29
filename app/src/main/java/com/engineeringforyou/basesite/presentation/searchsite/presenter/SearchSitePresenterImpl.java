@@ -1,6 +1,5 @@
 package com.engineeringforyou.basesite.presentation.searchsite.presenter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.EditText;
@@ -36,11 +35,10 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         mView = view;
     }
 
-    @SuppressLint("CheckResult")
     @Override
     public void watchChanges(@NonNull EditText view) {
-        RxTextView.textChanges(view)
-                .subscribe(event -> mView.hideError());
+        mDisposable.add(RxTextView.textChanges(view)
+                .subscribe(event -> mView.hideError()));
     }
 
     @Override
@@ -119,7 +117,7 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         }
     }
 
-        @Override
+    @Override
     public void unbindView() {
         mView = null;
         mDisposable.dispose();

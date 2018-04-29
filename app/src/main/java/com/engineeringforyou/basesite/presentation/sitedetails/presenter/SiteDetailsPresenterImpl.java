@@ -1,30 +1,25 @@
 package com.engineeringforyou.basesite.presentation.sitedetails.presenter;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.support.annotation.NonNull;
 
+import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractor;
+import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractorImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
 
-    private Context mContext;
     private CompositeDisposable mDisposable;
     private SiteDetailsView mView;
+    private SiteDetailsInteractor mInteractor;
 
     public SiteDetailsPresenterImpl(Context context) {
-        mContext = context;
         mDisposable = new CompositeDisposable();
+        mInteractor = new SiteDetailsInteractorImpl(context);
     }
 
     @Override
@@ -34,7 +29,7 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
 
     @Override
     public void loadAddressFromCoordinates(double lat, double lng) {
-        mDisposable.add(loadAddress(lat, lng)
+        mDisposable.add(mInteractor.loadAddress(lat, lng)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::loadAddressSuccess));
@@ -42,38 +37,6 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
 
     private void loadAddressSuccess(String address) {
         mView.setAddressFromCoordinates(address);
-    }
-
-    private Single<String> loadAddress(double lat, double lng) {
-        return Single.fromCallable(() -> {
-            List<Address> list = null;
-            try {
-                list = new Geocoder(mContext).getFromLocation(lat, lng, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (list != null) {
-                Address address = list.get(0);
-                List<String> details = new ArrayList<>();
-                details.add(address.getAdminArea());
-                details.add(address.getSubAdminArea());
-                details.add(address.getLocality());
-                details.add(address.getThoroughfare());
-                details.add(address.getFeatureName());
-
-                String prev = "";
-                String addressText = "";
-                for (String detail : details) {
-                    if (detail != null && !detail.equals(prev)) {
-                        if (!addressText.equals("")) addressText += ", ";
-                        addressText += detail;
-                        prev = detail;
-                    }
-                }
-                return addressText;
-            } else return "нет данных";
-        });
     }
 
     @Override
