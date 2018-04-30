@@ -26,6 +26,7 @@ import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
+import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
 import com.engineeringforyou.basesite.utils.DBHelper;
 import com.google.android.gms.ads.AdRequest;
@@ -531,7 +532,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         cursor.moveToNext();
                     }
                     cursor.close();
-                    Intent intent = new Intent(this, SiteChoice.class);
+                    Intent intent = new Intent(this, SiteListActivity.class);
                     intent.putExtra("param1", param1);
                     intent.putExtra("param2", param2);
                     intent.putExtra("id", id);

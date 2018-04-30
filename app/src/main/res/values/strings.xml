@@ -44,7 +44,7 @@
     <string name="operarators">Операторы</string>
     <string name="maps">Карта</string>
     <string name="ok">OK</string>
-    <string name="choiceBs">Выберите БС:</string>
+    <string name="site_list_title">Выбор БС:</string>
     <string name="route">Проложить маршрут</string>
     <string name="ALL">Все</string>
 

@@ -12,7 +12,7 @@ import android.widget.RadioGroup;
 
 import com.engineeringforyou.basesite.MapsActivity;
 import com.engineeringforyou.basesite.R;
-import com.engineeringforyou.basesite.SiteChoice;
+import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
@@ -113,7 +113,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     @Override
     public void toSiteChoice(@NonNull List<Site> list) {
         hideKeyboard();
-        SiteChoice.start(this, list);
+        SiteListActivity.start(this, list);
     }
 
     @Override
