@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
-import static com.engineeringforyou.basesite.MapsActivity.getOperatorBD3;
+import static com.engineeringforyou.basesite.presentation.map.MapActivity.getOperatorBD3;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static String DB_PATH; // полный путь к базе данных

@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.engineeringforyou.basesite.presentation.map.MapActivity;
+
 public class DialogRadius extends DialogFragment implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
    SeekBar seekBar;
    TextView txt;
@@ -21,7 +23,7 @@ public class DialogRadius extends DialogFragment implements SeekBar.OnSeekBarCha
        v.findViewById(R.id.radiusOk).setOnClickListener(this);
        seekBar = v.findViewById(R.id.seekRadius);
        seekBar.setMax(6);
-       seekBar.setProgress((int) MapsActivity.radius-1);
+       seekBar.setProgress((int) MapActivity.radius-1);
        seekBar.setOnSeekBarChangeListener(this);
 
        txt = v.findViewById(R.id.textView);
@@ -32,7 +34,7 @@ public class DialogRadius extends DialogFragment implements SeekBar.OnSeekBarCha
    @Override
    public void onClick(View view) {
        Log.d("LogForMe", "DialogRadius onClick");
-       MapsActivity.radius = seekBar.getProgress()+1;
+       MapActivity.radius = seekBar.getProgress()+1;
        dismiss();
    }
 

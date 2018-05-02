@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 
-import com.engineeringforyou.basesite.MapsActivity;
+import com.engineeringforyou.basesite.presentation.map.MapActivity;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.models.Site;
@@ -119,7 +119,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     @Override
     public void openMap() {
         hideKeyboard();
-        MapsActivity.start(this);
+        MapActivity.start(this);
     }
 
     private void hideKeyboard() {

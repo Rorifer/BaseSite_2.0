@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite;
+package com.engineeringforyou.basesite.presentation.map;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -17,13 +17,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.engineeringforyou.basesite.DialogRadius;
+import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.map.views.MapView;
 import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
@@ -44,7 +46,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
+public class MapActivity extends AppCompatActivity implements MapView, OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     public static final int MAP_BS_HERE = 1;
     static final int MAP_BS_SITE = 2;
@@ -52,12 +54,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     static final int MAP_BS_MAP = 4;
     public static final int MAP_BS_SITE_ONE = 5;
 
+    public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
+    public final static String DB_OPERATOR_MGF = "MGF_Site_Base";
+    public final static String DB_OPERATOR_VMK = "VMK_Site_Base";
+    public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
+    public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
+
+    public static String operator_lable;
+    public static String operatorBD = null;
+
     private double boundsLat1 = 54.489509;
     private double boundsLat2 = 56.953235;
     private double boundsLng1 = 35.127559;
     private double boundsLng2 = 40.250872;
 
-    static float radius = 3; // ралиус "квадрата" в километрах
+    public static float radius = 3; // ралиус "квадрата" в километрах
     private float scale = 16;
     private int mapType = GoogleMap.MAP_TYPE_NORMAL;
     private LatLng lastLatLng;
@@ -76,30 +87,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static boolean startMessage = true;
 
     public static void start(Activity activity) {
-
-//        startActivity(new Intent(this, MapsActivity.class));
-//        //TODO добавить анимацию
-
-        Intent intent = new Intent(activity, MapsActivity.class);
-        intent.putExtra("next", MapsActivity.MAP_BS_HERE);
+        Intent intent = new Intent(activity, MapActivity.class);
+        intent.putExtra("next", MapActivity.MAP_BS_HERE);
         intent.putExtra("operatorBD", getOperatorBD3(activity));
         activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }
 
     public static void start(Activity activity, Site site) {
-
-        Intent intent = new Intent(activity, MapsActivity.class);
+        Intent intent = new Intent(activity, MapActivity.class);
         intent.putExtra("lat", site.getLatitude());
         intent.putExtra("lng", site.getLongitude());
         intent.putExtra("site", site.getNumber());
-        intent.putExtra("next", MapsActivity.MAP_BS_SITE_ONE);
+        intent.putExtra("next", MapActivity.MAP_BS_SITE_ONE);
         activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("LogForMe", "onCreate MapsActivity ");
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -133,7 +140,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.v("LogForMe", "onCreateOptionsMenu ");
         getMenuInflater().inflate(R.menu.menu_map, menu);
         String operatorBD = getOperatorBD();
         switch (operatorBD) {
@@ -233,10 +239,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putFloat(APP_PREFERENCES_RADIUS, radius);
         //  editor.apply();
-        Log.v("LogForMe", "Запись радиуса в настройки:  " + radius);
         editor.putInt(APP_PREFERENCES_MAP_TYPE, mapType);
         editor.apply();
-        Log.v("LogForMe", getClass().getName() + " Запись типа карты в настройки:  " + mapType);
         super.onPause();
     }
 
@@ -246,12 +250,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onResume();
         if (mSettings.contains(APP_PREFERENCES_RADIUS)) {
             radius = mSettings.getFloat(APP_PREFERENCES_RADIUS, 1);
-            Log.v("LogForMe", "Радиус из насторек:  " + radius);
         }
         if (mSettings.contains(APP_PREFERENCES_MAP_TYPE)) {
             mapType = mSettings.getInt(APP_PREFERENCES_MAP_TYPE, 1);
-            Log.v("LogForMe", "Тип карты из насторек:  " + mapType);
-
             getOperatorBD();
         }
         mAdView.resume();
@@ -259,7 +260,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onDestroy() {
-        Log.v("LogForMe", getClass() + "onDestroy");
         mAdView.destroy();
         super.onDestroy();
     }
@@ -328,13 +328,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     double longitude = location.getLongitude();
 
                     if (latitude < boundsLat1 || latitude > boundsLat2 || longitude < boundsLng1 || longitude > boundsLng2) {
-                        Log.v("LogForMe", "Текущие координаты за пределами границ карты");
                         startingMap();
                         break;
                     }
                     LatLng myPosition = new LatLng(latitude, longitude);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, scale));
-                    Log.v("LogForMe", "Текущие координаты:  " + latitude + "  " + longitude);
                     checkBS(myPosition);
                 } else {
                     startingMap();
@@ -396,7 +394,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         lngMin = lng - lngDelta;
         query = "SELECT * FROM " + DB_NAME + " WHERE GPS_Latitude>" + latMin + " AND GPS_Latitude<" + latMax +
                 " AND GPS_Longitude>" + lngMin + " AND GPS_Longitude<" + lngMax;
-        Log.v("LogForMe", "Запрос= " + query);
         // Работа с БД
         db = new DBHelper(this);
         db.create_db();
@@ -404,7 +401,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         userCursor = sqld.rawQuery(query, null);
         db.close();
         int count = userCursor.getCount();
-        Log.v("LogForMe", "Количество ТОЧЕК совпадения = " + count);
 
         if (count == 0) {
             Toast.makeText(this, "Здесь БС не найдено!", Toast.LENGTH_SHORT).show();
@@ -465,7 +461,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onInfoWindowClick(Marker marker) {
         String oper = (String) marker.getTag();
-        Log.v("LogForMe", " Tag из маркера = " + oper);
         //  setOperatorBD(oper);
         Operator operator;
         switch (oper) {
@@ -490,15 +485,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void siteData(Cursor cursor, Operator operator) {
-        Log.v("LogForMe", " MapsActivity siteData ");
         if (cursor == null) {
             Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
-            Log.v("LogForMe", "Ошибка в Курсоре ");
             return;
         }
         int count;
         count = cursor.getCount();
-        Log.v("LogForMe", "Пришло Количество строк совпадений = " + count);
 
         switch (count) {
             case 0:
@@ -513,7 +505,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     new SettingsRepositoryImpl(this).saveOperator(operator);
 
                     Toast.makeText(this, "Количество  совпадений = " + count, Toast.LENGTH_SHORT).show();
-                    Log.v("LogForMe", "default");
 
                     cursor.moveToFirst();
                     String[] headers = new String[]{"SITE", "Addres"};
@@ -521,14 +512,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String[] param1 = new String[count];
                     String[] param2 = new String[count];
                     String[] id = new String[count];
-                    Log.v("LogForMe", "Choice.headers.length " + headers.length);
                     for (int i = 0; i < count; i++) {
                         param1[i] = cursor.getString(cursor.getColumnIndex(headers[0]));
                         param2[i] = cursor.getString(cursor.getColumnIndex(headers[1]));
                         id[i] = cursor.getString(cursor.getColumnIndex("_id"));
-                        Log.v("LogForMe", i + "id[i] " + id[i]);
-                        Log.v("LogForMe", i + "param1[i] " + param1[i]);
-                        Log.v("LogForMe", i + "param2[i] " + param2[i]);
                         cursor.moveToNext();
                     }
                     cursor.close();
@@ -550,61 +537,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (cursor == null) {
             return;
         }
-//        cursor.moveToFirst();
-//        String[] headers = getResources().getStringArray(R.array.columns);
-//        String[] text = new String[headers.length];
-//        for (int i = 0; i < text.length; i++) {
-//            Log.v("LogForMe", i + " " + headers[i]);
-//
-//            if (cursor.getColumnIndex(headers[i]) != -1) {
-//                text[i] = cursor.
-//                        getString(cursor.getColumnIndex(headers[i]));
-//                Log.v("LogForMe", i + " " + text[i]);
-//            } else {
-//                Log.v("LogForMe", "Колонки не существует -" + headers[i]);
-//            }
-//            if (text[i] == null || text[i].equals("")) text[i] = "нет данных";
-//            if (headers[i].equals("SITE")) text[i] = text[i] + " (" + operator_lable + ")";
-//        }
-        //  cursor.close();
-//        Log.v("LogForMe", "Вся БД закрылась-2");
-//
-//        Intent intent = new Intent(this, SiteDetailsActivity.class);
-//        intent.putExtra("lines", text);
-//        intent.putExtra("lat", lat);
-//        intent.putExtra("lng", lng);
-//        intent.putExtra("site", site);
-//        startActivity(intent);
-
 
         Site siteS = DBHelper.mapToSiteList(cursor, operator, this).get(0);
         //неправильно для all
-
 
         SiteDetailsActivity.start(this, siteS);
     }
 
     @Override
     public void onMapLongClick(final LatLng latLng) {
-
-  /*      AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Искать БС в этом месте?");
-        builder.setNegativeButton("Нет",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                mMap.clear();
-                nextStep = MAP_BS_MAP;
-                lastLatLng = latLng;
-                fillMap();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();*/
 
         Toast.makeText(this, "Поиск БС в указанном месте", Toast.LENGTH_SHORT).show();
         mMap.clear();
@@ -674,14 +615,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
-    public final static String DB_OPERATOR_MGF = "MGF_Site_Base";
-    public final static String DB_OPERATOR_VMK = "VMK_Site_Base";
-    public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
-    public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
+    @Override
+    public void showProgress() {
 
-    public static String operator_lable;
-    public static String operatorBD = null;
+    }
 
+    @Override
+    public void hideProgress() {
 
+    }
 }

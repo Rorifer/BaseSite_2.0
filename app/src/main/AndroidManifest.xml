@@ -38,7 +38,7 @@
             android:name="com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity"
             android:label="Выбор БС" />
         <activity
-            android:name=".MapsActivity"
+            android:name=".presentation.map.MapActivity"
             android:label="" />
 
         <meta-data

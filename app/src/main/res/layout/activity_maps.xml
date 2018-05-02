@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/ad_mob_map"
-        tools:context="com.engineeringforyou.basesite.MapsActivity">
+        tools:context="com.engineeringforyou.basesite.presentation.map.MapActivity">
     </fragment>
 
     <com.google.android.gms.ads.AdView

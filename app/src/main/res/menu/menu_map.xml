@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.engineeringforyou.basesite.MapsActivity">
+    tools:context="com.engineeringforyou.basesite.presentation.map.MapActivity">
     <item
         android:id="@+id/action_radius"
         android:orderInCategory="100"

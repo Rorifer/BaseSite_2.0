@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.engineeringforyou.basesite.MapsActivity;
+import com.engineeringforyou.basesite.presentation.map.MapActivity;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
@@ -104,7 +104,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @OnClick(R.id.button_map)
     public void clickMapBtn() {
-        MapsActivity.start(this, mSite);
+        MapActivity.start(this, mSite);
     }
 
     @OnClick(R.id.button_route)
