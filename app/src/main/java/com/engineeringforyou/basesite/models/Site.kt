@@ -2,18 +2,33 @@ package com.engineeringforyou.basesite.models
 
 import android.os.Parcel
 import android.os.Parcelable
-
+import com.j256.ormlite.field.DatabaseField
 
 data class Site(
+        @DatabaseField(generatedId = true, columnName = "_id")
         val id: String,
+
         val operator: Operator,
+
+        @DatabaseField(columnName = "SITE")
         val number: String,
+
+        @DatabaseField(columnName = "GPS_Latitude")
         val latitude: Double,
+
+        @DatabaseField(columnName = "GPS_Longitude")
         val longitude: Double,
+
+        @DatabaseField(columnName = "Addres")
         val address: String = "нет данных",
+
+        @DatabaseField(columnName = "Object")
         val obj: String = "нет данных",
+
         val status: Status = Status.ACTIVE,
+
         val description: String = "нет данных"
+
 ) : Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
