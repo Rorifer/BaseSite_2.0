@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 
+import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.presentation.map.MapActivity;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
@@ -59,15 +60,15 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @OnClick(R.id.button_search)
     public void clickSearchBtn() {
-        mPresenter.searchSite(getOperator(), mSearch.getText().toString().trim());
+        mPresenter.searchSite(getOperatorIndex(), mSearch.getText().toString().trim());
     }
 
     @OnClick(R.id.button_search_in_map)
     public void clickMapBtn() {
-        mPresenter.showMap(getOperator());
+        mPresenter.showMap(getOperatorIndex());
     }
 
-    private int getOperator() {
+    private int getOperatorIndex() {
         return mOperators.indexOfChild(findViewById(mOperators.getCheckedRadioButtonId()));
     }
 
@@ -117,9 +118,9 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
     @Override
-    public void openMap() {
+    public void openMap(@NonNull Operator operator) {
         hideKeyboard();
-        MapActivity.start(this);
+        MapActivity.start(this, operator, null);
     }
 
     private void hideKeyboard() {

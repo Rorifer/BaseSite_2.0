@@ -59,7 +59,7 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     @Override
     public void showMap(int operatorIndex) {
         saveOperator(operatorIndex);
-        mView.openMap();
+        mView.openMap(Operator.values()[operatorIndex]);
     }
 
     @Override

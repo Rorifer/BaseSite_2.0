@@ -1,6 +1,7 @@
 package com.engineeringforyou.basesite.presentation.searchsite.views
 
 import android.support.annotation.StringRes
+import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 
 interface SearchSiteView {
@@ -19,6 +20,6 @@ interface SearchSiteView {
 
     fun toSiteChoice(list: List<Site>)
 
-    fun openMap()
+    fun openMap(operator: Operator)
 
 }

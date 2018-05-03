@@ -13,6 +13,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -25,6 +27,8 @@ import com.engineeringforyou.basesite.DialogRadius;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.map.presenter.MapPresenter;
+import com.engineeringforyou.basesite.presentation.map.presenter.MapPresenterImpl;
 import com.engineeringforyou.basesite.presentation.map.views.MapView;
 import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
@@ -44,9 +48,23 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.location.LocationManager.PASSIVE_PROVIDER;
 
 public class MapActivity extends AppCompatActivity implements MapView, OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
+
+    private static final String KEY_SITE = "key_site";
+    private static final String KEY_OPERATOR = "key_operator";
+
+    @BindView(R.id.ad_mob_map)
+    AdView mAdMobView;
+
+    private MapPresenter mPresenter;
+    private Site mSite;
+    private Operator mOperator;
+
 
     public static final int MAP_BS_HERE = 1;
     static final int MAP_BS_SITE = 2;
@@ -72,7 +90,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private float scale = 16;
     private int mapType = GoogleMap.MAP_TYPE_NORMAL;
     private LatLng lastLatLng;
-    private String startBD;
+    //    private String startBD;
     private GoogleMap mMap;
     double lat, lng;
     String siteNumber;
@@ -82,24 +100,22 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private static final String APP_PREFERENCES = "mysettings";
     private static final String APP_PREFERENCES_RADIUS = "radius";
     private static final String APP_PREFERENCES_MAP_TYPE = "mapType";
-    private SharedPreferences mSettings;
-    private AdView mAdView;
+    //    private SharedPreferences mSettings;
     private static boolean startMessage = true;
 
-    public static void start(Activity activity) {
-        Intent intent = new Intent(activity, MapActivity.class);
-        intent.putExtra("next", MapActivity.MAP_BS_HERE);
-        intent.putExtra("operatorBD", getOperatorBD3(activity));
-        activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
-    }
+//    public static void start(Activity activity) {
+//        Intent intent = new Intent(activity, MapActivity.class);
+//        intent.putExtra("next", MapActivity.MAP_BS_HERE);
+//        intent.putExtra("operatorBD", getOperatorBD3(activity));
+//        activity.startActivity(intent);
+//        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
+//    }
 
-    public static void start(Activity activity, Site site) {
+    public static void start(Activity activity, @NonNull Operator operator, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
-        intent.putExtra("lat", site.getLatitude());
-        intent.putExtra("lng", site.getLongitude());
-        intent.putExtra("site", site.getNumber());
-        intent.putExtra("next", MapActivity.MAP_BS_SITE_ONE);
+        intent.putExtra(KEY_OPERATOR, operator);
+        intent.putExtra(KEY_SITE, site);
+//        intent.putExtra("next", MapActivity.MAP_BS_SITE_ONE);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }
@@ -107,56 +123,76 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            nextStep = extras.getInt("next");
-            lat = extras.getDouble("lat");
-            lng = extras.getDouble("lng");
-            siteNumber = extras.getString("site");
-            startBD = getOperatorBD();
+        setContentView(R.layout.activity_map);
+        ButterKnife.bind(this);
+        mPresenter = new MapPresenterImpl(this);
+        mPresenter.bind(this);
+        init();
+    }
+
+    private void init() {
+        initToolbar();
+        initMap();
+        initAdMob();
+        mSite = getIntent().getParcelableExtra(KEY_SITE);
+        mOperator = getIntent().getParcelableExtra(KEY_OPERATOR);
+    }
+
+    private void initAdMob() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("5A69AA056907078C6954C3CC63DEE957")
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdMobView.loadAd(adRequest);
+    }
+
+    private void initToolbar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        setContentView(R.layout.activity_maps);
+    }
+
+    private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         }
+    }
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mSettings.contains(APP_PREFERENCES_RADIUS)) {
+            radius = mSettings.getFloat(APP_PREFERENCES_RADIUS, 1);
         }
-
-        mAdView = findViewById(R.id.ad_mob_map);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("5A69AA056907078C6954C3CC63DEE957")
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-        mAdView.loadAd(adRequest);
+        if (mSettings.contains(APP_PREFERENCES_MAP_TYPE)) {
+            mapType = mSettings.getInt(APP_PREFERENCES_MAP_TYPE, 1);
+            getOperatorBD();
+        }
+        mAdView.resume();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_map, menu);
-        String operatorBD = getOperatorBD();
-        switch (operatorBD) {
-            case (DB_OPERATOR_MTS):
-                menu.findItem(R.id.MTS_oper).setChecked(true);
+        switch (mOperator) {
+            case MTS:
+                menu.findItem(R.id.menu_item_MTS).setChecked(true);
                 break;
-            case (DB_OPERATOR_MGF):
-                menu.findItem(R.id.MGF_oper).setChecked(true);
+            case MEGAFON:
+                menu.findItem(R.id.menu_item_MGF).setChecked(true);
                 break;
-            case (DB_OPERATOR_VMK):
-                menu.findItem(R.id.VMK_oper).setChecked(true);
+            case VIMPELCOM:
+                menu.findItem(R.id.menu_item_VMK).setChecked(true);
                 break;
-            case (DB_OPERATOR_TEL):
-                menu.findItem(R.id.TEL_oper).setChecked(true);
+            case TELE2:
+                menu.findItem(R.id.menu_item_TELE2).setChecked(true);
                 break;
-            case (DB_OPERATOR_ALL):
-                menu.findItem(R.id.ALL_oper).setChecked(true);
+            case ALL:
+                menu.findItem(R.id.menu_item_ALL).setChecked(true);
                 break;
         }
 
@@ -181,30 +217,30 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
             case android.R.id.home:
                 startActivity(new Intent(this, SearchSiteActivity.class));
                 return true;
-            case R.id.action_radius:
+            case R.id.menu_item_radius:
                 new DialogRadius().show(getFragmentManager(), "dialog");
                 return true;
-            case R.id.MTS_oper:
+            case R.id.menu_item_MTS:
                 item.setChecked(true);
                 setOperatorBD(DB_OPERATOR_MTS);
                 fillOldMap();
                 return true;
-            case R.id.MGF_oper:
+            case R.id.menu_item_MGF:
                 item.setChecked(true);
                 setOperatorBD(DB_OPERATOR_MGF);
                 fillOldMap();
                 return true;
-            case R.id.VMK_oper:
+            case R.id.menu_item_VMK:
                 item.setChecked(true);
                 setOperatorBD(DB_OPERATOR_VMK);
                 fillOldMap();
                 return true;
-            case R.id.TEL_oper:
+            case R.id.menu_item_TELE2:
                 item.setChecked(true);
                 setOperatorBD(DB_OPERATOR_TEL);
                 fillOldMap();
                 return true;
-            case R.id.ALL_oper:
+            case R.id.menu_item_ALL:
                 item.setChecked(true);
                 setOperatorBD(DB_OPERATOR_ALL);
                 fillOldMap();
@@ -242,20 +278,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         editor.putInt(APP_PREFERENCES_MAP_TYPE, mapType);
         editor.apply();
         super.onPause();
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mSettings.contains(APP_PREFERENCES_RADIUS)) {
-            radius = mSettings.getFloat(APP_PREFERENCES_RADIUS, 1);
-        }
-        if (mSettings.contains(APP_PREFERENCES_MAP_TYPE)) {
-            mapType = mSettings.getInt(APP_PREFERENCES_MAP_TYPE, 1);
-            getOperatorBD();
-        }
-        mAdView.resume();
     }
 
     @Override

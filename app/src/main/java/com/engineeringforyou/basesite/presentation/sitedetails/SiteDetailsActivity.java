@@ -30,7 +30,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     private static final String KEY_SITE = "key_site";
 
-    @BindView(R.id.ad_mob)
+    @BindView(R.id.ad_mob_details)
     AdView mAdMobView;
     @BindView(R.id.progress_bar)
     FrameLayout mProgress;
@@ -104,7 +104,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @OnClick(R.id.button_map)
     public void clickMapBtn() {
-        MapActivity.start(this, mSite);
+        MapActivity.start(this, mSite.getOperator(), mSite);
     }
 
     @OnClick(R.id.button_route)

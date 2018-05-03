@@ -29,7 +29,8 @@ data class Site(
 
         val description: String = "нет данных"
 
-) : Parcelable {
+)
+    : Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
             Operator.values()[source.readInt()],
