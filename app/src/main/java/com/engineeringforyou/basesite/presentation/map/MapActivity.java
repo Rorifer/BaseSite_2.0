@@ -53,16 +53,21 @@ import butterknife.ButterKnife;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
 
-public class MapActivity extends AppCompatActivity implements MapView, OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
+public class MapActivity extends AppCompatActivity implements MapView, OnMapReadyCallback,
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static final String KEY_SITE = "key_site";
     private static final String KEY_OPERATOR = "key_operator";
+
+    private final double BORDER_LAT_START = 54.489509;
+    private final double BORDER_LAT_END = 56.953235;
+    private final double BORDER_LNG_START = 35.127559;
+    private final double BORDER_LNG_END = 40.250872;
 
     @BindView(R.id.ad_mob_map)
     AdView mAdMobView;
 
     private MapPresenter mPresenter;
-    private Site mSite;
     private Operator mOperator;
 
 
@@ -81,14 +86,10 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     public static String operator_lable;
     public static String operatorBD = null;
 
-    private double boundsLat1 = 54.489509;
-    private double boundsLat2 = 56.953235;
-    private double boundsLng1 = 35.127559;
-    private double boundsLng2 = 40.250872;
 
     public static float radius = 3; // ралиус "квадрата" в километрах
     private float scale = 16;
-    private int mapType = GoogleMap.MAP_TYPE_NORMAL;
+    private int mMapType = GoogleMap.MAP_TYPE_NORMAL;
     private LatLng lastLatLng;
     //    private String startBD;
     private GoogleMap mMap;
@@ -99,7 +100,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String APP_PREFERENCES = "mysettings";
     private static final String APP_PREFERENCES_RADIUS = "radius";
-    private static final String APP_PREFERENCES_MAP_TYPE = "mapType";
+    private static final String APP_PREFERENCES_MAP_TYPE = "mMapType";
     //    private SharedPreferences mSettings;
     private static boolean startMessage = true;
 
@@ -125,17 +126,17 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         ButterKnife.bind(this);
-        mPresenter = new MapPresenterImpl(this);
-        mPresenter.bind(this);
-        init();
-    }
-
-    private void init() {
         initToolbar();
         initMap();
         initAdMob();
-        mSite = getIntent().getParcelableExtra(KEY_SITE);
+        initPresenter();
+    }
+
+    private void initPresenter(){
+        Site site = getIntent().getParcelableExtra(KEY_SITE);
         mOperator = getIntent().getParcelableExtra(KEY_OPERATOR);
+        mPresenter = new MapPresenterImpl(this);
+        mPresenter.bind(this, mOperator, site);
     }
 
     private void initAdMob() {
@@ -149,8 +150,9 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private void initToolbar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setIcon(android.R.drawable.ic_menu_home);
         }
     }
 
@@ -170,14 +172,15 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
             radius = mSettings.getFloat(APP_PREFERENCES_RADIUS, 1);
         }
         if (mSettings.contains(APP_PREFERENCES_MAP_TYPE)) {
-            mapType = mSettings.getInt(APP_PREFERENCES_MAP_TYPE, 1);
+            mMapType = mSettings.getInt(APP_PREFERENCES_MAP_TYPE, 1);
             getOperatorBD();
         }
-        mAdView.resume();
+        mAdMobView.resume();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_map, menu);
         switch (mOperator) {
             case MTS:
                 menu.findItem(R.id.menu_item_MTS).setChecked(true);
@@ -196,15 +199,15 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 break;
         }
 
-        switch (mapType) {
+        switch (mMapType) {
             case (GoogleMap.MAP_TYPE_NORMAL):
-                menu.findItem(R.id.standartMap).setChecked(true);
+                menu.findItem(R.id.menu_item_map_standart).setChecked(true);
                 break;
             case (GoogleMap.MAP_TYPE_HYBRID):
-                menu.findItem(R.id.hybridMap).setChecked(true);
+                menu.findItem(R.id.menu_item_map_hybrid).setChecked(true);
                 break;
             case (GoogleMap.MAP_TYPE_SATELLITE):
-                menu.findItem(R.id.satelitMap).setChecked(true);
+                menu.findItem(R.id.menu_item_map_satelit).setChecked(true);
                 break;
         }
         return true;
@@ -212,78 +215,71 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
+        switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(this, SearchSiteActivity.class));
+                toSearchSite();
                 return true;
             case R.id.menu_item_radius:
-                new DialogRadius().show(getFragmentManager(), "dialog");
+                showDialogRadius();
                 return true;
             case R.id.menu_item_MTS:
                 item.setChecked(true);
-                setOperatorBD(DB_OPERATOR_MTS);
-                fillOldMap();
+                showOperator(Operator.MTS);
                 return true;
             case R.id.menu_item_MGF:
                 item.setChecked(true);
-                setOperatorBD(DB_OPERATOR_MGF);
-                fillOldMap();
+                showOperator(Operator.MEGAFON);
                 return true;
             case R.id.menu_item_VMK:
                 item.setChecked(true);
-                setOperatorBD(DB_OPERATOR_VMK);
-                fillOldMap();
+                showOperator(Operator.VIMPELCOM);
                 return true;
             case R.id.menu_item_TELE2:
                 item.setChecked(true);
-                setOperatorBD(DB_OPERATOR_TEL);
-                fillOldMap();
+                showOperator(Operator.TELE2);
                 return true;
             case R.id.menu_item_ALL:
                 item.setChecked(true);
-                setOperatorBD(DB_OPERATOR_ALL);
-                fillOldMap();
+                showOperator(Operator.ALL);
                 return true;
-
-            case R.id.standartMap:
+            case R.id.menu_item_map_standart:
                 item.setChecked(true);
-                mapType = GoogleMap.MAP_TYPE_NORMAL;
-                mMap.setMapType(mapType);
+                showMapType(GoogleMap.MAP_TYPE_NORMAL);
                 return true;
-            case R.id.satelitMap:
+            case R.id.menu_item_map_satelit:
                 item.setChecked(true);
-                mapType = GoogleMap.MAP_TYPE_SATELLITE;
-                mMap.setMapType(mapType);
+                showMapType(GoogleMap.MAP_TYPE_SATELLITE);
                 return true;
-            case R.id.hybridMap:
-               /* if (item.isChecked()) item.setChecked(false);
-                else {*/
+            case R.id.menu_item_map_hybrid:
                 item.setChecked(true);
-                mapType = GoogleMap.MAP_TYPE_HYBRID;
-                mMap.setMapType(mapType);
-                //          }
+                showMapType(GoogleMap.MAP_TYPE_HYBRID);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @Override
-    protected void onPause() {
-        mAdView.pause();
-        SharedPreferences.Editor editor = mSettings.edit();
-        editor.putFloat(APP_PREFERENCES_RADIUS, radius);
-        //  editor.apply();
-        editor.putInt(APP_PREFERENCES_MAP_TYPE, mapType);
-        editor.apply();
-        super.onPause();
+    private void toSearchSite() {
+        Intent intent = new Intent(this, SearchSiteActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
-    @Override
-    protected void onDestroy() {
-        mAdView.destroy();
-        super.onDestroy();
+    private void showOperator(Operator operator) {
+        mPresenter.saveOperator(operator);
+        mOperator = operator;
+        fillOldMap();
+    }
+
+    private void showMapType(int mapType) {
+        mPresenter.saveMapType(mapType);
+        mMapType = mapType;
+        mMap.setMapType(mapType);
+    }
+
+    private void showDialogRadius() {
+        new DialogRadius().show(getFragmentManager(), "dialog");
     }
 
     @SuppressLint("MissingPermission")
@@ -292,7 +288,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mMap = googleMap;
         mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMapLongClickListener(this);
-        mMap.setMapType(mapType);
+        mMap.setMapType(mMapType);
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setCompassEnabled(true);
@@ -300,40 +296,10 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         if (mLocationPermissionGranted) {
             mMap.setMyLocationEnabled(true);
         }
-        mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(boundsLat1, boundsLng1), new LatLng(boundsLat2, boundsLng2)));
-        fillMap();
-    }
-
-    private void fillOldMap() {
-//        if (nextStep == MAP_BS_ONE) return;
-        if (nextStep != MAP_BS_SITE && nextStep != MAP_BS_MAP) nextStep = MAP_BS_SITE;
-
-        scale = mMap.getCameraPosition().zoom;
-        LatLng position = mMap.getCameraPosition().target;
-        lat = position.latitude;
-        lng = position.longitude;
-        mMap.clear();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, scale));
-
-        if (getOperatorBD().equals(DB_OPERATOR_ALL)) {
-            setOperatorBD(DB_OPERATOR_MTS);
-            fillMap();
-            setOperatorBD(DB_OPERATOR_MGF);
-            fillMap();
-            setOperatorBD(DB_OPERATOR_VMK);
-            fillMap();
-            setOperatorBD(DB_OPERATOR_TEL);
-            fillMap();
-            setOperatorBD(DB_OPERATOR_ALL);
-        } else {
-            fillMap();
-        }
-    }
-
-    private void startingMap() {
-        LatLng Position = new LatLng(55.753720, 37.619927);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Position, scale));
-        checkBS(Position);
+        mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
+                new LatLng(BORDER_LAT_START, BORDER_LNG_START),
+                new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
+        mPresenter.setupMap();
     }
 
     @SuppressLint("MissingPermission")
@@ -349,7 +315,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
 
-                    if (latitude < boundsLat1 || latitude > boundsLat2 || longitude < boundsLng1 || longitude > boundsLng2) {
+                    if (latitude < BORDER_LAT_START || latitude > BORDER_LAT_END || longitude < BORDER_LNG_START || longitude > BORDER_LNG_END) {
                         startingMap();
                         break;
                     }
@@ -383,6 +349,38 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 break;
         }
         startMessage();
+    }
+
+    private void fillOldMap() {
+//        if (nextStep == MAP_BS_ONE) return;
+        if (nextStep != MAP_BS_SITE && nextStep != MAP_BS_MAP) nextStep = MAP_BS_SITE;
+
+        scale = mMap.getCameraPosition().zoom;
+        LatLng position = mMap.getCameraPosition().target;
+        lat = position.latitude;
+        lng = position.longitude;
+        mMap.clear();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, scale));
+
+        if (getOperatorBD().equals(DB_OPERATOR_ALL)) {
+            setOperatorBD(DB_OPERATOR_MTS);
+            fillMap();
+            setOperatorBD(DB_OPERATOR_MGF);
+            fillMap();
+            setOperatorBD(DB_OPERATOR_VMK);
+            fillMap();
+            setOperatorBD(DB_OPERATOR_TEL);
+            fillMap();
+            setOperatorBD(DB_OPERATOR_ALL);
+        } else {
+            fillMap();
+        }
+    }
+
+    private void startingMap() {
+        LatLng Position = new LatLng(55.753720, 37.619927);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Position, scale));
+        checkBS(Position);
     }
 
     private void startMessage() {
@@ -645,5 +643,22 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     @Override
     public void hideProgress() {
 
+    }
+
+    @Override
+    protected void onPause() {
+        mAdMobView.pause();
+        super.onPause();
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putFloat(APP_PREFERENCES_RADIUS, radius);
+        //  editor.apply();
+        editor.putInt(APP_PREFERENCES_MAP_TYPE, mMapType);
+        editor.apply();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mAdMobView.destroy();
+        super.onDestroy();
     }
 }

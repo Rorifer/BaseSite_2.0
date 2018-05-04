@@ -43,15 +43,15 @@
                 android:checkableBehavior="single"
                 app:showAsAction="never">
                 <item
-                    android:id="@+id/standartMap"
+                    android:id="@+id/menu_item_map_standart"
                     android:title="Схема" />
 
                 <item
-                    android:id="@+id/hybridMap"
+                    android:id="@+id/menu_item_map_hybrid"
                     android:title="Гибрид" />
 
                 <item
-                    android:id="@+id/satelitMap"
+                    android:id="@+id/menu_item_map_satelit"
                     android:title="Спутник" />
             </group>
         </menu>
