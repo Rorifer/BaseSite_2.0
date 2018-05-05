@@ -8,7 +8,15 @@ interface MapView {
 
     fun hideProgress()
 
-    fun showSites(siteList: List<Site>, siteCentral: Site?)
+    fun showError()
 
-    fun showLocation()
+    fun showSites(siteList: List<Site>)
+
+    fun showMainSite(site: Site)
+
+    fun clearMap()
+
+    fun showUserLocation()
+
+    fun showStartingMessage()
 }

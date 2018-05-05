@@ -2,9 +2,7 @@ package com.engineeringforyou.basesite.presentation.map;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -13,7 +11,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -42,6 +39,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -56,15 +54,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
+import static com.engineeringforyou.basesite.utils.UtilsForDelete.DB_OPERATOR_ALL;
 
 public class MapActivity extends AppCompatActivity implements MapView, OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static final String KEY_SITE = "key_site";
-    private static final String KEY_OPERATOR = "key_operator";
 
-    public final double CENTER_LAT = 55.753720;
-    public final double CENTER_LNG = 37.619927;
+    public final double DEFAULT_LAT = 55.753720;
+    public final double DEFAULT_LNG = 37.619927;
     private final double BORDER_LAT_START = 54.489509;
     private final double BORDER_LAT_END = 56.953235;
     private final double BORDER_LNG_START = 35.127559;
@@ -102,7 +100,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     double mLat, mLng;
     String siteNumber;
     int nextStep;
-    private boolean mLocationPermissionGranted;
+    private boolean isLocationPermission;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String APP_PREFERENCES = "mysettings";
     private static final String APP_PREFERENCES_RADIUS = "radius";
@@ -118,9 +116,8 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 //        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
 //    }
 
-    public static void start(Activity activity, @NonNull Operator operator, @Nullable Site site) {
+    public static void start(Activity activity, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
-        intent.putExtra(KEY_OPERATOR, operator);
         intent.putExtra(KEY_SITE, site);
 //        intent.putExtra("next", MapActivity.MAP_BS_SITE_ONE);
         activity.startActivity(intent);
@@ -140,9 +137,8 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private void initPresenter() {
         Site site = getIntent().getParcelableExtra(KEY_SITE);
-        Operator operator = getIntent().getParcelableExtra(KEY_OPERATOR);
         mPresenter = new MapPresenterImpl(this);
-        mPresenter.bind(this, operator, site);
+        mPresenter.bind(this, site);
     }
 
     private void initAdMob() {
@@ -158,29 +154,52 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setIcon(android.R.drawable.ic_menu_home);
+            actionBar.setIcon(android.R.drawable.ic_menu_search);
         }
     }
 
     private void initMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         }
     }
 
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnMapLongClickListener(this);
+        mMap.setMapType(mPresenter.getMapType());
+        UiSettings mUiSettings = mMap.getUiSettings();
+        mUiSettings.setZoomControlsEnabled(true);
+        mUiSettings.setCompassEnabled(true);
+        getLocationPermission();
+        if (isLocationPermission) mMap.setMyLocationEnabled(true);
+        mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
+                new LatLng(BORDER_LAT_START, BORDER_LNG_START),
+                new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
+        mPresenter.setupMap();
+    }
+
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            isLocationPermission = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        if (mSettings.contains(APP_PREFERENCES_RADIUS)) {
-            radius = mSettings.getFloat(APP_PREFERENCES_RADIUS, 1);
-        }
-        if (mSettings.contains(APP_PREFERENCES_MAP_TYPE)) {
-            mMapType = mSettings.getInt(APP_PREFERENCES_MAP_TYPE, 1);
-            getOperatorBD();
-        }
         mAdMobView.resume();
     }
 
@@ -189,23 +208,23 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         getMenuInflater().inflate(R.menu.menu_map, menu);
         switch (mPresenter.getOperator()) {
             case MTS:
-                menu.findItem(R.id.menu_item_MTS).setChecked(true);
+                menu.findItem(R.id.menu_item_mts).setChecked(true);
                 break;
             case MEGAFON:
-                menu.findItem(R.id.menu_item_MGF).setChecked(true);
+                menu.findItem(R.id.menu_item_mgf).setChecked(true);
                 break;
             case VIMPELCOM:
-                menu.findItem(R.id.menu_item_VMK).setChecked(true);
+                menu.findItem(R.id.menu_item_vmk).setChecked(true);
                 break;
             case TELE2:
-                menu.findItem(R.id.menu_item_TELE2).setChecked(true);
+                menu.findItem(R.id.menu_item_tele2).setChecked(true);
                 break;
             case ALL:
-                menu.findItem(R.id.menu_item_ALL).setChecked(true);
+                menu.findItem(R.id.menu_item_all).setChecked(true);
                 break;
         }
 
-        switch (mMapType) {
+        switch (mPresenter.getMapType()) {
             case (GoogleMap.MAP_TYPE_NORMAL):
                 menu.findItem(R.id.menu_item_map_standart).setChecked(true);
                 break;
@@ -223,203 +242,235 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                toSearchSite();
+                toMainActivity();
                 return true;
             case R.id.menu_item_radius:
                 showDialogRadius();
                 return true;
-            case R.id.menu_item_MTS:
+
+            case R.id.menu_item_mts:
                 item.setChecked(true);
                 showOperator(Operator.MTS);
                 return true;
-            case R.id.menu_item_MGF:
+            case R.id.menu_item_mgf:
                 item.setChecked(true);
                 showOperator(Operator.MEGAFON);
                 return true;
-            case R.id.menu_item_VMK:
+            case R.id.menu_item_vmk:
                 item.setChecked(true);
                 showOperator(Operator.VIMPELCOM);
                 return true;
-            case R.id.menu_item_TELE2:
+            case R.id.menu_item_tele2:
                 item.setChecked(true);
                 showOperator(Operator.TELE2);
                 return true;
-            case R.id.menu_item_ALL:
+            case R.id.menu_item_all:
                 item.setChecked(true);
                 showOperator(Operator.ALL);
                 return true;
+
             case R.id.menu_item_map_standart:
                 item.setChecked(true);
-                showMapType(GoogleMap.MAP_TYPE_NORMAL);
+                mPresenter.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 return true;
             case R.id.menu_item_map_satelit:
                 item.setChecked(true);
-                showMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                mPresenter.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
                 return true;
             case R.id.menu_item_map_hybrid:
                 item.setChecked(true);
-                showMapType(GoogleMap.MAP_TYPE_HYBRID);
+                mPresenter.setMapType(GoogleMap.MAP_TYPE_HYBRID);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void toSearchSite() {
+    private void toMainActivity() {
         Intent intent = new Intent(this, SearchSiteActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        overridePendingTransition(R.anim.alpha_in, R.anim.slide_right_out);
         finish();
     }
 
     private void showOperator(Operator operator) {
-        mPresenter.saveOperator(operator);
-        fillOldMap();
+        mScale = mMap.getCameraPosition().zoom;
+        LatLng position = mMap.getCameraPosition().target;
+        double lat = position.latitude;
+        double lng = position.longitude;
+        mPresenter.showOperatorLocation(operator, lat, lng);
     }
-
-    private void showMapType(int mapType) {
-        mPresenter.saveMapType(mapType);
-        mMapType = mapType;
-        mMap.setMapType(mapType);
-    }
+//
+//    private void showMapType(int mapType) {
+//        mPresenter.setMapType(mapType);
+//        mMapType = mapType;
+//        mMap.setMapType(mapType);
+//    }
 
     private void showDialogRadius() {
         new DialogRadius().show(getFragmentManager(), "dialog");
     }
 
-    @SuppressLint("MissingPermission")
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setOnInfoWindowClickListener(this);
-        mMap.setOnMapLongClickListener(this);
-        mMap.setMapType(mMapType);
-        UiSettings mUiSettings = mMap.getUiSettings();
-        mUiSettings.setZoomControlsEnabled(true);
-        mUiSettings.setCompassEnabled(true);
-        getLocationPermission();
-        if (mLocationPermissionGranted) {
-            mMap.setMyLocationEnabled(true);
+    public void clearMap() {
+        mMap.clear();
+    }
+
+    private void moveCamera(LatLng position) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, mScale));
+    }
+
+    @Override
+    public void showMainSite(@NotNull Site site) {
+        LatLng position = new LatLng(site.getLatitude(), site.getLongitude());
+        mMap.addMarker(new MarkerOptions().
+                position(position).
+                title(site.getNumber()).
+                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+        ).setTag(site);
+        moveCamera(position);
+    }
+
+    @Override
+    public void showSites(@NotNull List<Site> siteList) {
+        if (siteList.isEmpty()) {
+            Toast.makeText(this, R.string.map_no_sites, Toast.LENGTH_SHORT).show();
+        } else {
+            for (Site site : siteList) {
+                mMap.addMarker(new MarkerOptions().
+                        position(new LatLng(site.getLatitude(), site.getLongitude()))
+                        .title(site.getNumber())
+                        .alpha(0.5f)
+                        .icon(iconOperator(site.getOperator())))
+                        .setTag(site);
+            }
         }
-        mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
-                new LatLng(BORDER_LAT_START, BORDER_LNG_START),
-                new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
-        mPresenter.setupMap();
     }
 
-    @Override
-    public void showSites(@NotNull List<Site> siteList, Site siteCentral) {
-
+    private BitmapDescriptor iconOperator(Operator operator) {
+        switch (operator) {
+            case MTS:
+                return BitmapDescriptorFactory.fromResource(R.drawable.ic_mts);
+            case MEGAFON:
+                return BitmapDescriptorFactory.fromResource(R.drawable.ic_megafon);
+            case VIMPELCOM:
+                return BitmapDescriptorFactory.fromResource(R.drawable.ic_beeline);
+            case TELE2:
+                return BitmapDescriptorFactory.fromResource(R.drawable.ic_tele2);
+            default:
+                return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+        }
     }
 
     @SuppressLint("MissingPermission")
     @Override
-    public void showLocation() {
+    public void showUserLocation() {
         Location location = null;
-        if (mLocationPermissionGranted) {
+        double lat = DEFAULT_LAT;
+        double lng = DEFAULT_LNG;
+
+        if (isLocationPermission) {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             location = locationManager != null ? locationManager.getLastKnownLocation(PASSIVE_PROVIDER) : null;
         }
+
         if (location != null) {
-            double lat = location.getLatitude();
-            double lng = location.getLongitude();
-
-            if (lat < BORDER_LAT_START || lat > BORDER_LAT_END || lng < BORDER_LNG_START || lng > BORDER_LNG_END) {
-                centerMap();
-            } else {
-                LatLng myPosition = new LatLng(lat, lng);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, mScale));
-//                checkBS(myPosition);
+            if (location.getLatitude() > BORDER_LAT_START && location.getLatitude() < BORDER_LAT_END
+                    && location.getLongitude() > BORDER_LNG_START && location.getLongitude() < BORDER_LNG_END) {
+                lat = location.getLatitude();
+                lng = location.getLongitude();
             }
-        } else centerMap();
-    }
-
-    @SuppressLint("MissingPermission")
-    public void fillMap() {
-        switch (nextStep) {
-            case MAP_BS_HERE:
-                Location location = null;
-                if (mLocationPermissionGranted) {
-                    LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                    location = locationManager != null ? locationManager.getLastKnownLocation(PASSIVE_PROVIDER) : null;
-                }
-                if (location != null) {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-
-                    if (latitude < BORDER_LAT_START || latitude > BORDER_LAT_END || longitude < BORDER_LNG_START || longitude > BORDER_LNG_END) {
-                        centerMap();
-                        break;
-                    }
-                    LatLng myPosition = new LatLng(latitude, longitude);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, mScale));
-                    checkBS(myPosition);
-                } else {
-                    centerMap();
-                }
-                break;
-
-            case MAP_BS_SITE:
-                checkBS(new LatLng(mLat, mLng));
-                break;
-
-            case MAP_BS_SITE_ONE:
-                checkBS(new LatLng(mLat, mLng));
-
-            case MAP_BS_ONE:
-                LatLng site = new LatLng(mLat, mLng);
-                mMap.addMarker(new MarkerOptions().
-                        position(site).
-                        title(siteNumber).
-                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                ).setTag(startBD);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(site, mScale));
-                break;
-
-            case MAP_BS_MAP:
-                checkBS(lastLatLng);
-                break;
         }
-        startingMessage();
+
+        moveCamera(new LatLng(lat, lng));
+        mPresenter.showSitesLocation(lat, lng);
     }
 
-    private void fillOldMap() {
-//        if (nextStep == MAP_BS_ONE) return;
-        if (nextStep != MAP_BS_SITE && nextStep != MAP_BS_MAP) nextStep = MAP_BS_SITE;
+//    @SuppressLint("MissingPermission")
+//    public void fillMap() {
+//        switch (nextStep) {
+//            case MAP_BS_HERE:
+//                Location location = null;
+//                if (isLocationPermission) {
+//                    LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+//                    location = locationManager != null ? locationManager.getLastKnownLocation(PASSIVE_PROVIDER) : null;
+//                }
+//                if (location != null) {
+//                    double latitude = location.getLatitude();
+//                    double longitude = location.getLongitude();
+//
+//                    if (latitude < BORDER_LAT_START || latitude > BORDER_LAT_END || longitude < BORDER_LNG_START || longitude > BORDER_LNG_END) {
+//                        centerMap();
+//                        break;
+//                    }
+//                    LatLng myPosition = new LatLng(latitude, longitude);
+//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, mScale));
+//                    checkBS(myPosition);
+//                } else {
+//                    centerMap();
+//                }
+//                break;
 
-        mScale = mMap.getCameraPosition().zoom;
-        LatLng position = mMap.getCameraPosition().target;
-        mLat = position.latitude;
-        mLng = position.longitude;
-        mMap.clear();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, mScale));
+//            case MAP_BS_SITE:
+//                checkBS(new LatLng(mLat, mLng));
+//                break;
+//
+//            case MAP_BS_SITE_ONE:
+//                checkBS(new LatLng(mLat, mLng));
 
-        if (getOperatorBD().equals(DB_OPERATOR_ALL)) {
-            setOperatorBD(DB_OPERATOR_MTS);
-            fillMap();
-            setOperatorBD(DB_OPERATOR_MGF);
-            fillMap();
-            setOperatorBD(DB_OPERATOR_VMK);
-            fillMap();
-            setOperatorBD(DB_OPERATOR_TEL);
-            fillMap();
-            setOperatorBD(DB_OPERATOR_ALL);
-        } else {
-            fillMap();
-        }
-    }
+//            case MAP_BS_ONE:
+//                LatLng site = new LatLng(mLat, mLng);
+//                mMap.addMarker(new MarkerOptions().
+//                        position(site).
+//                        title(siteNumber).
+//                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+//                ).setTag(startBD);
+//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(site, mScale));
+//                break;
 
-    private void centerMap() {
-        LatLng Position = new LatLng(CENTER_LAT, CENTER_LNG);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Position, mScale));
-        checkBS(Position);
-    }
+//            case MAP_BS_MAP:
+//                checkBS(lastLatLng);
+//                break;
+//        }
+//        showStartingMessage();
+//    }
 
-    private void startingMessage() {
-        if (!isShownStartingMessage) {
-            Toast.makeText(this, "Для поиска БС на карте используйте долгое нажатие", Toast.LENGTH_LONG).show();
-            isShownStartingMessage = true;
-        }
+//    private void fillOldMap() {
+////        if (nextStep == MAP_BS_ONE) return;
+//        if (nextStep != MAP_BS_SITE && nextStep != MAP_BS_MAP) nextStep = MAP_BS_SITE;
+//
+//        mScale = mMap.getCameraPosition().zoom;
+//        LatLng position = mMap.getCameraPosition().target;
+//        mLat = position.latitude;
+//        mLng = position.longitude;
+//        mMap.clear();
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, mScale));
+//
+//        if (getOperatorBD().equals(DB_OPERATOR_ALL)) {
+//            setOperatorBD(DB_OPERATOR_MTS);
+//            fillMap();
+//            setOperatorBD(DB_OPERATOR_MGF);
+//            fillMap();
+//            setOperatorBD(DB_OPERATOR_VMK);
+//            fillMap();
+//            setOperatorBD(DB_OPERATOR_TEL);
+//            fillMap();
+//            setOperatorBD(DB_OPERATOR_ALL);
+//        } else {
+//            fillMap();
+//        }
+//    }
+
+//    private void centerMap() {
+//        LatLng Position = new LatLng(DEFAULT_LAT, DEFAULT_LNG);
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Position, mScale));
+//        checkBS(Position);
+//    }
+
+    @Override
+    public void showStartingMessage() {
+        Toast.makeText(this, R.string.map_starting_message, Toast.LENGTH_LONG).show();
     }
 
     private void checkBS(LatLng center) {
@@ -454,60 +505,48 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         db.close();
         int count = userCursor.getCount();
 
-        if (count == 0) {
-            Toast.makeText(this, "Здесь БС не найдено!", Toast.LENGTH_SHORT).show();
-        } else {
-
-            String oper = getOperatorBD();
-            String title = null;
-
-            float colorPoint = 0;
-            switch (oper) {
-                case DB_OPERATOR_MTS:
-                    colorPoint = 0.0F; // red
-                    title = "МТС";
-                    break;
-                case DB_OPERATOR_MGF:
-                    colorPoint = 120.0F; // green+
-                    title = "Мегафон";
-                    break;
-                case DB_OPERATOR_VMK:
-                    colorPoint = 60.0F; // YELLOW
-                    title = "Билайн";
-                    break;
-                case DB_OPERATOR_TEL:
-                    colorPoint = 270.0F; // HUE_VIOLET
-                    title = "Теле2";
-                    break;
-            }
-
-            for (int i = 0; i < count; i++) {
-                userCursor.moveToPosition(i);
-
-                mMap.addMarker(new MarkerOptions().
-                        position(new LatLng(
-                                userCursor.getDouble(userCursor.getColumnIndex("GPS_Latitude")),
-                                userCursor.getDouble(userCursor.getColumnIndex("GPS_Longitude")))).
-                        title(userCursor.getString(userCursor.getColumnIndex("SITE"))).
-                        snippet(title).
-                        alpha(0.5f).
-                        icon(BitmapDescriptorFactory.defaultMarker(colorPoint))).
-                        setTag(oper);
-            }
-        }
+//        if (count == 0) {
+//            Toast.makeText(this, "Здесь БС не найдено!", Toast.LENGTH_SHORT).show();
+//        } else {
+//
+//            String oper = getOperatorBD();
+//            String title = null;
+//
+//            float colorPoint = 0;
+//            switch (oper) {
+//                case DB_OPERATOR_MTS:
+//                    colorPoint = 0.0F; // red
+//                    title = "МТС";
+//                    break;
+//                case DB_OPERATOR_MGF:
+//                    colorPoint = 120.0F; // green+
+//                    title = "Мегафон";
+//                    break;
+//                case DB_OPERATOR_VMK:
+//                    colorPoint = 60.0F; // YELLOW
+//                    title = "Билайн";
+//                    break;
+//                case DB_OPERATOR_TEL:
+//                    colorPoint = 270.0F; // HUE_VIOLET
+//                    title = "Теле2";
+//                    break;
+//            }
+//
+//            for (int i = 0; i < count; i++) {
+//                userCursor.moveToPosition(i);
+//
+//                mMap.addMarker(new MarkerOptions().
+//                        position(new LatLng(
+//                                userCursor.getDouble(userCursor.getColumnIndex("GPS_Latitude")),
+//                                userCursor.getDouble(userCursor.getColumnIndex("GPS_Longitude")))).
+//                        title(userCursor.getString(userCursor.getColumnIndex("SITE"))).
+//                        snippet(title).
+//                        alpha(0.5f).
+//                        icon(BitmapDescriptorFactory.defaultMarker(colorPoint))).
+//                        setTag(oper);
+//            }
+//        }
         userCursor.close();
-    }
-
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
     }
 
     @Override
@@ -642,7 +681,18 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     }
 
     @Override
+    public void showError() {
+        hideProgress();
+
+    }
+
+    private void hideError() {
+
+    }
+
+    @Override
     public void showProgress() {
+        hideError();
 
     }
 

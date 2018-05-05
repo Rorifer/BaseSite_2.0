@@ -16,26 +16,26 @@
                 android:checkableBehavior="single"
                 app:showAsAction="never">
                 <item
-                    android:id="@+id/menu_item_MTS"
+                    android:id="@+id/menu_item_mts"
                     android:title="@string/MTS" />
                 <item
-                    android:id="@+id/menu_item_MGF"
+                    android:id="@+id/menu_item_mgf"
                     android:title="@string/MGF" />
                 <item
-                    android:id="@+id/menu_item_VMK"
+                    android:id="@+id/menu_item_vmk"
                     android:title="@string/VMK" />
                 <item
-                    android:id="@+id/menu_item_TELE2"
+                    android:id="@+id/menu_item_tele2"
                     android:title="@string/TELE" />
                 <item
-                    android:id="@+id/menu_item_ALL"
+                    android:id="@+id/menu_item_all"
                     android:title="@string/ALL" />
             </group>
         </menu>
     </item>
 
     <item
-        android:title="Тип карты"
+        android:title="@string/map_type"
         app:showAsAction="ifRoom">
         <menu>
             <group
@@ -44,15 +44,15 @@
                 app:showAsAction="never">
                 <item
                     android:id="@+id/menu_item_map_standart"
-                    android:title="Схема" />
+                    android:title="@string/map_standart" />
 
                 <item
                     android:id="@+id/menu_item_map_hybrid"
-                    android:title="Гибрид" />
+                    android:title="@string/hybrid" />
 
                 <item
                     android:id="@+id/menu_item_map_satelit"
-                    android:title="Спутник" />
+                    android:title="@string/satelit" />
             </group>
         </menu>
     </item>

@@ -120,7 +120,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     @Override
     public void openMap(@NonNull Operator operator) {
         hideKeyboard();
-        MapActivity.start(this, operator, null);
+        MapActivity.start(this, null);
     }
 
     private void hideKeyboard() {

@@ -104,7 +104,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @OnClick(R.id.button_map)
     public void clickMapBtn() {
-        MapActivity.start(this, mSite.getOperator(), mSite);
+        MapActivity.start(this, mSite);
     }
 
     @OnClick(R.id.button_route)

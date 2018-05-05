@@ -7,16 +7,20 @@ import com.engineeringforyou.basesite.presentation.map.views.MapView
 
 interface MapPresenter {
 
-    fun bind(view: MapView, operator: Operator, site: Site?)
+    fun bind(view: MapView, site: Site?)
 
     fun unbindView()
 
-    fun saveOperator (operator: Operator)
+    fun showOperatorLocation(operator: Operator, lat: Double, lng: Double)
 
-    fun saveMapType (mapType: Int)
+    fun setMapType(mapType: Int)
 
     fun setupMap()
 
     fun getOperator(): Operator
+
+    fun getMapType(): Int
+
+    fun showSitesLocation(lat: Double, lng: Double)
 
 }

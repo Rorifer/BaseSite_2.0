@@ -66,5 +66,11 @@
     <string name="edit">Редактировать</string>
     <string name="bs_status">Статус:</string>
     <string name="status_active">действующая</string>
+    <string name="hybrid">Гибрид</string>
+    <string name="satelit">Спутник</string>
+    <string name="map_type">Тип карты</string>
+    <string name="map_standart">Схема</string>
+    <string name="map_starting_message">Для поиска БС на карте используйте долгое нажатие</string>
+    <string name="map_no_sites">Здесь БС не найдено</string>
 
 </resources>

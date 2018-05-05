@@ -11,6 +11,8 @@ import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.Status;
+import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
-import static com.engineeringforyou.basesite.presentation.map.MapActivity.getOperatorBD3;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static String DB_PATH; // полный путь к базе данных
@@ -88,7 +89,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<Site> siteSearch2(Operator operator, String siteQuery, int mode) {
 
         Cursor cursor = siteSearch(getOperatorBD3(myContext), siteQuery, mode);
-
 
 
         return mapToSiteList(cursor, operator, myContext);
@@ -210,6 +210,87 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public SQLiteDatabase open() throws SQLException {
         return SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READONLY);
+    }
+
+
+    private void checkBS(LatLng center, int radius) {
+        DBHelper db;
+        Cursor userCursor;
+        SQLiteDatabase sqld;
+        String query;
+        String DB_NAME = getOperatorBD3(myContext);
+        if (DB_NAME.equals(DB_OPERATOR_ALL)) return;
+        double latMax,
+                latMin,
+                lngMax,
+                lngMin,
+                latDelta,
+                lngDelta;
+
+        double mLat = center.latitude;
+        double mLng = center.longitude;
+        latDelta = radius / 111;
+        lngDelta = radius / 63.2;
+        latMax = mLat + latDelta;
+        latMin = mLat - latDelta;
+        lngMax = mLng + lngDelta;
+        lngMin = mLng - lngDelta;
+        query = "SELECT * FROM " + DB_NAME + " WHERE GPS_Latitude>" + latMin + " AND GPS_Latitude<" + latMax +
+                " AND GPS_Longitude>" + lngMin + " AND GPS_Longitude<" + lngMax;
+        // Работа с БД
+        db = new DBHelper(myContext);
+        db.create_db();
+        sqld = db.open();
+        userCursor = sqld.rawQuery(query, null);
+        db.close();
+        int count = userCursor.getCount();
+
+        for (int i = 0; i < count; i++) {
+            userCursor.moveToPosition(i);
+
+//            mMap.addMarker(new MarkerOptions().
+//                    position(new LatLng(
+//                            userCursor.getDouble(userCursor.getColumnIndex("GPS_Latitude")),
+//                            userCursor.getDouble(userCursor.getColumnIndex("GPS_Longitude")))).
+//                    title(userCursor.getString(userCursor.getColumnIndex("SITE"))).
+//                    snippet(title).
+//                    alpha(0.5f).
+//                    icon(BitmapDescriptorFactory.defaultMarker(colorPoint))).
+//                    setTag(oper);
+        }
+        userCursor.close();
+    }
+
+    public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
+    public final static String DB_OPERATOR_MGF = "MGF_Site_Base";
+    public final static String DB_OPERATOR_VMK = "VMK_Site_Base";
+    public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
+    public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
+
+
+    public static String getOperatorBD3(Context context) {
+//        if (operatorBD != null) {
+//            return operatorBD;
+//        } else {
+        //  operatorBDoutPreferences();
+        Operator oper = new SettingsRepositoryImpl(context).getOperator();
+
+        switch (oper) {
+            case ALL:
+                return DB_OPERATOR_ALL;
+            case MEGAFON:
+                return DB_OPERATOR_MGF;
+            case VIMPELCOM:
+                return DB_OPERATOR_VMK;
+            case TELE2:
+                return DB_OPERATOR_TEL;
+            default:
+            case MTS:
+                return DB_OPERATOR_MTS;
+
+        }
+        //     return operatorBD;
+        //}
     }
 }
 
