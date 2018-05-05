@@ -21,6 +21,8 @@ public class MapPresenterImpl implements MapPresenter {
     private MapView mView;
     private Site mSite;
     private Operator mOperator;
+    private boolean isStarting = false;
+
 
 
     public MapPresenterImpl(Context context) {
@@ -38,11 +40,22 @@ public class MapPresenterImpl implements MapPresenter {
 
     @Override
     public void saveMapType(int mapType) {
-
+        mInteractor.saveMapType(mapType);
     }
 
     @Override
     public void saveOperator(@NotNull Operator operator) {
+        mInteractor.saveOperator(operator);
+    }
+
+    @NotNull
+    @Override
+    public Operator getOperator() {
+        return null;
+    }
+
+    @Override
+    public void setupMap() {
 
     }
 

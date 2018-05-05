@@ -10,15 +10,25 @@ import com.engineeringforyou.basesite.repositories.sites.SitesRepositoryImpl
 class MapInteractorImpl(context: Context) : MapInteractor {
 
     private val settingsRepository: SettingsRepository
+    private val sitesRepository: SitesRepository
     private val baseSitesRepository: SitesRepository
 
     init {
         settingsRepository = SettingsRepositoryImpl(context)
+        sitesRepository = SitesRepositoryImpl(context)
         baseSitesRepository = SitesRepositoryImpl(context)
     }
 
     override fun saveOperator(operator: Operator) = settingsRepository.saveOperator(operator)
 
     override fun getOperator() = settingsRepository.getOperator()
+
+    override fun saveMapType(mapType: Int) = settingsRepository.saveMapType(mapType)
+
+    override fun getMapType()= settingsRepository.getMapType()
+
+    override fun saveRadius(radius: Int) = settingsRepository.saveRadius(radius)
+
+    override fun getRadius()= settingsRepository.getRadius()
 
 }

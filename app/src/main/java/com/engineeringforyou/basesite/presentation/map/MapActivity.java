@@ -48,6 +48,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -59,16 +63,19 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private static final String KEY_SITE = "key_site";
     private static final String KEY_OPERATOR = "key_operator";
 
+    public final double CENTER_LAT = 55.753720;
+    public final double CENTER_LNG = 37.619927;
     private final double BORDER_LAT_START = 54.489509;
     private final double BORDER_LAT_END = 56.953235;
     private final double BORDER_LNG_START = 35.127559;
     private final double BORDER_LNG_END = 40.250872;
 
+
     @BindView(R.id.ad_mob_map)
     AdView mAdMobView;
 
     private MapPresenter mPresenter;
-    private Operator mOperator;
+    private float mScale = 16;
 
 
     public static final int MAP_BS_HERE = 1;
@@ -77,23 +84,22 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     static final int MAP_BS_MAP = 4;
     public static final int MAP_BS_SITE_ONE = 5;
 
-    public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
-    public final static String DB_OPERATOR_MGF = "MGF_Site_Base";
-    public final static String DB_OPERATOR_VMK = "VMK_Site_Base";
-    public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
-    public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
+//    public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
+//    public final static String DB_OPERATOR_MGF = "MGF_Site_Base";
+//    public final static String DB_OPERATOR_VMK = "VMK_Site_Base";
+//    public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
+//    public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
 
     public static String operator_lable;
     public static String operatorBD = null;
 
 
     public static float radius = 3; // ралиус "квадрата" в километрах
-    private float scale = 16;
     private int mMapType = GoogleMap.MAP_TYPE_NORMAL;
     private LatLng lastLatLng;
     //    private String startBD;
     private GoogleMap mMap;
-    double lat, lng;
+    double mLat, mLng;
     String siteNumber;
     int nextStep;
     private boolean mLocationPermissionGranted;
@@ -102,7 +108,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private static final String APP_PREFERENCES_RADIUS = "radius";
     private static final String APP_PREFERENCES_MAP_TYPE = "mMapType";
     //    private SharedPreferences mSettings;
-    private static boolean startMessage = true;
+    private boolean isShownStartingMessage = false;
 
 //    public static void start(Activity activity) {
 //        Intent intent = new Intent(activity, MapActivity.class);
@@ -127,16 +133,16 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         setContentView(R.layout.activity_map);
         ButterKnife.bind(this);
         initToolbar();
+        initPresenter();
         initMap();
         initAdMob();
-        initPresenter();
     }
 
-    private void initPresenter(){
+    private void initPresenter() {
         Site site = getIntent().getParcelableExtra(KEY_SITE);
-        mOperator = getIntent().getParcelableExtra(KEY_OPERATOR);
+        Operator operator = getIntent().getParcelableExtra(KEY_OPERATOR);
         mPresenter = new MapPresenterImpl(this);
-        mPresenter.bind(this, mOperator, site);
+        mPresenter.bind(this, operator, site);
     }
 
     private void initAdMob() {
@@ -181,7 +187,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_map, menu);
-        switch (mOperator) {
+        switch (mPresenter.getOperator()) {
             case MTS:
                 menu.findItem(R.id.menu_item_MTS).setChecked(true);
                 break;
@@ -268,7 +274,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private void showOperator(Operator operator) {
         mPresenter.saveOperator(operator);
-        mOperator = operator;
         fillOldMap();
     }
 
@@ -302,8 +307,35 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mPresenter.setupMap();
     }
 
+    @Override
+    public void showSites(@NotNull List<Site> siteList, Site siteCentral) {
+
+    }
+
     @SuppressLint("MissingPermission")
-    private void fillMap() {
+    @Override
+    public void showLocation() {
+        Location location = null;
+        if (mLocationPermissionGranted) {
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            location = locationManager != null ? locationManager.getLastKnownLocation(PASSIVE_PROVIDER) : null;
+        }
+        if (location != null) {
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+
+            if (lat < BORDER_LAT_START || lat > BORDER_LAT_END || lng < BORDER_LNG_START || lng > BORDER_LNG_END) {
+                centerMap();
+            } else {
+                LatLng myPosition = new LatLng(lat, lng);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, mScale));
+//                checkBS(myPosition);
+            }
+        } else centerMap();
+    }
+
+    @SuppressLint("MissingPermission")
+    public void fillMap() {
         switch (nextStep) {
             case MAP_BS_HERE:
                 Location location = null;
@@ -316,51 +348,51 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                     double longitude = location.getLongitude();
 
                     if (latitude < BORDER_LAT_START || latitude > BORDER_LAT_END || longitude < BORDER_LNG_START || longitude > BORDER_LNG_END) {
-                        startingMap();
+                        centerMap();
                         break;
                     }
                     LatLng myPosition = new LatLng(latitude, longitude);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, scale));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, mScale));
                     checkBS(myPosition);
                 } else {
-                    startingMap();
+                    centerMap();
                 }
                 break;
 
             case MAP_BS_SITE:
-                checkBS(new LatLng(lat, lng));
+                checkBS(new LatLng(mLat, mLng));
                 break;
 
             case MAP_BS_SITE_ONE:
-                checkBS(new LatLng(lat, lng));
+                checkBS(new LatLng(mLat, mLng));
 
             case MAP_BS_ONE:
-                LatLng site = new LatLng(lat, lng);
+                LatLng site = new LatLng(mLat, mLng);
                 mMap.addMarker(new MarkerOptions().
                         position(site).
                         title(siteNumber).
                         icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 ).setTag(startBD);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(site, scale));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(site, mScale));
                 break;
 
             case MAP_BS_MAP:
                 checkBS(lastLatLng);
                 break;
         }
-        startMessage();
+        startingMessage();
     }
 
     private void fillOldMap() {
 //        if (nextStep == MAP_BS_ONE) return;
         if (nextStep != MAP_BS_SITE && nextStep != MAP_BS_MAP) nextStep = MAP_BS_SITE;
 
-        scale = mMap.getCameraPosition().zoom;
+        mScale = mMap.getCameraPosition().zoom;
         LatLng position = mMap.getCameraPosition().target;
-        lat = position.latitude;
-        lng = position.longitude;
+        mLat = position.latitude;
+        mLng = position.longitude;
         mMap.clear();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, scale));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, mScale));
 
         if (getOperatorBD().equals(DB_OPERATOR_ALL)) {
             setOperatorBD(DB_OPERATOR_MTS);
@@ -377,16 +409,16 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         }
     }
 
-    private void startingMap() {
-        LatLng Position = new LatLng(55.753720, 37.619927);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Position, scale));
+    private void centerMap() {
+        LatLng Position = new LatLng(CENTER_LAT, CENTER_LNG);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Position, mScale));
         checkBS(Position);
     }
 
-    private void startMessage() {
-        if (startMessage) {
-            Toast.makeText(this, "Для поиска БС на карте используйте долгое нажатие в месте поиска", Toast.LENGTH_LONG).show();
-            startMessage = false;
+    private void startingMessage() {
+        if (!isShownStartingMessage) {
+            Toast.makeText(this, "Для поиска БС на карте используйте долгое нажатие", Toast.LENGTH_LONG).show();
+            isShownStartingMessage = true;
         }
     }
 
@@ -404,14 +436,14 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 latDelta,
                 lngDelta;
 
-        lat = center.latitude;
-        lng = center.longitude;
+        mLat = center.latitude;
+        mLng = center.longitude;
         latDelta = radius / 111;
         lngDelta = radius / 63.2;
-        latMax = lat + latDelta;
-        latMin = lat - latDelta;
-        lngMax = lng + lngDelta;
-        lngMin = lng - lngDelta;
+        latMax = mLat + latDelta;
+        latMin = mLat - latDelta;
+        lngMax = mLng + lngDelta;
+        lngMin = mLng - lngDelta;
         query = "SELECT * FROM " + DB_NAME + " WHERE GPS_Latitude>" + latMin + " AND GPS_Latitude<" + latMax +
                 " AND GPS_Longitude>" + lngMin + " AND GPS_Longitude<" + lngMax;
         // Работа с БД
@@ -579,32 +611,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         return getOperatorBD3(this);
     }
 
-
-    public static String getOperatorBD3(Context context) {
-//        if (operatorBD != null) {
-//            return operatorBD;
-//        } else {
-        //  operatorBDoutPreferences();
-        Operator oper = new SettingsRepositoryImpl(context).getOperator();
-
-        switch (oper) {
-            case ALL:
-                return DB_OPERATOR_ALL;
-            case MEGAFON:
-                return DB_OPERATOR_MGF;
-            case VIMPELCOM:
-                return DB_OPERATOR_VMK;
-            case TELE2:
-                return DB_OPERATOR_TEL;
-            default:
-            case MTS:
-                return DB_OPERATOR_MTS;
-
-        }
-        //     return operatorBD;
-        //}
-    }
-
     public void setOperatorBD(String oper) {
         operatorBD = oper;
         //operatorBDinPreferences(); // TODO
@@ -649,11 +655,11 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     protected void onPause() {
         mAdMobView.pause();
         super.onPause();
-        SharedPreferences.Editor editor = mSettings.edit();
-        editor.putFloat(APP_PREFERENCES_RADIUS, radius);
-        //  editor.apply();
-        editor.putInt(APP_PREFERENCES_MAP_TYPE, mMapType);
-        editor.apply();
+//        SharedPreferences.Editor editor = mSettings.edit();
+//        editor.putFloat(APP_PREFERENCES_RADIUS, radius);
+//        //  editor.apply();
+//        editor.putInt(APP_PREFERENCES_MAP_TYPE, mMapType);
+//        editor.apply();
     }
 
     @Override

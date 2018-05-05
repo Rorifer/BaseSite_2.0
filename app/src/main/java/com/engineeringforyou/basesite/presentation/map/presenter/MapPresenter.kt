@@ -15,4 +15,8 @@ interface MapPresenter {
 
     fun saveMapType (mapType: Int)
 
+    fun setupMap()
+
+    fun getOperator(): Operator
+
 }

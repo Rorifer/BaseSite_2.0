@@ -8,4 +8,11 @@ interface MapInteractor {
 
     fun getOperator(): Operator
 
+    fun saveMapType (mapType: Int)
+
+    fun getMapType(): Int
+
+    fun saveRadius(radius: Int)
+
+    fun getRadius(): Int
 }
