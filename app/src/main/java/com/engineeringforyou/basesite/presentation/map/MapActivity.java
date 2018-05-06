@@ -267,6 +267,11 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mPresenter.showOperatorLocation(operator, lat, lng);
     }
 
+    @Override
+    public void setMapType(int mapType) {
+        mMap.setMapType(mapType);
+    }
+
     private void showDialogRadius() {
         DialogRadius.getInstance(mPresenter.getRadius()).show(getFragmentManager(), "dialog_radius");
     }
@@ -304,7 +309,8 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 mMap.addMarker(new MarkerOptions().
                         position(new LatLng(site.getLatitude(), site.getLongitude()))
                         .title(site.getNumber())
-                        .alpha(0.5f)
+                        .snippet(site.getOperator().getLabel())
+                        .alpha(0.7f)
                         .icon(iconOperator(site.getOperator())))
                         .setTag(site);
             }

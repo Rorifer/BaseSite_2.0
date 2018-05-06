@@ -16,6 +16,8 @@ interface MapView {
 
     fun clearMap()
 
+    fun setMapType(mapType: Int)
+
     fun showUserLocation()
 
     fun showStartingMessage()

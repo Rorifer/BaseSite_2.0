@@ -72,7 +72,7 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public void clickMapLocation(double lat, double lng) {
         mView.clearMap();
-        showSitesLocation(lat, lat);
+        showSitesLocation(lat, lng);
     }
 
     private void loadSitesError(Throwable t) {
@@ -82,6 +82,7 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public void setMapType(int mapType) {
         mInteractor.saveMapType(mapType);
+        mView.setMapType(mapType);
     }
 
     @Override

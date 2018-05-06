@@ -215,13 +215,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public List<Site> searchSitesByLocation(Operator operator, Double lat, Double lng, int radius) {
 
-        Cursor cursor = siteSearchLoc(getDbName(operator), lat, lng, radius);
+        Cursor cursor = siteSearchLoc(getDbName(operator), lat, lng, (float) radius);
 
         return mapToSiteList(cursor, operator, myContext);
     }
 
 
-    private Cursor siteSearchLoc(String DB_NAME, Double lat, Double lng, int radius) {
+    private Cursor siteSearchLoc(String DB_NAME, Double lat, Double lng, float radius) {
         DBHelper db;
         Cursor userCursor;
         SQLiteDatabase sqld;
