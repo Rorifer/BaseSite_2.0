@@ -10,4 +10,6 @@ interface SitesRepository {
 
     fun searchSitesByAddress(operator: Operator, search: String): Single<List<Site>>
 
+    fun searchSitesByLocation(operator: Operator, lat: Double, lng: Double, radius: Int): Single<List<Site>>
+
 }

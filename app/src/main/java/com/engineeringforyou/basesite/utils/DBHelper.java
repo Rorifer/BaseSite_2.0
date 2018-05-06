@@ -12,7 +12,6 @@ import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.Status;
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -85,6 +84,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return list;
     }
+
 
     public List<Site> siteSearch2(Operator operator, String siteQuery, int mode) {
 
@@ -213,53 +213,54 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    private void checkBS(LatLng center, int radius) {
+    public List<Site> searchSitesByLocation(Operator operator, Double lat, Double lng, int radius) {
+
+        Cursor cursor = siteSearchLoc(getDbName(operator), lat, lng, radius);
+
+        return mapToSiteList(cursor, operator, myContext);
+    }
+
+
+    private Cursor siteSearchLoc(String DB_NAME, Double lat, Double lng, int radius) {
         DBHelper db;
         Cursor userCursor;
         SQLiteDatabase sqld;
         String query;
-        String DB_NAME = getOperatorBD3(myContext);
-        if (DB_NAME.equals(DB_OPERATOR_ALL)) return;
-        double latMax,
-                latMin,
-                lngMax,
-                lngMin,
-                latDelta,
-                lngDelta;
+        double latMax, latMin, lngMax, lngMin, latDelta, lngDelta;
 
-        double mLat = center.latitude;
-        double mLng = center.longitude;
         latDelta = radius / 111;
         lngDelta = radius / 63.2;
-        latMax = mLat + latDelta;
-        latMin = mLat - latDelta;
-        lngMax = mLng + lngDelta;
-        lngMin = mLng - lngDelta;
+        latMax = lat + latDelta;
+        latMin = lat - latDelta;
+        lngMax = lng + lngDelta;
+        lngMin = lng - lngDelta;
         query = "SELECT * FROM " + DB_NAME + " WHERE GPS_Latitude>" + latMin + " AND GPS_Latitude<" + latMax +
                 " AND GPS_Longitude>" + lngMin + " AND GPS_Longitude<" + lngMax;
         // Работа с БД
-        db = new DBHelper(myContext);
+        db = new DBHelper(this.myContext);
         db.create_db();
         sqld = db.open();
         userCursor = sqld.rawQuery(query, null);
         db.close();
-        int count = userCursor.getCount();
-
-        for (int i = 0; i < count; i++) {
-            userCursor.moveToPosition(i);
-
-//            mMap.addMarker(new MarkerOptions().
-//                    position(new LatLng(
-//                            userCursor.getDouble(userCursor.getColumnIndex("GPS_Latitude")),
-//                            userCursor.getDouble(userCursor.getColumnIndex("GPS_Longitude")))).
-//                    title(userCursor.getString(userCursor.getColumnIndex("SITE"))).
-//                    snippet(title).
-//                    alpha(0.5f).
-//                    icon(BitmapDescriptorFactory.defaultMarker(colorPoint))).
-//                    setTag(oper);
-        }
-        userCursor.close();
+        return userCursor;
     }
+
+    public static String getDbName(Operator oper) {
+        switch (oper) {
+            case ALL:
+                return DB_OPERATOR_ALL;
+            case MEGAFON:
+                return DB_OPERATOR_MGF;
+            case VIMPELCOM:
+                return DB_OPERATOR_VMK;
+            case TELE2:
+                return DB_OPERATOR_TEL;
+            default:
+            case MTS:
+                return DB_OPERATOR_MTS;
+        }
+    }
+
 
     public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
     public final static String DB_OPERATOR_MGF = "MGF_Site_Base";

@@ -2,11 +2,10 @@ package com.engineeringforyou.basesite.presentation.map;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -16,11 +15,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.engineeringforyou.basesite.DialogRadius;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
@@ -29,9 +34,6 @@ import com.engineeringforyou.basesite.presentation.map.presenter.MapPresenterImp
 import com.engineeringforyou.basesite.presentation.map.views.MapView;
 import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
-import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
-import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
-import com.engineeringforyou.basesite.utils.DBHelper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,13 +56,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
-import static com.engineeringforyou.basesite.utils.UtilsForDelete.DB_OPERATOR_ALL;
 
 public class MapActivity extends AppCompatActivity implements MapView, OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static final String KEY_SITE = "key_site";
 
+    public final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     public final double DEFAULT_LAT = 55.753720;
     public final double DEFAULT_LNG = 37.619927;
     private final double BORDER_LAT_START = 54.489509;
@@ -68,58 +70,21 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private final double BORDER_LNG_START = 35.127559;
     private final double BORDER_LNG_END = 40.250872;
 
-
     @BindView(R.id.ad_mob_map)
     AdView mAdMobView;
+    @BindView(R.id.progress_view)
+    ProgressBar mProgress;
+    @BindView(R.id.error_view)
+    AppCompatImageView mError;
 
     private MapPresenter mPresenter;
-    private float mScale = 16;
-
-
-    public static final int MAP_BS_HERE = 1;
-    static final int MAP_BS_SITE = 2;
-    public static final int MAP_BS_ONE = 3;
-    static final int MAP_BS_MAP = 4;
-    public static final int MAP_BS_SITE_ONE = 5;
-
-//    public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
-//    public final static String DB_OPERATOR_MGF = "MGF_Site_Base";
-//    public final static String DB_OPERATOR_VMK = "VMK_Site_Base";
-//    public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
-//    public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
-
-    public static String operator_lable;
-    public static String operatorBD = null;
-
-
-    public static float radius = 3; // ралиус "квадрата" в километрах
-    private int mMapType = GoogleMap.MAP_TYPE_NORMAL;
-    private LatLng lastLatLng;
-    //    private String startBD;
     private GoogleMap mMap;
-    double mLat, mLng;
-    String siteNumber;
-    int nextStep;
-    private boolean isLocationPermission;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final String APP_PREFERENCES = "mysettings";
-    private static final String APP_PREFERENCES_RADIUS = "radius";
-    private static final String APP_PREFERENCES_MAP_TYPE = "mMapType";
-    //    private SharedPreferences mSettings;
-    private boolean isShownStartingMessage = false;
-
-//    public static void start(Activity activity) {
-//        Intent intent = new Intent(activity, MapActivity.class);
-//        intent.putExtra("next", MapActivity.MAP_BS_HERE);
-//        intent.putExtra("operatorBD", getOperatorBD3(activity));
-//        activity.startActivity(intent);
-//        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
-//    }
+    private float mScale = 16;
+    private boolean isLocationGranted = false;
 
     public static void start(Activity activity, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
         intent.putExtra(KEY_SITE, site);
-//        intent.putExtra("next", MapActivity.MAP_BS_SITE_ONE);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }
@@ -177,7 +142,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setCompassEnabled(true);
         getLocationPermission();
-        if (isLocationPermission) mMap.setMyLocationEnabled(true);
+        if (isLocationGranted) mMap.setMyLocationEnabled(true);
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
                 new LatLng(BORDER_LAT_START, BORDER_LNG_START),
                 new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
@@ -189,7 +154,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
-            isLocationPermission = true;
+            isLocationGranted = true;
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -301,15 +266,13 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         double lng = position.longitude;
         mPresenter.showOperatorLocation(operator, lat, lng);
     }
-//
-//    private void showMapType(int mapType) {
-//        mPresenter.setMapType(mapType);
-//        mMapType = mapType;
-//        mMap.setMapType(mapType);
-//    }
 
     private void showDialogRadius() {
-        new DialogRadius().show(getFragmentManager(), "dialog");
+        DialogRadius.getInstance(mPresenter.getRadius()).show(getFragmentManager(), "dialog_radius");
+    }
+
+    public void setRadius(int radius) {
+        mPresenter.setRadius(radius);
     }
 
     @Override
@@ -370,7 +333,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         double lat = DEFAULT_LAT;
         double lng = DEFAULT_LNG;
 
-        if (isLocationPermission) {
+        if (isLocationGranted) {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             location = locationManager != null ? locationManager.getLastKnownLocation(PASSIVE_PROVIDER) : null;
         }
@@ -387,334 +350,102 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mPresenter.showSitesLocation(lat, lng);
     }
 
-//    @SuppressLint("MissingPermission")
-//    public void fillMap() {
-//        switch (nextStep) {
-//            case MAP_BS_HERE:
-//                Location location = null;
-//                if (isLocationPermission) {
-//                    LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-//                    location = locationManager != null ? locationManager.getLastKnownLocation(PASSIVE_PROVIDER) : null;
-//                }
-//                if (location != null) {
-//                    double latitude = location.getLatitude();
-//                    double longitude = location.getLongitude();
-//
-//                    if (latitude < BORDER_LAT_START || latitude > BORDER_LAT_END || longitude < BORDER_LNG_START || longitude > BORDER_LNG_END) {
-//                        centerMap();
-//                        break;
-//                    }
-//                    LatLng myPosition = new LatLng(latitude, longitude);
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, mScale));
-//                    checkBS(myPosition);
-//                } else {
-//                    centerMap();
-//                }
-//                break;
-
-//            case MAP_BS_SITE:
-//                checkBS(new LatLng(mLat, mLng));
-//                break;
-//
-//            case MAP_BS_SITE_ONE:
-//                checkBS(new LatLng(mLat, mLng));
-
-//            case MAP_BS_ONE:
-//                LatLng site = new LatLng(mLat, mLng);
-//                mMap.addMarker(new MarkerOptions().
-//                        position(site).
-//                        title(siteNumber).
-//                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-//                ).setTag(startBD);
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(site, mScale));
-//                break;
-
-//            case MAP_BS_MAP:
-//                checkBS(lastLatLng);
-//                break;
-//        }
-//        showStartingMessage();
-//    }
-
-//    private void fillOldMap() {
-////        if (nextStep == MAP_BS_ONE) return;
-//        if (nextStep != MAP_BS_SITE && nextStep != MAP_BS_MAP) nextStep = MAP_BS_SITE;
-//
-//        mScale = mMap.getCameraPosition().zoom;
-//        LatLng position = mMap.getCameraPosition().target;
-//        mLat = position.latitude;
-//        mLng = position.longitude;
-//        mMap.clear();
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, mScale));
-//
-//        if (getOperatorBD().equals(DB_OPERATOR_ALL)) {
-//            setOperatorBD(DB_OPERATOR_MTS);
-//            fillMap();
-//            setOperatorBD(DB_OPERATOR_MGF);
-//            fillMap();
-//            setOperatorBD(DB_OPERATOR_VMK);
-//            fillMap();
-//            setOperatorBD(DB_OPERATOR_TEL);
-//            fillMap();
-//            setOperatorBD(DB_OPERATOR_ALL);
-//        } else {
-//            fillMap();
-//        }
-//    }
-
-//    private void centerMap() {
-//        LatLng Position = new LatLng(DEFAULT_LAT, DEFAULT_LNG);
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Position, mScale));
-//        checkBS(Position);
-//    }
-
     @Override
     public void showStartingMessage() {
         Toast.makeText(this, R.string.map_starting_message, Toast.LENGTH_LONG).show();
     }
 
-    private void checkBS(LatLng center) {
-        DBHelper db;
-        Cursor userCursor;
-        SQLiteDatabase sqld;
-        String query;
-        String DB_NAME = getOperatorBD();
-        if (DB_NAME.equals(DB_OPERATOR_ALL)) return;
-        double latMax,
-                latMin,
-                lngMax,
-                lngMin,
-                latDelta,
-                lngDelta;
-
-        mLat = center.latitude;
-        mLng = center.longitude;
-        latDelta = radius / 111;
-        lngDelta = radius / 63.2;
-        latMax = mLat + latDelta;
-        latMin = mLat - latDelta;
-        lngMax = mLng + lngDelta;
-        lngMin = mLng - lngDelta;
-        query = "SELECT * FROM " + DB_NAME + " WHERE GPS_Latitude>" + latMin + " AND GPS_Latitude<" + latMax +
-                " AND GPS_Longitude>" + lngMin + " AND GPS_Longitude<" + lngMax;
-        // Работа с БД
-        db = new DBHelper(this);
-        db.create_db();
-        sqld = db.open();
-        userCursor = sqld.rawQuery(query, null);
-        db.close();
-        int count = userCursor.getCount();
-
-//        if (count == 0) {
-//            Toast.makeText(this, "Здесь БС не найдено!", Toast.LENGTH_SHORT).show();
-//        } else {
-//
-//            String oper = getOperatorBD();
-//            String title = null;
-//
-//            float colorPoint = 0;
-//            switch (oper) {
-//                case DB_OPERATOR_MTS:
-//                    colorPoint = 0.0F; // red
-//                    title = "МТС";
-//                    break;
-//                case DB_OPERATOR_MGF:
-//                    colorPoint = 120.0F; // green+
-//                    title = "Мегафон";
-//                    break;
-//                case DB_OPERATOR_VMK:
-//                    colorPoint = 60.0F; // YELLOW
-//                    title = "Билайн";
-//                    break;
-//                case DB_OPERATOR_TEL:
-//                    colorPoint = 270.0F; // HUE_VIOLET
-//                    title = "Теле2";
-//                    break;
-//            }
-//
-//            for (int i = 0; i < count; i++) {
-//                userCursor.moveToPosition(i);
-//
-//                mMap.addMarker(new MarkerOptions().
-//                        position(new LatLng(
-//                                userCursor.getDouble(userCursor.getColumnIndex("GPS_Latitude")),
-//                                userCursor.getDouble(userCursor.getColumnIndex("GPS_Longitude")))).
-//                        title(userCursor.getString(userCursor.getColumnIndex("SITE"))).
-//                        snippet(title).
-//                        alpha(0.5f).
-//                        icon(BitmapDescriptorFactory.defaultMarker(colorPoint))).
-//                        setTag(oper);
-//            }
-//        }
-        userCursor.close();
-    }
-
     @Override
     public void onInfoWindowClick(Marker marker) {
-        String oper = (String) marker.getTag();
-        //  setOperatorBD(oper);
-        Operator operator;
-        switch (oper) {
-            case DB_OPERATOR_MTS:
-                operator = Operator.MTS;
-                break;
-            case DB_OPERATOR_VMK:
-                operator = Operator.VIMPELCOM;
-                break;
-            case DB_OPERATOR_MGF:
-                operator = Operator.MEGAFON;
-                break;
-            case DB_OPERATOR_TEL:
-                operator = Operator.TELE2;
-                break;
-            default:
-                return;
-        }
-
-        siteData(new DBHelper(getApplicationContext()).
-                siteSearch(oper, marker.getTitle(), 1), operator);
+        mPresenter.clickSite((Site) marker.getTag());
     }
 
-    private void siteData(Cursor cursor, Operator operator) {
-        if (cursor == null) {
-            Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        int count;
-        count = cursor.getCount();
 
-        switch (count) {
-            case 0:
-                Toast.makeText(this, "Совпадений не найдено", Toast.LENGTH_LONG).show();
-                break;
-            case 1:
-                new SettingsRepositoryImpl(this).saveOperator(operator);
-                toSiteInfo(cursor, operator);
-                break;
-            default:
-                if (count > 1) {
-                    new SettingsRepositoryImpl(this).saveOperator(operator);
-
-                    Toast.makeText(this, "Количество  совпадений = " + count, Toast.LENGTH_SHORT).show();
-
-                    cursor.moveToFirst();
-                    String[] headers = new String[]{"SITE", "Addres"};
-//        String[] headers = getResources().getStringArray(R.array.columnsChoice);
-                    String[] param1 = new String[count];
-                    String[] param2 = new String[count];
-                    String[] id = new String[count];
-                    for (int i = 0; i < count; i++) {
-                        param1[i] = cursor.getString(cursor.getColumnIndex(headers[0]));
-                        param2[i] = cursor.getString(cursor.getColumnIndex(headers[1]));
-                        id[i] = cursor.getString(cursor.getColumnIndex("_id"));
-                        cursor.moveToNext();
-                    }
-                    cursor.close();
-                    Intent intent = new Intent(this, SiteListActivity.class);
-                    intent.putExtra("param1", param1);
-                    intent.putExtra("param2", param2);
-                    intent.putExtra("id", id);
-                    startActivity(intent);
-
-                    break;
-                } else {
-                    Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
-                }
-        }
-    }
-
-    private void toSiteInfo(Cursor cursor, Operator operator) {
-
-        if (cursor == null) {
-            return;
-        }
-
-        Site siteS = DBHelper.mapToSiteList(cursor, operator, this).get(0);
-        //неправильно для all
-
-        SiteDetailsActivity.start(this, siteS);
+    @Override
+    public void toSiteDetail(@NotNull Site site) {
+        SiteDetailsActivity.start(this, site);
     }
 
     @Override
     public void onMapLongClick(final LatLng latLng) {
-
-        Toast.makeText(this, "Поиск БС в указанном месте", Toast.LENGTH_SHORT).show();
-        mMap.clear();
-        nextStep = MAP_BS_MAP;
-        lastLatLng = latLng;
-        //       fillMap();
-        fillOldMap();
-    }
-
-    private String getOperatorBD() {
-        return getOperatorBD3(this);
-    }
-
-    public void setOperatorBD(String oper) {
-        operatorBD = oper;
-        //operatorBDinPreferences(); // TODO
-
-
-        switch (oper) {
-            case DB_OPERATOR_MTS:
-                operator_lable = "МТС";
-                new SettingsRepositoryImpl(this).saveOperator(Operator.MTS);
-                break;
-            case DB_OPERATOR_MGF:
-                operator_lable = "МегаФон";
-                new SettingsRepositoryImpl(this).saveOperator(Operator.MEGAFON);
-                break;
-            case DB_OPERATOR_VMK:
-                operator_lable = "Билайн";
-                new SettingsRepositoryImpl(this).saveOperator(Operator.VIMPELCOM);
-                break;
-            case DB_OPERATOR_TEL:
-                operator_lable = "Теле2";
-                new SettingsRepositoryImpl(this).saveOperator(Operator.TELE2);
-                break;
-            case DB_OPERATOR_ALL:
-                operator_lable = "Все";
-                new SettingsRepositoryImpl(this).saveOperator(Operator.ALL);
-                break;
-            default:
-        }
+        mPresenter.clickMapLocation(latLng.latitude, latLng.longitude);
     }
 
     @Override
     public void showError() {
         hideProgress();
-
+        mError.setVisibility(View.VISIBLE);
     }
 
     private void hideError() {
-
+        mError.setVisibility(View.GONE);
     }
 
     @Override
     public void showProgress() {
         hideError();
-
+        mProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        mProgress.setVisibility(View.GONE);
     }
 
     @Override
     protected void onPause() {
         mAdMobView.pause();
         super.onPause();
-//        SharedPreferences.Editor editor = mSettings.edit();
-//        editor.putFloat(APP_PREFERENCES_RADIUS, radius);
-//        //  editor.apply();
-//        editor.putInt(APP_PREFERENCES_MAP_TYPE, mMapType);
-//        editor.apply();
     }
 
     @Override
     protected void onDestroy() {
         mAdMobView.destroy();
         super.onDestroy();
+    }
+
+    public static class DialogRadius extends DialogFragment implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
+        SeekBar mSeekBar;
+        TextView mTextView;
+        private final int RADIUS_MAX = 7;
+
+        private static int sRadius;
+
+        public static DialogRadius getInstance(int radius) {
+            sRadius = radius;
+            return new DialogRadius();
+        }
+
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            getDialog().setTitle(R.string.dialog_radius_title);
+            @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.activity_dialog_radius, null);
+            v.findViewById(R.id.radiusOk).setOnClickListener(this);
+            mSeekBar = v.findViewById(R.id.seekRadius);
+            mSeekBar.setMax(RADIUS_MAX - 1);
+            mSeekBar.setProgress(sRadius - 1);
+            mSeekBar.setOnSeekBarChangeListener(this);
+            mTextView = v.findViewById(R.id.textView);
+            mTextView.setText(String.valueOf(mSeekBar.getProgress() + 1));
+            return v;
+        }
+
+        @Override
+        public void onClick(View view) {
+            ((MapActivity) getActivity()).setRadius(mSeekBar.getProgress() + 1);
+            dismiss();
+        }
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            mTextView.setText(String.valueOf(seekBar.getProgress() + 1));
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
     }
 }

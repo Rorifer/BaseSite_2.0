@@ -19,4 +19,6 @@ interface MapView {
     fun showUserLocation()
 
     fun showStartingMessage()
+
+    fun toSiteDetail(site: Site)
 }

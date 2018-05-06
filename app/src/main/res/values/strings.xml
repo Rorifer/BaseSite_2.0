@@ -72,5 +72,6 @@
     <string name="map_standart">Схема</string>
     <string name="map_starting_message">Для поиска БС на карте используйте долгое нажатие</string>
     <string name="map_no_sites">Здесь БС не найдено</string>
+    <string name="dialog_radius_title">Радиус зоны поиска (км)</string>
 
 </resources>

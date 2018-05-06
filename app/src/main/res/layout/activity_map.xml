@@ -11,8 +11,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/ad_mob_map"
-        tools:context="com.engineeringforyou.basesite.presentation.map.MapActivity">
-    </fragment>
+        tools:context="com.engineeringforyou.basesite.presentation.map.MapActivity" />
+
+    <ProgressBar
+        android:id="@+id/progress_view"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="8dp"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/error_view"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        ads:srcCompat="@drawable/ic_error_outline_24dp" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/ad_mob_map"

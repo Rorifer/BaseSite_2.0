@@ -19,17 +19,12 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MapPresenterImpl implements MapPresenter {
 
-    //  private Context mContext;
     private CompositeDisposable mDisposable;
     private MapInteractor mInteractor;
-    private MapView mView;
     private Site mSite = null;
-    // private Integer mRadius;
-    //  private boolean isStarting = false;
-
+    private MapView mView;
 
     public MapPresenterImpl(Context context) {
-        //     mContext = context;
         mDisposable = new CompositeDisposable();
         mInteractor = new MapInteractorImpl(context);
     }
@@ -68,6 +63,18 @@ public class MapPresenterImpl implements MapPresenter {
         }
     }
 
+    @Override
+    public void clickSite(@Nullable Site site) {
+        mInteractor.saveOperator(site.getOperator());
+        mView.toSiteDetail(site);
+    }
+
+    @Override
+    public void clickMapLocation(double lat, double lng) {
+        mView.clearMap();
+        showSitesLocation(lat, lat);
+    }
+
     private void loadSitesError(Throwable t) {
         if (mView != null) mView.showError();
     }
@@ -75,13 +82,21 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public void setMapType(int mapType) {
         mInteractor.saveMapType(mapType);
-        mMapType = mapType;
-        mMap.setMapType(mapType);
     }
 
     @Override
     public int getMapType() {
         return mInteractor.getMapType();
+    }
+
+    @Override
+    public void setRadius(int radius) {
+        mInteractor.saveRadius(radius);
+    }
+
+    @Override
+    public int getRadius() {
+        return mInteractor.getRadius();
     }
 
     @Override
@@ -94,9 +109,8 @@ public class MapPresenterImpl implements MapPresenter {
     @NotNull
     @Override
     public Operator getOperator() {
-        return mOperator;
+        return mInteractor.getOperator();
     }
-
 
     @Override
     public void unbindView() {

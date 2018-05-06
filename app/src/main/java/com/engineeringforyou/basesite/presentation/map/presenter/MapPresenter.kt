@@ -21,6 +21,14 @@ interface MapPresenter {
 
     fun getMapType(): Int
 
+    fun  setRadius(radius: Int)
+
+    fun getRadius (): Int
+
     fun showSitesLocation(lat: Double, lng: Double)
+
+    fun clickSite(site: Site?)
+
+    fun clickMapLocation(lat: Double, lng: Double)
 
 }

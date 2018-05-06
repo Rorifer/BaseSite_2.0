@@ -13,4 +13,7 @@ class SitesRepositoryImpl(private val context: Context) : SitesRepository {
 
     override fun searchSitesByAddress(operator: Operator, search: String): Single<List<Site>> =
             Single.fromCallable { DBHelper(context).siteSearch2(operator, search, 2) }
+
+    override fun searchSitesByLocation(operator: Operator, lat: Double, lng: Double, radius: Int): Single<List<Site>>  =
+            Single.fromCallable { DBHelper(context).searchSitesByLocation(operator, lat, lng, radius) }
 }
