@@ -2,6 +2,7 @@ package com.engineeringforyou.basesite.domain.map
 
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
+import io.reactivex.Observable
 import io.reactivex.Single
 
 interface MapInteractor {
@@ -18,5 +19,7 @@ interface MapInteractor {
 
     fun getRadius(): Int
 
-    fun getSites(lat: Double, lng: Double): Single<List<Site>>
+    fun getSites(lat: Double, lng: Double): Observable<List<Site>>
+
+    fun getAllSites(): Single<List<Site>>
 }

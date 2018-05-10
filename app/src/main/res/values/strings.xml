@@ -56,7 +56,7 @@
     <string name="error_search_empty">Поле поиска не заполнено</string>
     <string name="error">Внутренняя ошибка</string>
     <string name="error_no_succes">Совпадений не найдено</string>
-    <string name="error_many_success">Слишком много совпадений. Уточните запрос</string>
+    <string name="error_many_success">Слишком много совпадений</string>
     <string name="bs_number">БC №</string>
     <string name="bs_address">Адрес:</string>
     <string name="no_data">нет данных</string>

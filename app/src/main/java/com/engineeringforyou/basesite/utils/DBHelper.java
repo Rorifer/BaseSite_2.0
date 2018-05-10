@@ -85,7 +85,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
-
     public List<Site> siteSearch2(Operator operator, String siteQuery, int mode) {
 
         Cursor cursor = siteSearch(getOperatorBD3(myContext), siteQuery, mode);
@@ -212,6 +211,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READONLY);
     }
 
+    public List<Site> getAllSites(Operator operator) {
+        Cursor cursor = siteSearchAll(getDbName(operator));
+        return mapToSiteList(cursor, operator, myContext);
+    }
+
+    private Cursor siteSearchAll(String DB_NAME) {
+        DBHelper db;
+        Cursor userCursor;
+        SQLiteDatabase sqld;
+        String query;
+
+        query = "SELECT * FROM " + DB_NAME;
+        // Работа с БД
+        db = new DBHelper(this.myContext);
+        db.create_db();
+        sqld = db.open();
+        userCursor = sqld.rawQuery(query, null);
+        db.close();
+        return userCursor;
+    }
+
 
     public List<Site> searchSitesByLocation(Operator operator, Double lat, Double lng, int radius) {
 
@@ -219,7 +239,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return mapToSiteList(cursor, operator, myContext);
     }
-
 
     private Cursor siteSearchLoc(String DB_NAME, Double lat, Double lng, float radius) {
         DBHelper db;

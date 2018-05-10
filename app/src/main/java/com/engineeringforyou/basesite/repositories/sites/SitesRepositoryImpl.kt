@@ -14,6 +14,9 @@ class SitesRepositoryImpl(private val context: Context) : SitesRepository {
     override fun searchSitesByAddress(operator: Operator, search: String): Single<List<Site>> =
             Single.fromCallable { DBHelper(context).siteSearch2(operator, search, 2) }
 
-    override fun searchSitesByLocation(operator: Operator, lat: Double, lng: Double, radius: Int): Single<List<Site>>  =
+    override fun searchSitesByLocation(operator: Operator, lat: Double, lng: Double, radius: Int): Single<List<Site>> =
             Single.fromCallable { DBHelper(context).searchSitesByLocation(operator, lat, lng, radius) }
+
+    override fun getAllSites(operator: Operator): Single<List<Site>> =
+            Single.fromCallable { DBHelper(context).getAllSites(operator) }
 }

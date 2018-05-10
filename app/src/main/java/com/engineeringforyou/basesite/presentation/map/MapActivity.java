@@ -118,7 +118,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+      //      actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setIcon(android.R.drawable.ic_menu_search);
         }
     }
@@ -293,9 +293,10 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     public void showMainSite(@NotNull Site site) {
         LatLng position = new LatLng(site.getLatitude(), site.getLongitude());
         mMap.addMarker(new MarkerOptions().
-                position(position).
-                title(site.getNumber()).
-                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                position(position)
+                .title(site.getNumber())
+                .snippet(site.getOperator().getLabel())
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
         ).setTag(site);
         moveCamera(position);
     }

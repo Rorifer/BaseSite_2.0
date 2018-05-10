@@ -23,10 +23,12 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
 
     private SearchSiteView mView;
     private CompositeDisposable mDisposable;
+    private CompositeDisposable mDisposableView;
     private SearchSiteInteractor mInteractor;
 
     public SearchSitePresenterImpl(Context context) {
         mDisposable = new CompositeDisposable();
+        mDisposableView = new CompositeDisposable();
         mInteractor = new SearchSiteInteractorImpl(context);
     }
 
@@ -37,7 +39,7 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
 
     @Override
     public void watchChanges(@NonNull EditText view) {
-        mDisposable.add(RxTextView.textChanges(view)
+        mDisposableView.add(RxTextView.textChanges(view)
                 .subscribe(event -> mView.hideError()));
     }
 
@@ -121,5 +123,6 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     public void unbindView() {
         mView = null;
         mDisposable.dispose();
+        mDisposableView.dispose();
     }
 }
