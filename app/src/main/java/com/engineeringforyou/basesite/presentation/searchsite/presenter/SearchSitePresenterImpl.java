@@ -10,6 +10,7 @@ import com.engineeringforyou.basesite.domain.searchsite.SearchSiteInteractorImpl
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView;
+import com.engineeringforyou.basesite.utils.EventFactory;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.util.List;
@@ -113,6 +114,7 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     }
 
     private void searchError(Throwable throwable) {
+        EventFactory.INSTANCE.exception(throwable);
         if (mView != null) {
             mView.hideProgress();
             mView.showError(R.string.error);
