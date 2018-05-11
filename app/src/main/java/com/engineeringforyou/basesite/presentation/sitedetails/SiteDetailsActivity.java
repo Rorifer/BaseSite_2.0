@@ -71,6 +71,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     @Override
     protected void onResume() {
         super.onResume();
+        hideProgress();
         mAdMobView.resume();
     }
 
@@ -104,6 +105,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @OnClick(R.id.button_map)
     public void clickMapBtn() {
+        showProgress();
         MapActivity.start(this, mSite);
     }
 

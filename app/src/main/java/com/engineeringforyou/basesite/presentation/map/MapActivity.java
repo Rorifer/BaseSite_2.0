@@ -4,12 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -80,7 +79,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private MapPresenter mPresenter;
     private GoogleMap mMap;
     private float mScale = 16;
-    private boolean isLocationGranted = false;
+    private boolean isLocationGranted;
 
     public static void start(Activity activity, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
@@ -117,18 +116,14 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private void initToolbar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayShowHomeEnabled(true);
-      //      actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setIcon(android.R.drawable.ic_menu_search);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_home_30dp);
         }
     }
 
     private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-        }
     }
 
     @SuppressLint("MissingPermission")
@@ -141,6 +136,8 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setCompassEnabled(true);
+        mUiSettings.setMapToolbarEnabled(false);
+        mUiSettings.isIndoorLevelPickerEnabled();
         getLocationPermission();
         if (isLocationGranted) mMap.setMyLocationEnabled(true);
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
@@ -159,6 +156,17 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mMap.setMyLocationEnabled(true);
+                }
         }
     }
 

@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".presentation.sitedetails.SiteDetailsActivity">
 
     <LinearLayout
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatButton
@@ -63,6 +63,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/ad_mob_details"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_below="@id/button_layout">
 
         <LinearLayout

@@ -10,15 +10,15 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 
-import com.engineeringforyou.basesite.models.Operator;
-import com.engineeringforyou.basesite.presentation.map.MapActivity;
 import com.engineeringforyou.basesite.R;
-import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
+import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.map.MapActivity;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.searchsite.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.searchsite.views.SearchSiteView;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
+import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 
 import java.util.List;
@@ -56,6 +56,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     protected void onResume() {
         super.onResume();
         mPresenter.setupOperator();
+        hideProgress();
     }
 
     @OnClick(R.id.button_search)
@@ -119,6 +120,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @Override
     public void openMap(@NonNull Operator operator) {
+        showProgress();
         hideKeyboard();
         MapActivity.start(this, null);
     }
