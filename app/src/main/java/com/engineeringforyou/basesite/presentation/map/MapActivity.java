@@ -464,8 +464,10 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         if (sites.isEmpty()) sites = mSites;
         outState.putParcelableArrayList(SITES, sites);
         outState.putParcelable(MAIN_SITE, mMainSite);
-        outState.putParcelable(POSITION, mMap.getCameraPosition().target);
-        outState.putFloat(SCALE, mMap.getCameraPosition().zoom);
+        if (mMap != null) {
+            outState.putParcelable(POSITION, mMap.getCameraPosition().target);
+            outState.putFloat(SCALE, mMap.getCameraPosition().zoom);
+        }
         super.onSaveInstanceState(outState);
     }
 
