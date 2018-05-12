@@ -3,6 +3,7 @@ package com.engineeringforyou.basesite.presentation.map.presenter
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.presentation.map.views.MapView
+import java.util.*
 
 
 interface MapPresenter {
@@ -30,5 +31,7 @@ interface MapPresenter {
     fun clickSite(site: Site?)
 
     fun clickMapLocation(lat: Double, lng: Double)
+
+    fun getSites(): ArrayList<Site>
 
 }

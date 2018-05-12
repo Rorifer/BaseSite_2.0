@@ -12,6 +12,7 @@ import com.engineeringforyou.basesite.utils.EventFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,6 +23,7 @@ public class MapPresenterImpl implements MapPresenter {
 
     private CompositeDisposable mDisposable;
     private MapInteractor mInteractor;
+    private List<Site> mSiteList = new ArrayList<>();
     private Site mSite = null;
     private MapView mView;
 
@@ -51,6 +53,7 @@ public class MapPresenterImpl implements MapPresenter {
     public void showSitesLocation(double lat, double lng) {
         mView.showProgress();
         mDisposable.clear();
+        mSiteList.clear();
         mDisposable.add(mInteractor.getSites(lat, lng)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -58,6 +61,7 @@ public class MapPresenterImpl implements MapPresenter {
     }
 
     private void loadSitesSuccess(List<Site> siteList) {
+        mSiteList.addAll(siteList);
         if (mView != null) {
             mView.showSites(siteList);
             mView.hideProgress();
@@ -113,6 +117,12 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public Operator getOperator() {
         return mInteractor.getOperator();
+    }
+
+    @NotNull
+    @Override
+    public ArrayList<Site> getSites() {
+        return (ArrayList<Site>) mSiteList;
     }
 
     @Override

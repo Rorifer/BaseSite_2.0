@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,6 +61,9 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static final String KEY_SITE = "key_site";
+    private final String SITES = "sites";
+    private final String POSITION = "position";
+    private final String SCALE = "scale";
 
     public final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     public final double DEFAULT_LAT = 55.753720;
@@ -78,6 +82,8 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private MapPresenter mPresenter;
     private GoogleMap mMap;
+    private ArrayList<Site> mSites = null;
+    private LatLng mPosition = null;
     private float mScale = 16;
     private boolean isLocationGranted;
 
@@ -93,6 +99,12 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         ButterKnife.bind(this);
+        if (savedInstanceState != null) {
+            mPosition = savedInstanceState.getParcelable(POSITION);
+            mScale = savedInstanceState.getFloat(SCALE, mScale);
+            mSites = savedInstanceState.getParcelableArrayList(SITES);
+        }
+
         initToolbar();
         initPresenter();
         initMap();
@@ -143,7 +155,11 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
                 new LatLng(BORDER_LAT_START, BORDER_LNG_START),
                 new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
-        mPresenter.setupMap();
+        if (mPosition == null) mPresenter.setupMap();
+        else {
+            moveCamera(mPosition);
+            if (mSites != null) showSites(mSites);
+        }
     }
 
     private void getLocationPermission() {
@@ -300,12 +316,13 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     @Override
     public void showMainSite(@NotNull Site site) {
         LatLng position = new LatLng(site.getLatitude(), site.getLongitude());
-        mMap.addMarker(new MarkerOptions().
+        Marker marker = mMap.addMarker(new MarkerOptions().
                 position(position)
                 .title(site.getNumber())
                 .snippet(site.getOperator().getLabel())
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-        ).setTag(site);
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        marker.setTag(site);
+        marker.showInfoWindow();
         moveCamera(position);
     }
 
@@ -405,6 +422,16 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     @Override
     public void hideProgress() {
         mProgress.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        ArrayList<Site> sites = mPresenter.getSites();
+        if (sites.isEmpty()) sites = mSites;
+        outState.putParcelableArrayList(SITES, sites);
+        outState.putParcelable(POSITION, mMap.getCameraPosition().target);
+        outState.putFloat(SCALE, mMap.getCameraPosition().zoom);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
