@@ -69,8 +69,8 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private final int PERMISSIONS_LOCATION = 1;
     private final int PERMISSIONS_LOCATION_BUTTON = 2;
-    public final double DEFAULT_LAT = 55.753720;
-    public final double DEFAULT_LNG = 37.619927;
+    private final double DEFAULT_LAT = 55.753720;
+    private final double DEFAULT_LNG = 37.619927;
     private final double BORDER_LAT_START = 54.489509;
     private final double BORDER_LAT_END = 56.953235;
     private final double BORDER_LNG_START = 35.127559;
@@ -88,7 +88,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private ArrayList<Site> mSites = null;
     private Site mMainSite = null;
     private LatLng mPosition = null;
-    private float mScale = 16;
+    private float mScale = 15;
 
     public static void start(Activity activity, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
@@ -154,14 +154,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mUiSettings.setMapToolbarEnabled(false);
         mUiSettings.isIndoorLevelPickerEnabled();
         enableButtonLocation();
-        mMap.setOnMyLocationButtonClickListener(() -> {
-            LatLng location = getLocation();
-            if (location != null) {
-                clearMap();
-                mPresenter.showSitesLocation(location.latitude, location.longitude);
-            }
-            return false;
-        });
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
                 new LatLng(BORDER_LAT_START, BORDER_LNG_START),
                 new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
@@ -179,6 +171,18 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         } else {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_LOCATION_BUTTON);
         }
+
+        mMap.setOnMyLocationButtonClickListener(() -> {
+            LatLng location = getLocation();
+            if (location != null) {
+                clearMap();
+                mPresenter.showSitesLocation(location.latitude, location.longitude);
+                mScale = mMap.getCameraPosition().zoom;
+                moveCamera(new LatLng(location.latitude, location.longitude));
+            }
+            return true;
+        });
+
     }
 
     private LatLng getLocation() {
@@ -334,13 +338,20 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     }
 
     @Override
+    public void showSitesForCurrentLocation() {
+        clearMap();
+        LatLng position = mMap.getCameraPosition().target;
+        mPresenter.showSitesLocation(position.latitude, position.longitude);
+    }
+
+    @Override
     public void clearMap() {
         mMap.clear();
     }
 
     @Override
     public void moveCamera(@NonNull LatLng position) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, mScale));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, mScale));
     }
 
     @Override
@@ -366,7 +377,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                         position(new LatLng(site.getLatitude(), site.getLongitude()))
                         .title(site.getNumber())
                         .snippet(site.getOperator().getLabel())
-                        .alpha(0.7f)
+                        .alpha(0.8f)
                         .icon(iconOperator(site.getOperator())))
                         .setTag(site);
             }
@@ -484,7 +495,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             getDialog().setTitle(R.string.dialog_radius_title);
-            @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.activity_dialog_radius, null);
+            View v = inflater.inflate(R.layout.activity_dialog_radius, container);
             v.findViewById(R.id.radiusOk).setOnClickListener(this);
             mSeekBar = v.findViewById(R.id.seekRadius);
             mSeekBar.setMax(RADIUS_MAX - 1);

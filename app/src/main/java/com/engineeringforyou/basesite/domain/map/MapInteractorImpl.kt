@@ -51,4 +51,9 @@ class MapInteractorImpl(context: Context) : MapInteractor {
     }
 
     override fun getAllSites() = sitesRepository.getAllSites(getOperator())
+
+    override fun addCountMapCreate() = settingsRepository.addCountMapCreate()
+
+    override fun getCountMapCreate() = settingsRepository.getCountMapCreate()
+
 }

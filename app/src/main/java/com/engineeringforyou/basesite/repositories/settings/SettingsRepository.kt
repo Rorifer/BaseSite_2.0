@@ -16,4 +16,8 @@ interface SettingsRepository {
 
     fun getRadius(): Int
 
+    fun addCountMapCreate()
+
+    fun getCountMapCreate(): Int
+
 }

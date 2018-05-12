@@ -22,4 +22,8 @@ interface MapInteractor {
     fun getSites(lat: Double, lng: Double): Observable<List<Site>>
 
     fun getAllSites(): Single<List<Site>>
+
+    fun addCountMapCreate()
+
+    fun getCountMapCreate(): Int
 }

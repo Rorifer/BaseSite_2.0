@@ -39,7 +39,7 @@
             android:label="Выбор БС" />
         <activity
             android:name=".presentation.map.MapActivity"
-            android:label="" />
+            android:label="Карта" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

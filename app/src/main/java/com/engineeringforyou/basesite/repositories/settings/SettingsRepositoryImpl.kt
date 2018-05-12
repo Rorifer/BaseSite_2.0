@@ -16,6 +16,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         private const val KEY_RADIUS = "key_radius"
         private const val KEY_MAP_TYPE = "key_map_type"
         private const val KEY_OPERATOR = "key_operator"
+        private const val KEY_MAP_COUNTER = "key_map_counter"
     }
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -55,4 +56,15 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
             RADIUS_DEFAULT
         }
     }
+
+    override fun addCountMapCreate() = prefs.edit().putInt(KEY_MAP_COUNTER, getCountMapCreate() + 1).apply()
+
+    override fun getCountMapCreate(): Int {
+        return try {
+            prefs.getInt(KEY_MAP_COUNTER, 0)
+        } catch (e: ClassCastException) {
+            0
+        }
+    }
+
 }

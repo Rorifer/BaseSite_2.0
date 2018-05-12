@@ -26,4 +26,6 @@ interface MapView {
     fun toSiteDetail(site: Site)
 
     fun moveCamera(position: LatLng)
+
+    fun showSitesForCurrentLocation()
 }

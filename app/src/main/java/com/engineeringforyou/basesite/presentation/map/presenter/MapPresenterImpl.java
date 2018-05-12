@@ -22,6 +22,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MapPresenterImpl implements MapPresenter {
 
+    private final int COUNT_SHOW_START_MESSAGE = 7;
+
     private CompositeDisposable mDisposable;
     private MapInteractor mInteractor;
     private List<Site> mSiteList = new ArrayList<>();
@@ -37,6 +39,7 @@ public class MapPresenterImpl implements MapPresenter {
     public void bind(@NotNull MapView view, @Nullable Site site) {
         mView = view;
         mSite = site;
+        mInteractor.addCountMapCreate();
     }
 
     @Override
@@ -48,7 +51,7 @@ public class MapPresenterImpl implements MapPresenter {
             mView.moveCamera(new LatLng(mSite.getLatitude(), mSite.getLongitude()));
             showSitesLocation(mSite.getLatitude(), mSite.getLongitude());
         }
-        mView.showStartingMessage();
+        if (mInteractor.getCountMapCreate() < COUNT_SHOW_START_MESSAGE) mView.showStartingMessage();
     }
 
     @Override
@@ -101,6 +104,7 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public void setRadius(int radius) {
         mInteractor.saveRadius(radius);
+        mView.showSitesForCurrentLocation();
     }
 
     @Override

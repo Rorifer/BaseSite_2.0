@@ -2,14 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.engineeringforyou.basesite.presentation.map.MapActivity">
-    <item
-        android:id="@+id/menu_item_radius"
-        android:orderInCategory="100"
-        android:title="@string/radius" />
 
     <item
+        android:icon="@drawable/ic_antenna"
         android:title="@string/operarators"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
         <menu>
             <group
                 android:id="@+id/menu_group_operators"
@@ -17,15 +14,19 @@
                 app:showAsAction="never">
                 <item
                     android:id="@+id/menu_item_mts"
+                    android:icon="@drawable/ic_mts"
                     android:title="@string/MTS" />
                 <item
                     android:id="@+id/menu_item_mgf"
+                    android:icon="@drawable/ic_megafon"
                     android:title="@string/MGF" />
                 <item
                     android:id="@+id/menu_item_vmk"
+                    android:icon="@drawable/ic_beeline"
                     android:title="@string/VMK" />
                 <item
                     android:id="@+id/menu_item_tele2"
+                    android:icon="@drawable/ic_tele2"
                     android:title="@string/TELE" />
                 <item
                     android:id="@+id/menu_item_all"
@@ -35,8 +36,9 @@
     </item>
 
     <item
+        android:icon="@drawable/ic_layers"
         android:title="@string/map_type"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
         <menu>
             <group
                 android:id="@+id/menu_group_map"
@@ -56,4 +58,9 @@
             </group>
         </menu>
     </item>
+    <item
+        android:id="@+id/menu_item_radius"
+        android:icon="@drawable/ic_radius_of_circle"
+        android:title="@string/radius"
+        app:showAsAction="always" />
 </menu>
