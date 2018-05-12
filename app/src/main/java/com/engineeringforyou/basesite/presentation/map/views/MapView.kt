@@ -1,6 +1,7 @@
 package com.engineeringforyou.basesite.presentation.map.views
 
 import com.engineeringforyou.basesite.models.Site
+import com.google.android.gms.maps.model.LatLng
 
 interface MapView {
 
@@ -23,4 +24,6 @@ interface MapView {
     fun showStartingMessage()
 
     fun toSiteDetail(site: Site)
+
+    fun moveCamera(position: LatLng)
 }

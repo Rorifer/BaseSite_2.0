@@ -8,6 +8,7 @@ import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.map.views.MapView;
 import com.engineeringforyou.basesite.utils.EventFactory;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +45,7 @@ public class MapPresenterImpl implements MapPresenter {
             mView.showUserLocation();
         } else {
             mView.showMainSite(mSite);
+            mView.moveCamera(new LatLng(mSite.getLatitude(), mSite.getLongitude()));
             showSitesLocation(mSite.getLatitude(), mSite.getLongitude());
         }
         mView.showStartingMessage();
@@ -80,7 +82,7 @@ public class MapPresenterImpl implements MapPresenter {
         showSitesLocation(lat, lng);
     }
 
-    private void loadSitesError(Throwable throwable ) {
+    private void loadSitesError(Throwable throwable) {
         EventFactory.INSTANCE.exception(throwable);
         if (mView != null) mView.showError();
     }

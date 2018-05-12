@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.presentation.map;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -61,11 +62,13 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static final String KEY_SITE = "key_site";
+    private static final String MAIN_SITE = "main_site";
     private final String SITES = "sites";
     private final String POSITION = "position";
     private final String SCALE = "scale";
 
-    public final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private final int PERMISSIONS_LOCATION = 1;
+    private final int PERMISSIONS_LOCATION_BUTTON = 2;
     public final double DEFAULT_LAT = 55.753720;
     public final double DEFAULT_LNG = 37.619927;
     private final double BORDER_LAT_START = 54.489509;
@@ -83,9 +86,9 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private MapPresenter mPresenter;
     private GoogleMap mMap;
     private ArrayList<Site> mSites = null;
+    private Site mMainSite = null;
     private LatLng mPosition = null;
     private float mScale = 16;
-    private boolean isLocationGranted;
 
     public static void start(Activity activity, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
@@ -103,6 +106,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
             mPosition = savedInstanceState.getParcelable(POSITION);
             mScale = savedInstanceState.getFloat(SCALE, mScale);
             mSites = savedInstanceState.getParcelableArrayList(SITES);
+            mMainSite = savedInstanceState.getParcelable(MAIN_SITE);
         }
 
         initToolbar();
@@ -138,7 +142,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mapFragment.getMapAsync(this);
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -150,8 +153,15 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mUiSettings.setCompassEnabled(true);
         mUiSettings.setMapToolbarEnabled(false);
         mUiSettings.isIndoorLevelPickerEnabled();
-        getLocationPermission();
-        if (isLocationGranted) mMap.setMyLocationEnabled(true);
+        enableButtonLocation();
+        mMap.setOnMyLocationButtonClickListener(() -> {
+            LatLng location = getLocation();
+            if (location != null) {
+                clearMap();
+                mPresenter.showSitesLocation(location.latitude, location.longitude);
+            }
+            return false;
+        });
         mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
                 new LatLng(BORDER_LAT_START, BORDER_LNG_START),
                 new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
@@ -159,30 +169,48 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         else {
             moveCamera(mPosition);
             if (mSites != null) showSites(mSites);
+            if (mMainSite != null) showMainSite(mMainSite);
         }
     }
 
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
-            isLocationGranted = true;
+    private void enableButtonLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
         } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_LOCATION_BUTTON);
         }
+    }
+
+    private LatLng getLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (locationManager != null) {
+                Location location = locationManager.getLastKnownLocation(PASSIVE_PROVIDER);
+                return new LatLng(location.getLatitude(), location.getLongitude());
+            }
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_LOCATION);
+        }
+        return null;
     }
 
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
+            case PERMISSIONS_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mMap.setMyLocationEnabled(true);
+                    LatLng location = getLocation();
+                    if (location != null)
+                        mPresenter.showSitesLocation(location.latitude, location.longitude);
+                }
+                break;
+            case PERMISSIONS_LOCATION_BUTTON:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mMap.setMyLocationEnabled(true);
                 }
+                break;
         }
     }
 
@@ -285,6 +313,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private void showOperator(Operator operator) {
         mScale = mMap.getCameraPosition().zoom;
+        mMainSite = null;
         LatLng position = mMap.getCameraPosition().target;
         double lat = position.latitude;
         double lng = position.longitude;
@@ -309,12 +338,14 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mMap.clear();
     }
 
-    private void moveCamera(LatLng position) {
+    @Override
+    public void moveCamera(@NonNull LatLng position) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, mScale));
     }
 
     @Override
     public void showMainSite(@NotNull Site site) {
+        mMainSite = site;
         LatLng position = new LatLng(site.getLatitude(), site.getLongitude());
         Marker marker = mMap.addMarker(new MarkerOptions().
                 position(position)
@@ -323,7 +354,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         marker.setTag(site);
         marker.showInfoWindow();
-        moveCamera(position);
     }
 
     @Override
@@ -358,26 +388,19 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         }
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void showUserLocation() {
-        Location location = null;
         double lat = DEFAULT_LAT;
         double lng = DEFAULT_LNG;
-
-        if (isLocationGranted) {
-            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            location = locationManager != null ? locationManager.getLastKnownLocation(PASSIVE_PROVIDER) : null;
+        LatLng location = getLocation();
+        if (location != null
+                && location.latitude > BORDER_LAT_START
+                && location.latitude < BORDER_LAT_END
+                && location.longitude > BORDER_LNG_START
+                && location.longitude < BORDER_LNG_END) {
+            lat = location.latitude;
+            lng = location.longitude;
         }
-
-        if (location != null) {
-            if (location.getLatitude() > BORDER_LAT_START && location.getLatitude() < BORDER_LAT_END
-                    && location.getLongitude() > BORDER_LNG_START && location.getLongitude() < BORDER_LNG_END) {
-                lat = location.getLatitude();
-                lng = location.getLongitude();
-            }
-        }
-
         moveCamera(new LatLng(lat, lng));
         mPresenter.showSitesLocation(lat, lng);
     }
@@ -429,6 +452,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         ArrayList<Site> sites = mPresenter.getSites();
         if (sites.isEmpty()) sites = mSites;
         outState.putParcelableArrayList(SITES, sites);
+        outState.putParcelable(MAIN_SITE, mMainSite);
         outState.putParcelable(POSITION, mMap.getCameraPosition().target);
         outState.putFloat(SCALE, mMap.getCameraPosition().zoom);
         super.onSaveInstanceState(outState);
