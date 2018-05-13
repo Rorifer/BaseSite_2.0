@@ -34,6 +34,7 @@ import com.engineeringforyou.basesite.presentation.map.presenter.MapPresenterImp
 import com.engineeringforyou.basesite.presentation.map.views.MapView;
 import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
+import com.engineeringforyou.basesite.utils.EventFactory;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -75,6 +76,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private final double BORDER_LAT_END = 56.953235;
     private final double BORDER_LNG_START = 35.127559;
     private final double BORDER_LNG_END = 40.250872;
+    private final float SCALE_DEFAULT = 15;
 
     @BindView(R.id.ad_mob_map)
     AdView mAdMobView;
@@ -88,7 +90,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private ArrayList<Site> mSites = null;
     private Site mMainSite = null;
     private LatLng mPosition = null;
-    private float mScale = 15;
+    private float mScale = SCALE_DEFAULT;
 
     public static void start(Activity activity, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
@@ -177,7 +179,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
             if (location != null) {
                 clearMap();
                 mPresenter.showSitesLocation(location.latitude, location.longitude);
-                mScale = mMap.getCameraPosition().zoom;
+                mScale = SCALE_DEFAULT;
                 moveCamera(new LatLng(location.latitude, location.longitude));
             }
             return true;
@@ -190,7 +192,11 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (locationManager != null) {
                 Location location = locationManager.getLastKnownLocation(PASSIVE_PROVIDER);
-                return new LatLng(location.getLatitude(), location.getLongitude());
+                if (location != null) {
+                    return new LatLng(location.getLatitude(), location.getLongitude());
+                } else {
+                    EventFactory.INSTANCE.message("MapActivity: error getLocation(): location = null");
+                }
             }
         } else {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_LOCATION);
@@ -467,6 +473,8 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         if (mMap != null) {
             outState.putParcelable(POSITION, mMap.getCameraPosition().target);
             outState.putFloat(SCALE, mMap.getCameraPosition().zoom);
+        } else {
+            EventFactory.INSTANCE.message("MapActivity: error onSaveInstanceState(): mMap = null");
         }
         super.onSaveInstanceState(outState);
     }

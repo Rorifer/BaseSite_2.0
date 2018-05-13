@@ -31,8 +31,8 @@ android {
         applicationId "com.engineeringforyou.basesite"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 27
-        versionName '2.04'
+        versionCode 28
+        versionName '2.04.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
         vectorDrawables.useSupportLibrary = true
