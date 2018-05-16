@@ -315,7 +315,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private void toMainActivity() {
         Intent intent = new Intent(this, SearchSiteActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         overridePendingTransition(R.anim.alpha_in, R.anim.slide_right_out);
         finish();
