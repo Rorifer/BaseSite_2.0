@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractor;
 import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractorImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
+import com.engineeringforyou.basesite.utils.EventFactory;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -32,11 +33,15 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
         mDisposable.add(mInteractor.loadAddress(lat, lng)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::loadAddressSuccess));
+                .subscribe(this::loadAddressSuccess, this::loadAddressError));
     }
 
     private void loadAddressSuccess(String address) {
         mView.setAddressFromCoordinates(address);
+    }
+
+    private void loadAddressError(Throwable throwable){
+        EventFactory.INSTANCE.exception(throwable);
     }
 
     @Override
