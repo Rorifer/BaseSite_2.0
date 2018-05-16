@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
@@ -34,21 +32,17 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DATABASE_VERSION);
         this.myContext = context;
         DB_PATH = context.getFilesDir().getPath() + DB_NAME;
-        Log.v("LogForMe", "Создание экземпляра БД");
-        Log.v("LogForMe", "ПУТЬ  к БД = " + DB_PATH);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.v("LogForMe", "Попытка создать БД");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.v("LogForMe", "Попытка обновить БД");
     }
 
-    public static List<Site> mapToSiteList(Cursor cursor, Operator operator, Context context) {
+    private static List<Site> mapToSiteList(Cursor cursor, Operator operator, Context context) {
         List<Site> list = new ArrayList<>();
 
         if (cursor == null) {
@@ -93,38 +87,24 @@ public class DBHelper extends SQLiteOpenHelper {
         return mapToSiteList(cursor, operator, myContext);
     }
 
-    //       public Cursor siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
-    //  public List<Site> siteSearch(Operator bDoperatorName, String siteQuery, int mode) {
-    public Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
+    private Cursor siteSearch(String bDoperatorName, String siteQuery, int mode) {
 
         if (bDoperatorName == null) {
-            Log.v("LogForMe", "В siteSearch передали пустую bDoperatorName, siteQuery = " + siteQuery);
             bDoperatorName = getOperatorBD3(myContext);
         }
         DBHelper db = null;
         Cursor userCursor = null;
         SQLiteDatabase sqld;
-        int count = 0;
+        int count;
         if (mode == 1) {
-            Log.v("LogForMe", "Запрос mode 1");
             String query[] = new String[2];
             query[0] = "SELECT * FROM " + bDoperatorName + " WHERE SITE = '" + siteQuery + "'";
-            //     query[1] = "SELECT * FROM " + bDoperatorName + " WHERE SITE = '77-" + siteQuery + "'";
-            //    query[2] = "SELECT * FROM " + bDoperatorName + " WHERE SITE LIKE '77-" + siteQuery + "%'";
-            //  query[1] = "SELECT * FROM " + bDoperatorName + " WHERE SITE LIKE '77-%" + siteQuery + "'";
             query[1] = "SELECT * FROM " + bDoperatorName + " WHERE SITE LIKE '%" + siteQuery + "'";
-            //      query[4] = "SELECT * FROM " + bDoperatorName + " WHERE SITE LIKE '%" + siteQuery + "%'";
-            Log.v("LogForMe", query[0]);
-            Log.v("LogForMe", query[1]);
-//            Log.v("LogForMe", query[2]);
-//            Log.v("LogForMe", query[3]);
-//            Log.v("LogForMe", query[4]);
-            // Работа с БД
+
             db = new DBHelper(this.myContext);
             db.create_db();
             sqld = db.open();
             for (String quer : query) {
-                Log.v("LogForMe", "Поиск в курсоре");
                 userCursor = sqld.rawQuery(quer, null);
                 count = userCursor.getCount();
                 if (count != 0) {
@@ -132,12 +112,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 }
             }
         } else if (mode == 2) {
-            Log.v("LogForMe", "Запрос mode 2");
-            siteQuery = siteQuery.replace(',', ' ');
+            siteQuery = siteQuery.replace(',', ' '); // надо?
             String[] words = siteQuery.split(" ");
-            Log.v("LogForMe", Arrays.toString(words));
             StringBuilder query = new StringBuilder();
-            // Работа с БД
+
             db = new DBHelper(this.myContext);
             db.create_db();
             sqld = db.open();
@@ -154,32 +132,24 @@ public class DBHelper extends SQLiteOpenHelper {
                 query.append("'%").append(word).append("%'");
             }
             userCursor = sqld.rawQuery(String.valueOf(query), null);
-            count = userCursor.getCount();
-            Log.v("LogForMe", "Количество текстовых совпадений = " + count);
+
         } else {
             if (mode == 3) {
-                Log.v("LogForMe", "Запрос mode 3");
                 String query;
                 query = "SELECT * FROM " + bDoperatorName + " WHERE _ID = " + siteQuery;
-                Log.v("LogForMe", "Запрос по mode 3 =" + query);
+
                 db = new DBHelper(this.myContext);
                 db.create_db();
                 sqld = db.open();
                 userCursor = sqld.rawQuery(query, null);
-                count = userCursor.getCount();
-                Log.v("LogForMe", "Количество текстовых совпадений по id = " + count);
             }
         }
 
-        Log.v("LogForMe", "Количество строк совпадений = " + count);
-//        assert db != null;
         if (db != null) db.close();
-        // userCursor.close();
-        Log.v("LogForMe", "Вся БД закрылась-3");
         return userCursor;
     }
 
-    public void create_db() {
+    private void create_db() {
         InputStream myInput;
         OutputStream myOutput;
         try {
@@ -203,11 +173,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 myInput.close();
             }
         } catch (IOException ex) {
-            Log.v("LogForMe", ex.getMessage());
+            EventFactory.INSTANCE.exception(ex);
         }
     }
 
-    public SQLiteDatabase open() throws SQLException {
+    private SQLiteDatabase open() throws SQLException {
         return SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READONLY);
     }
 
@@ -223,7 +193,6 @@ public class DBHelper extends SQLiteOpenHelper {
         String query;
 
         query = "SELECT * FROM " + DB_NAME;
-        // Работа с БД
         db = new DBHelper(this.myContext);
         db.create_db();
         sqld = db.open();
@@ -232,11 +201,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return userCursor;
     }
 
-
     public List<Site> searchSitesByLocation(Operator operator, Double lat, Double lng, int radius) {
-
         Cursor cursor = siteSearchLoc(getDbName(operator), lat, lng, (float) radius);
-
         return mapToSiteList(cursor, operator, myContext);
     }
 
@@ -255,7 +221,7 @@ public class DBHelper extends SQLiteOpenHelper {
         lngMin = lng - lngDelta;
         query = "SELECT * FROM " + DB_NAME + " WHERE GPS_Latitude>" + latMin + " AND GPS_Latitude<" + latMax +
                 " AND GPS_Longitude>" + lngMin + " AND GPS_Longitude<" + lngMax;
-        // Работа с БД
+
         db = new DBHelper(this.myContext);
         db.create_db();
         sqld = db.open();
@@ -264,37 +230,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return userCursor;
     }
 
-    public static String getDbName(Operator oper) {
-        switch (oper) {
-            case ALL:
-                return DB_OPERATOR_ALL;
-            case MEGAFON:
-                return DB_OPERATOR_MGF;
-            case VIMPELCOM:
-                return DB_OPERATOR_VMK;
-            case TELE2:
-                return DB_OPERATOR_TEL;
-            default:
-            case MTS:
-                return DB_OPERATOR_MTS;
-        }
-    }
-
-
-    public final static String DB_OPERATOR_MTS = "MTS_Site_Base";
-    public final static String DB_OPERATOR_MGF = "MGF_Site_Base";
-    public final static String DB_OPERATOR_VMK = "VMK_Site_Base";
-    public final static String DB_OPERATOR_TEL = "TELE_Site_Base";
-    public final static String DB_OPERATOR_ALL = "ALL_Site_Base";
-
-
-    public static String getOperatorBD3(Context context) {
-//        if (operatorBD != null) {
-//            return operatorBD;
-//        } else {
-        //  operatorBDoutPreferences();
+    private static String getOperatorBD3(Context context) {
         Operator oper = new SettingsRepositoryImpl(context).getOperator();
+        return getDbName(oper);
+    }
 
+    private static String getDbName(Operator oper) {
         switch (oper) {
             case ALL:
                 return DB_OPERATOR_ALL;
@@ -307,11 +248,14 @@ public class DBHelper extends SQLiteOpenHelper {
             default:
             case MTS:
                 return DB_OPERATOR_MTS;
-
         }
-        //     return operatorBD;
-        //}
     }
+    private final static String DB_OPERATOR_MTS = "MTS_Site_Base";
+    private final static String DB_OPERATOR_MGF = "MGF_Site_Base";
+    private final static String DB_OPERATOR_VMK = "VMK_Site_Base";
+    private final static String DB_OPERATOR_TEL = "TELE_Site_Base";
+
+    private final static String DB_OPERATOR_ALL = "ALL_Site_Base";
 }
 
 // https://stackoverflow.com/questions/2528489/no-such-table-android-metadata-whats-the-problem
