@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.utils;
+package com.engineeringforyou.basesite.data.sql;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -11,6 +11,7 @@ import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.Status;
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
+import com.engineeringforyou.basesite.utils.EventFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DATABASE_VERSION);
         this.myContext = context;
-        DB_PATH = context.getFilesDir().getPath() + DB_NAME;
+        DB_PATH = context.getFilesDir().getPath() + "/" + DB_NAME;
     }
 
     @Override
@@ -58,17 +59,17 @@ public class DBHelper extends SQLiteOpenHelper {
         for (int i = 0; i < count; i++) {
 
             String obj = cursor.getString(cursor.getColumnIndex(headers[2]));
-            String adres = cursor.getString(cursor.getColumnIndex(headers[1]));
+            String ADDRES = cursor.getString(cursor.getColumnIndex(headers[1]));
             if (isEmpty(obj)) obj = "нет данных";
-            if (isEmpty(adres)) adres = "нет данных";
+            if (isEmpty(ADDRES)) ADDRES = "нет данных";
 
             list.add(new Site(
-                    cursor.getString(cursor.getColumnIndex("_id")),
+                    cursor.getInt(cursor.getColumnIndex("_id")),
                     operator,
                     cursor.getString(cursor.getColumnIndex(headers[0])),
                     cursor.getDouble(cursor.getColumnIndex(headers[3])),
                     cursor.getDouble(cursor.getColumnIndex(headers[4])),
-                    adres,
+                    ADDRES,
                     obj,
                     Status.ACTIVE,
                     "нет данных"));
@@ -250,6 +251,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 return DB_OPERATOR_MTS;
         }
     }
+
     private final static String DB_OPERATOR_MTS = "MTS_Site_Base";
     private final static String DB_OPERATOR_MGF = "MGF_Site_Base";
     private final static String DB_OPERATOR_VMK = "VMK_Site_Base";

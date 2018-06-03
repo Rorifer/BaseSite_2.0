@@ -9,7 +9,7 @@
     <string name="nearestBS">ближайшие БС Оператора</string>
     <string-array name="columns">
         <item>"SITE"</item>
-        <item>"Addres"</item>
+        <item>"Address"</item>
         <item>"Object"</item>
         <item>"GPS_Latitude"</item>
         <item>"GPS_Longitude"</item>
@@ -17,7 +17,7 @@
 
     <string-array name="columnsChoice">
         <item>"SITE"</item>
-        <item>"Addres"</item>
+        <item>"Address"</item>
     </string-array>
 
     <string-array name="operatorsStrings">

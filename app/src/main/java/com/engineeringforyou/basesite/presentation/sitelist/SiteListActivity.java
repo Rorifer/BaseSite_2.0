@@ -26,9 +26,9 @@ public class SiteListActivity extends AppCompatActivity implements SiteListView 
     @BindView(R.id.list_sites)
     ListView listView;
 
-    public static void start(Activity activity, List<Site> list) {
+    public static void start(Activity activity, List<? extends Site> list) {
         Intent intent = new Intent(activity, SiteListActivity.class);
-        intent.putParcelableArrayListExtra(KEY_SITE_LIST, (ArrayList<Site>) list);
+        intent.putParcelableArrayListExtra(KEY_SITE_LIST, (ArrayList<? extends Site>) list);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }

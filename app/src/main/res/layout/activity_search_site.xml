@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:focusableInTouchMode="true"
-    tools:context=".presentation.searchsite.SearchSiteActivity">
+    tools:mContext=".presentation.searchsite.SearchSiteActivity">
 
     <ScrollView
         android:id="@+id/input_view"

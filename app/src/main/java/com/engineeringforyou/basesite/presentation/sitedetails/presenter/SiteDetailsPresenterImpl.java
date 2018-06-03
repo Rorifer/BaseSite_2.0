@@ -37,10 +37,10 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     }
 
     private void loadAddressSuccess(String address) {
-        mView.setAddressFromCoordinates(address);
+        if (mView != null) mView.setAddressFromCoordinates(address);
     }
 
-    private void loadAddressError(Throwable throwable){
+    private void loadAddressError(Throwable throwable) {
         EventFactory.INSTANCE.exception(throwable);
     }
 

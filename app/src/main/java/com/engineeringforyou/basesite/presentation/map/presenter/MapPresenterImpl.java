@@ -93,7 +93,7 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public void setMapType(int mapType) {
         mInteractor.saveMapType(mapType);
-        mView.setMapType(mapType);
+        if (mView != null) mView.setMapType(mapType);
     }
 
     @Override

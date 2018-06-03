@@ -13,12 +13,10 @@ class MapInteractorImpl(context: Context) : MapInteractor {
 
     private val settingsRepository: SettingsRepository
     private val sitesRepository: SitesRepository
-    private val baseSitesRepository: SitesRepository
 
     init {
         settingsRepository = SettingsRepositoryImpl(context)
-        sitesRepository = SitesRepositoryImpl(context)
-        baseSitesRepository = SitesRepositoryImpl(context)
+        sitesRepository = SitesRepositoryImpl()
     }
 
     override fun saveOperator(operator: Operator) = settingsRepository.saveOperator(operator)

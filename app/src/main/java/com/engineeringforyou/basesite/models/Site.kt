@@ -3,21 +3,24 @@ package com.engineeringforyou.basesite.models
 import android.os.Parcel
 import android.os.Parcelable
 import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 
-data class Site(
+//@DatabaseTable(tableName = "Sites_Base")
+//@DatabaseTable(tableName = "TELE_Site_Base")
+open class Site(
         @DatabaseField(generatedId = true, columnName = "_id")
-        val id: String,
+        val id: Int,
 
-        val operator: Operator,
+        open val operator: Operator? = null,
 
         @DatabaseField(columnName = "SITE")
-        val number: String,
+        val number: String? = null,
 
         @DatabaseField(columnName = "GPS_Latitude")
-        val latitude: Double,
+        val latitude: Double? = null,
 
         @DatabaseField(columnName = "GPS_Longitude")
-        val longitude: Double,
+        val longitude: Double? = null,
 
         @DatabaseField(columnName = "Addres")
         val address: String = "нет данных",
@@ -29,14 +32,15 @@ data class Site(
 
         val description: String = "нет данных"
 
-)
-    : Parcelable {
+) : Parcelable {
+    constructor() : this(562)
+
     constructor(source: Parcel) : this(
+            source.readInt(),
+            source.readValue(Int::class.java.classLoader)?.let { Operator.values()[it as Int] },
             source.readString(),
-            Operator.values()[source.readInt()],
-            source.readString(),
-            source.readDouble(),
-            source.readDouble(),
+            source.readValue(Double::class.java.classLoader) as Double?,
+            source.readValue(Double::class.java.classLoader) as Double?,
             source.readString(),
             source.readString(),
             Status.values()[source.readInt()],
@@ -46,11 +50,11 @@ data class Site(
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeString(id)
-        writeInt(operator.ordinal)
+        writeInt(id)
+        writeValue(operator?.ordinal)
         writeString(number)
-        writeDouble(latitude)
-        writeDouble(longitude)
+        writeValue(latitude)
+        writeValue(longitude)
         writeString(address)
         writeString(obj)
         writeInt(status.ordinal)
@@ -65,3 +69,15 @@ data class Site(
         }
     }
 }
+
+@DatabaseTable(tableName = "MTS_Site_Base")
+class SiteMTS(override val operator: Operator = Operator.MTS) : Site()
+
+@DatabaseTable(tableName = "VMK_Site_Base")
+data class SiteVMK(override val operator: Operator = Operator.VIMPELCOM) : Site()
+
+@DatabaseTable(tableName = "MGF_Site_Base")
+data class SiteMGF(override val operator: Operator = Operator.MEGAFON) : Site()
+
+@DatabaseTable(tableName = "TELE_Site_Base")
+data class SiteTELE(override val operator: Operator = Operator.TELE2) : Site()

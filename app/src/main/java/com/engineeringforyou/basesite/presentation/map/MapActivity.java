@@ -51,7 +51,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -64,7 +63,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private static final String KEY_SITE = "key_site";
     private static final String MAIN_SITE = "main_site";
-    private final String SITES = "sites";
     private final String POSITION = "position";
     private final String SCALE = "scale";
 
@@ -87,7 +85,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private MapPresenter mPresenter;
     private GoogleMap mMap;
-    private ArrayList<Site> mSites = null;
     private Site mMainSite = null;
     private LatLng mPosition = null;
     private float mScale = SCALE_DEFAULT;
@@ -107,7 +104,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         if (savedInstanceState != null) {
             mPosition = savedInstanceState.getParcelable(POSITION);
             mScale = savedInstanceState.getFloat(SCALE, mScale);
-            mSites = savedInstanceState.getParcelableArrayList(SITES);
             mMainSite = savedInstanceState.getParcelable(MAIN_SITE);
         }
 
@@ -162,8 +158,8 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         if (mPosition == null) mPresenter.setupMap();
         else {
             moveCamera(mPosition);
-            if (mSites != null) showSites(mSites);
             if (mMainSite != null) showMainSite(mMainSite);
+            mPresenter.showSitesLocation(mPosition.latitude, mPosition.longitude);
         }
     }
 
@@ -194,8 +190,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 Location location = locationManager.getLastKnownLocation(PASSIVE_PROVIDER);
                 if (location != null) {
                     return new LatLng(location.getLatitude(), location.getLongitude());
-                } else {
-                    EventFactory.INSTANCE.message("MapActivity: error getLocation(): location = null");
                 }
             }
         } else {
@@ -276,24 +270,19 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 return true;
 
             case R.id.menu_item_mts:
-                item.setChecked(true);
-                showOperator(Operator.MTS);
+                if (showOperator(Operator.MTS)) item.setChecked(true);
                 return true;
             case R.id.menu_item_mgf:
-                item.setChecked(true);
-                showOperator(Operator.MEGAFON);
+                if (showOperator(Operator.MEGAFON)) item.setChecked(true);
                 return true;
             case R.id.menu_item_vmk:
-                item.setChecked(true);
-                showOperator(Operator.VIMPELCOM);
+                if (showOperator(Operator.VIMPELCOM)) item.setChecked(true);
                 return true;
             case R.id.menu_item_tele2:
-                item.setChecked(true);
-                showOperator(Operator.TELE2);
+                if (showOperator(Operator.TELE2)) item.setChecked(true);
                 return true;
             case R.id.menu_item_all:
-                item.setChecked(true);
-                showOperator(Operator.ALL);
+                if (showOperator(Operator.ALL)) item.setChecked(true);
                 return true;
 
             case R.id.menu_item_map_standart:
@@ -320,18 +309,21 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         finish();
     }
 
-    private void showOperator(Operator operator) {
-        mScale = mMap.getCameraPosition().zoom;
-        mMainSite = null;
-        LatLng position = mMap.getCameraPosition().target;
-        double lat = position.latitude;
-        double lng = position.longitude;
-        mPresenter.showOperatorLocation(operator, lat, lng);
+    private boolean showOperator(Operator operator) {
+        if (mMap != null) {
+            mScale = mMap.getCameraPosition().zoom;
+            mMainSite = null;
+            LatLng position = mMap.getCameraPosition().target;
+            double lat = position.latitude;
+            double lng = position.longitude;
+            mPresenter.showOperatorLocation(operator, lat, lng);
+            return true;
+        } else return false;
     }
 
     @Override
     public void setMapType(int mapType) {
-        mMap.setMapType(mapType);
+        if (mMap != null) mMap.setMapType(mapType);
     }
 
     private void showDialogRadius() {
@@ -351,7 +343,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     @Override
     public void clearMap() {
-        mMap.clear();
+        if (mMap != null) mMap.clear();
     }
 
     @Override
@@ -373,7 +365,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     }
 
     @Override
-    public void showSites(@NotNull List<Site> siteList) {
+    public void showSites(@NotNull List<? extends Site> siteList) {
         if (siteList.isEmpty()) {
             Toast.makeText(this, R.string.map_no_sites, Toast.LENGTH_SHORT).show();
         } else {
@@ -465,9 +457,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        ArrayList<Site> sites = mPresenter.getSites();
-        if (sites.isEmpty()) sites = mSites;
-        outState.putParcelableArrayList(SITES, sites);
         outState.putParcelable(MAIN_SITE, mMainSite);
         if (mMap != null) {
             outState.putParcelable(POSITION, mMap.getCameraPosition().target);

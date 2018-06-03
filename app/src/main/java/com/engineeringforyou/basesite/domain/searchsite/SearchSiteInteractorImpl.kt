@@ -12,11 +12,11 @@ import io.reactivex.Single
 class SearchSiteInteractorImpl(context: Context) : SearchSiteInteractor {
 
     private val settingsRepository: SettingsRepository
-    private val baseSitesRepository: SitesRepository
+    private val sitesRepository: SitesRepository
 
     init {
         settingsRepository = SettingsRepositoryImpl(context)
-        baseSitesRepository = SitesRepositoryImpl(context)
+        sitesRepository = SitesRepositoryImpl()
     }
 
     override fun saveOperator(operator: Operator) = settingsRepository.saveOperator(operator)
@@ -24,8 +24,8 @@ class SearchSiteInteractorImpl(context: Context) : SearchSiteInteractor {
     override fun getOperator() = settingsRepository.getOperator()
 
     override fun searchSitesByNumber(search: String): Single<List<Site>> =
-            baseSitesRepository.searchSitesByNumber(getOperator(), search)
+            sitesRepository.searchSitesByNumber(getOperator(), search)
 
     override fun searchSitesByAddress(search: String): Single<List<Site>> =
-            baseSitesRepository.searchSitesByAddress(getOperator(), search)
+            sitesRepository.searchSitesByAddress(getOperator(), search)
 }
