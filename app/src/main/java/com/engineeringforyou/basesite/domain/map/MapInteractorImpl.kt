@@ -35,15 +35,36 @@ class MapInteractorImpl(context: Context) : MapInteractor {
         val operator = getOperator()
         val radius: Int = getRadius()
 
-        return if (operator != Operator.ALL) {
-            sitesRepository.searchSitesByLocation(operator, lat, lng, radius).toObservable()
+        if (radius == 0) {
+
+            return if (operator != Operator.ALL) {
+                sitesRepository.getAllSites(operator).toObservable()
+            } else {
+                Observable.create<List<Site>> { e ->
+                    sitesRepository.getAllSites(Operator.MTS).map { e.onNext(it) }.subscribe()
+                    sitesRepository.getAllSites(Operator.MEGAFON).map { e.onNext(it) }.subscribe()
+                    sitesRepository.getAllSites(Operator.VIMPELCOM).map { e.onNext(it) }.subscribe()
+                    sitesRepository.getAllSites(Operator.TELE2).map { e.onNext(it) }.subscribe()
+//                    e.onNext(sitesRepository.getAllSites(Operator.MTS).blockingGet())
+//                    e.onNext(sitesRepository.getAllSites(Operator.MEGAFON).blockingGet())
+//                    e.onNext(sitesRepository.getAllSites(Operator.VIMPELCOM).blockingGet())
+//                    e.onNext(sitesRepository.getAllSites(Operator.TELE2).blockingGet())
+                    e.onComplete()
+                }
+            }
+
         } else {
-            Observable.create<List<Site>> { e ->
-                e.onNext(sitesRepository.searchSitesByLocation(Operator.MTS, lat, lng, radius).blockingGet())
-                e.onNext(sitesRepository.searchSitesByLocation(Operator.MEGAFON, lat, lng, radius).blockingGet())
-                e.onNext(sitesRepository.searchSitesByLocation(Operator.VIMPELCOM, lat, lng, radius).blockingGet())
-                e.onNext(sitesRepository.searchSitesByLocation(Operator.TELE2, lat, lng, radius).blockingGet())
-                e.onComplete()
+
+            return if (operator != Operator.ALL) {
+                sitesRepository.searchSitesByLocation(operator, lat, lng, radius).toObservable()
+            } else {
+                Observable.create<List<Site>> { e ->
+                    e.onNext(sitesRepository.searchSitesByLocation(Operator.MTS, lat, lng, radius).blockingGet())
+                    e.onNext(sitesRepository.searchSitesByLocation(Operator.MEGAFON, lat, lng, radius).blockingGet())
+                    e.onNext(sitesRepository.searchSitesByLocation(Operator.VIMPELCOM, lat, lng, radius).blockingGet())
+                    e.onNext(sitesRepository.searchSitesByLocation(Operator.TELE2, lat, lng, radius).blockingGet())
+                    e.onComplete()
+                }
             }
         }
     }

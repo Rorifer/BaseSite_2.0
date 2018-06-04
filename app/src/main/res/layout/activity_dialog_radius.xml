@@ -4,26 +4,35 @@
     android:layout_height="fill_parent">
 
     <SeekBar
-        android:id="@+id/seekRadius"
+        android:id="@+id/seek_radius"
         android:layout_marginTop="30dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:id="@+id/radiusOk"
+    <CheckBox
+        android:id="@+id/checkbox_all_radius"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/seek_radius"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:text="@string/all_site_description" />
+
+    <Button
+        android:id="@+id/button_radius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/checkbox_all_radius"
         android:layout_centerHorizontal="true"
         android:text="@string/ok" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/text_radius"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/seekRadius"
+        android:layout_below="@+id/seek_radius"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
 

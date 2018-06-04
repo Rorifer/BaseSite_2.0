@@ -44,6 +44,8 @@
     <string name="operarators">Операторы</string>
     <string name="maps">Карта</string>
     <string name="ok">OK</string>
+    <string name="all_site">Все БС</string>
+    <string name="all_site_description">Все БС (замедление работы)</string>
     <string name="site_list_title">Выбор БС:</string>
     <string name="route">Проложить маршрут</string>
     <string name="ALL">Все</string>

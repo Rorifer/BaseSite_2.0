@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -88,6 +90,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private Site mMainSite = null;
     private LatLng mPosition = null;
     private float mScale = SCALE_DEFAULT;
+    private BitmapDescriptor icon_mts, icon_mgf, icon_beeline, icon_tele;
 
     public static void start(Activity activity, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
@@ -113,6 +116,12 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         initAdMob();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdMobView.resume();
+    }
+
     private void initPresenter() {
         Site site = getIntent().getParcelableExtra(KEY_SITE);
         mPresenter = new MapPresenterImpl(this);
@@ -136,6 +145,11 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     }
 
     private void initMap() {
+        icon_mts = BitmapDescriptorFactory.fromResource(R.drawable.ic_mts);
+        icon_mgf = BitmapDescriptorFactory.fromResource(R.drawable.ic_megafon);
+        icon_beeline = BitmapDescriptorFactory.fromResource(R.drawable.ic_beeline);
+        icon_tele = BitmapDescriptorFactory.fromResource(R.drawable.ic_tele2);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -216,12 +230,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 }
                 break;
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mAdMobView.resume();
     }
 
     @Override
@@ -384,13 +392,13 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private BitmapDescriptor iconOperator(Operator operator) {
         switch (operator) {
             case MTS:
-                return BitmapDescriptorFactory.fromResource(R.drawable.ic_mts);
+                return icon_mts;
             case MEGAFON:
-                return BitmapDescriptorFactory.fromResource(R.drawable.ic_megafon);
+                return icon_mgf;
             case VIMPELCOM:
-                return BitmapDescriptorFactory.fromResource(R.drawable.ic_beeline);
+                return icon_beeline;
             case TELE2:
-                return BitmapDescriptorFactory.fromResource(R.drawable.ic_tele2);
+                return icon_tele;
             default:
                 return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
         }
@@ -479,8 +487,9 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         super.onDestroy();
     }
 
-    public static class DialogRadius extends DialogFragment implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
+    public static class DialogRadius extends DialogFragment implements SeekBar.OnSeekBarChangeListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
         SeekBar mSeekBar;
+        CheckBox mCheckBox;
         TextView mTextView;
         private final int RADIUS_MAX = 7;
 
@@ -494,19 +503,29 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             getDialog().setTitle(R.string.dialog_radius_title);
             View v = inflater.inflate(R.layout.activity_dialog_radius, container);
-            v.findViewById(R.id.radiusOk).setOnClickListener(this);
-            mSeekBar = v.findViewById(R.id.seekRadius);
-            mSeekBar.setMax(RADIUS_MAX - 1);
-            mSeekBar.setProgress(sRadius - 1);
+            v.findViewById(R.id.button_radius).setOnClickListener(this);
+            mSeekBar = v.findViewById(R.id.seek_radius);
+            mTextView = v.findViewById(R.id.text_radius);
+            mCheckBox = v.findViewById(R.id.checkbox_all_radius);
             mSeekBar.setOnSeekBarChangeListener(this);
-            mTextView = v.findViewById(R.id.textView);
-            mTextView.setText(String.valueOf(mSeekBar.getProgress() + 1));
+            mCheckBox.setOnCheckedChangeListener(this);
+            mSeekBar.setMax(RADIUS_MAX - 1);
+
+            if (sRadius == 0) {
+                mCheckBox.setChecked(true);
+                mSeekBar.setProgress(RADIUS_MAX - 1);
+                mSeekBar.setEnabled(false);
+                mTextView.setText(R.string.all_site);
+            } else {
+                mSeekBar.setProgress(sRadius - 1);
+                mTextView.setText(String.valueOf(mSeekBar.getProgress() + 1));
+            }
             return v;
         }
 
         @Override
         public void onClick(View view) {
-            ((MapActivity) getActivity()).setRadius(mSeekBar.getProgress() + 1);
+            ((MapActivity) getActivity()).setRadius(mCheckBox.isChecked() ? 0 : mSeekBar.getProgress() + 1);
             dismiss();
         }
 
@@ -521,6 +540,17 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                mSeekBar.setEnabled(false);
+                mTextView.setText(R.string.all_site);
+            } else {
+                mSeekBar.setEnabled(true);
+                mTextView.setText(String.valueOf(mSeekBar.getProgress() + 1));
+            }
         }
     }
 }

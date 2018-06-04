@@ -6,11 +6,11 @@ import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
 import com.engineeringforyou.basesite.data.orm.ORMHelperFactory;
-import com.facebook.stetho.Stetho;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;
+
+//import com.facebook.stetho.Stetho;
 
 public class App extends MultiDexApplication {
     @Override
@@ -20,30 +20,30 @@ public class App extends MultiDexApplication {
         ORMHelperFactory.setHelper(getApplicationContext());
         FirebaseAnalytics.getInstance(this);
 
-        if (BuildConfig.DEBUG) {
+//        if (BuildConfig.DEBUG) {
 
-            LeakCanary.install(this);
+//            LeakCanary.install(this);
 
-            // Create an InitializerBuilder
-            Stetho.InitializerBuilder initializerBuilder =
-                    Stetho.newInitializerBuilder(this);
-
-            // Enable Chrome DevTools
-            initializerBuilder.enableWebKitInspector(
-                    Stetho.defaultInspectorModulesProvider(this)
-            );
-
-            // Enable command line interface
-            initializerBuilder.enableDumpapp(
-                    Stetho.defaultDumperPluginsProvider(this)
-            );
-
-            // Use the InitializerBuilder to generate an Initializer
-            Stetho.Initializer initializer = initializerBuilder.build();
-
-            // Initialize Stetho with the Initializer
-            Stetho.initialize(initializer);
-        }
+//            // Create an InitializerBuilder
+//            Stetho.InitializerBuilder initializerBuilder =
+//                    Stetho.newInitializerBuilder(this);
+//
+//            // Enable Chrome DevTools
+//            initializerBuilder.enableWebKitInspector(
+//                    Stetho.defaultInspectorModulesProvider(this)
+//            );
+//
+//            // Enable command line interface
+//            initializerBuilder.enableDumpapp(
+//                    Stetho.defaultDumperPluginsProvider(this)
+//            );
+//
+//            // Use the InitializerBuilder to generate an Initializer
+//            Stetho.Initializer initializer = initializerBuilder.build();
+//
+//            // Initialize Stetho with the Initializer
+//            Stetho.initialize(initializer);
+//        }
     }
 
     @Override
