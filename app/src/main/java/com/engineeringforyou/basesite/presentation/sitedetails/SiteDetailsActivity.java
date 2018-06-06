@@ -6,14 +6,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.engineeringforyou.basesite.presentation.map.MapActivity;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.map.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
@@ -48,6 +51,17 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     AppCompatTextView siteAddressAuto;
     @BindView(R.id.address_auto_layout)
     LinearLayout addressAutoLayout;
+    @BindView(R.id.comments_layout)
+    LinearLayout commentsLayout;
+    @BindView(R.id.comment_list)
+    RecyclerView commentsList;
+    @BindView(R.id.comment_user_layout)
+    LinearLayout commentUserLayout;
+    @BindView(R.id.comment_user_text)
+    EditText commentText;
+    @BindView(R.id.comment_user_button)
+    AppCompatButton commentButton;
+
 
     private SiteDetailsPresenter mPresenter;
     private Site mSite;

@@ -35,7 +35,7 @@ public class SiteListActivity extends AppCompatActivity implements SiteListView 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.site_list_activity);
+        setContentView(R.layout.activity_site_list);
         ButterKnife.bind(this);
         showList(getIntent().getParcelableArrayListExtra(KEY_SITE_LIST));
     }
