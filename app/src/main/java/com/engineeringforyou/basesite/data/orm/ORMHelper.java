@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.engineeringforyou.basesite.models.Comments;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.SiteMGF;
@@ -17,6 +18,7 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -98,9 +100,11 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
 //            EventFactory.INSTANCE.exception(e);
 //        }
 
-
         if (oldVer < 3) {
             try {
+
+                TableUtils.createTable(connectionSource, Comments.class);
+
                 SiteMTSDAO mts = getSiteMTSDAO();
                 SiteMGFDAO mgf = getSiteMGFDAO();
                 SiteVMKDAO vmk = getSiteVMKDAO();
@@ -110,11 +114,6 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
                 mgf.executeRaw("ALTER TABLE `MGF_Site_Base` ADD COLUMN uid STRING;");
                 vmk.executeRaw("ALTER TABLE `VMK_Site_Base` ADD COLUMN uid STRING;");
                 tele.executeRaw("ALTER TABLE `TELE_Site_Base` ADD COLUMN uid STRING;");
-
-                mts.executeRaw("ALTER TABLE `MTS_Site_Base` ADD COLUMN comments STRING;");
-                mgf.executeRaw("ALTER TABLE `MGF_Site_Base` ADD COLUMN comments STRING;");
-                vmk.executeRaw("ALTER TABLE `VMK_Site_Base` ADD COLUMN comments STRING;");
-                tele.executeRaw("ALTER TABLE `TELE_Site_Base` ADD COLUMN comments STRING;");
 
             } catch (SQLException e) {
                 e.printStackTrace();

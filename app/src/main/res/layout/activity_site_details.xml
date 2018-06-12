@@ -224,6 +224,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
                 <EditText
@@ -234,7 +235,9 @@
                     android:imeOptions="actionSend"
                     android:inputType="textMultiLine"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textColorHint="@color/colorPrimary"
+                    android:textSize="16sp"
+                    android:theme="@style/LineAccent" />
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/comment_user_button"

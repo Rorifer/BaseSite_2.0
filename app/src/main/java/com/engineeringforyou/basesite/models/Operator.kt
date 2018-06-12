@@ -1,9 +1,9 @@
 package com.engineeringforyou.basesite.models
 
-enum class Operator(val label: String) {
-    MTS("МТС"),
-    MEGAFON("МегаФон"),
-    VIMPELCOM("Билайн"),
-    TELE2("Теле2"),
-    ALL("Все")
+enum class Operator(val label: String, val code: Int) {
+    MTS("МТС", 1),
+    MEGAFON("МегаФон", 2),
+    VIMPELCOM("Билайн", 3),
+    TELE2("Теле2", 4),
+    ALL("Все", 0)
 }

@@ -90,6 +90,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private LatLng mPosition = null;
     private float mScale = SCALE_DEFAULT;
     private BitmapDescriptor icon_mts, icon_mgf, icon_beeline, icon_tele;
+    private boolean isInitIcon;
 
     public static void start(Activity activity, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
@@ -144,13 +145,16 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     }
 
     private void initMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    private void initOperatorIcon() {
+        isInitIcon = true;
         icon_mts = BitmapDescriptorFactory.fromResource(R.drawable.ic_mts);
         icon_mgf = BitmapDescriptorFactory.fromResource(R.drawable.ic_megafon);
         icon_beeline = BitmapDescriptorFactory.fromResource(R.drawable.ic_beeline);
         icon_tele = BitmapDescriptorFactory.fromResource(R.drawable.ic_tele2);
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -376,6 +380,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         if (siteList.isEmpty()) {
             Toast.makeText(this, R.string.map_no_sites, Toast.LENGTH_SHORT).show();
         } else {
+            if (!isInitIcon) initOperatorIcon();
             for (Site site : siteList) {
                 mMap.addMarker(new MarkerOptions().
                         position(new LatLng(site.getLatitude(), site.getLongitude()))

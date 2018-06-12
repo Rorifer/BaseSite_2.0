@@ -30,16 +30,14 @@ open class Site(
 
         @DatabaseField
         val uid: String? = null,
+//
+//        @DatabaseField
+//        val comments: String? = null,
 
-        @DatabaseField
-        val comments: String? = null,
-
-        val status: Status = Status.ACTIVE,
-
-        val description: String = "нет данных"
+        val status: Status = Status.ACTIVE
 
 ) : Parcelable {
-    constructor() : this(562)
+    constructor() : this(999999999)
 
     constructor(source: Parcel) : this(
             source.readInt(),
@@ -50,9 +48,7 @@ open class Site(
             source.readString(),
             source.readString(),
             source.readString(),
-            source.readString(),
-            Status.values()[source.readInt()],
-            source.readString()
+            Status.values()[source.readInt()]
     )
 
     override fun describeContents() = 0
@@ -66,9 +62,7 @@ open class Site(
         writeString(address)
         writeString(obj)
         writeString(uid)
-        writeString(comments)
         writeInt(status.ordinal)
-        writeString(description)
     }
 
     companion object {
