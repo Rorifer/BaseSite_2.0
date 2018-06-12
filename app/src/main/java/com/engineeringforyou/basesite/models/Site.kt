@@ -28,6 +28,12 @@ open class Site(
         @DatabaseField(columnName = "Object")
         val obj: String = "нет данных",
 
+        @DatabaseField
+        val uid: String? = null,
+
+        @DatabaseField
+        val comments: String? = null,
+
         val status: Status = Status.ACTIVE,
 
         val description: String = "нет данных"
@@ -41,6 +47,8 @@ open class Site(
             source.readString(),
             source.readValue(Double::class.java.classLoader) as Double?,
             source.readValue(Double::class.java.classLoader) as Double?,
+            source.readString(),
+            source.readString(),
             source.readString(),
             source.readString(),
             Status.values()[source.readInt()],
@@ -57,6 +65,8 @@ open class Site(
         writeValue(longitude)
         writeString(address)
         writeString(obj)
+        writeString(uid)
+        writeString(comments)
         writeInt(status.ordinal)
         writeString(description)
     }

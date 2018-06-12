@@ -36,7 +36,6 @@ import com.engineeringforyou.basesite.presentation.map.presenter.MapPresenterImp
 import com.engineeringforyou.basesite.presentation.map.views.MapView;
 import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
-import com.engineeringforyou.basesite.utils.EventFactory;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -469,8 +468,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         if (mMap != null) {
             outState.putParcelable(POSITION, mMap.getCameraPosition().target);
             outState.putFloat(SCALE, mMap.getCameraPosition().zoom);
-        } else {
-            EventFactory.INSTANCE.message("MapActivity: error onSaveInstanceState(): mMap = null");
         }
         super.onSaveInstanceState(outState);
     }

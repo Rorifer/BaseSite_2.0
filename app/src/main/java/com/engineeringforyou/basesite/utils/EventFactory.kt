@@ -36,6 +36,6 @@ object EventFactory {
         Crashlytics.setString(DATE_TIME, getCurrentDate())
         Crashlytics.setInt(BUILD_VERSION_SDK_INT, Build.VERSION.SDK_INT)
         Crashlytics.log(7, MESSAGE, message)
-        Crashlytics.logException(Throwable(MESSAGE))
+        Crashlytics.logException(Throwable(message))
     }
 }

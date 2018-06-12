@@ -111,6 +111,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @Override
     public void toSiteInfo(@NonNull Site site) {
+        hideKeyboard();
         SiteDetailsActivity.start(this, site);
     }
 
