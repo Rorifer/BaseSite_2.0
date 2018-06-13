@@ -1,9 +1,6 @@
 package com.engineeringforyou.basesite.data.orm
 
-import com.engineeringforyou.basesite.models.SiteMGF
-import com.engineeringforyou.basesite.models.SiteMTS
-import com.engineeringforyou.basesite.models.SiteTELE
-import com.engineeringforyou.basesite.models.SiteVMK
+import com.engineeringforyou.basesite.models.*
 import com.j256.ormlite.dao.BaseDaoImpl
 import com.j256.ormlite.support.ConnectionSource
 import java.sql.SQLException
@@ -62,3 +59,6 @@ internal constructor(connectionSource: ConnectionSource, dataClass: Class<SiteMG
 
 class SiteTELEDAO @Throws(SQLException::class)
 internal constructor(connectionSource: ConnectionSource, dataClass: Class<SiteTELE>) : BaseDaoImpl<SiteTELE, Int>(connectionSource, dataClass)
+
+class SiteCommentsDAO @Throws(SQLException::class)
+internal constructor(connectionSource: ConnectionSource, dataClass: Class<Comment>) : BaseDaoImpl<Comment, Int>(connectionSource, dataClass)

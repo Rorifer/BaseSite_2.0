@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
@@ -15,15 +16,19 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.engineeringforyou.basesite.R;
+import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.map.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenterImpl;
+import com.engineeringforyou.basesite.presentation.sitedetails.views.CommentsAdapter;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +66,9 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     EditText commentText;
     @BindView(R.id.comment_user_button)
     AppCompatButton commentButton;
+    @BindView(R.id.comment_list)
+    RecyclerView commentRecycler;
+
 
 
     private SiteDetailsPresenter mPresenter;
@@ -100,7 +108,16 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
             siteCoordinates.setText(String.format("%.6f° С.Ш.\n%.6f° В.Д.", mSite.getLatitude(), mSite.getLongitude()));
             siteStatus.setText(mSite.getStatus().getDescription());
             mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
+            mPresenter.showComments(mSite);
         }
+    }
+
+    @Override
+    public void showAdapter(@NotNull List<? extends Comment> list) {
+        CommentsAdapter mAdapter = new CommentsAdapter(list);
+        commentRecycler.setHasFixedSize(true);
+        commentRecycler.setLayoutManager(new LinearLayoutManager(this));
+        commentRecycler.setAdapter(mAdapter);
     }
 
     @Override

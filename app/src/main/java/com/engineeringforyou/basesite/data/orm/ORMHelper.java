@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.engineeringforyou.basesite.models.Comments;
+import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.SiteMGF;
@@ -38,11 +38,15 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
     private final String FIELD_LAT = "GPS_Latitude";
     private final String FIELD_LNG = "GPS_Longitude";
 
+    private final String FIELD_COMMENT_SITE = "siteId";
+    private final String FIELD_COMMENT_OPERATOR = "operatorId";
+
     private Context mContext;
     private SiteMTSDAO siteMTSDao;
     private SiteMGFDAO siteMGFDao;
     private SiteVMKDAO siteVMKDao;
     private SiteTELEDAO siteTELEDao;
+    private SiteCommentsDAO siteCommentsDao;
 
     public ORMHelper(Context mContext) {
         super(mContext, DB_NAME, null, DATABASE_VERSION);
@@ -103,7 +107,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         if (oldVer < 3) {
             try {
 
-                TableUtils.createTable(connectionSource, Comments.class);
+                TableUtils.createTable(connectionSource, Comment.class);
 
                 SiteMTSDAO mts = getSiteMTSDAO();
                 SiteMGFDAO mgf = getSiteMGFDAO();
@@ -155,8 +159,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         return null;
     }
 
-    private List<? extends Site> searchSitesByNumber(BaseDaoImpl<? extends
-            Site, Integer> dao, String search) throws SQLException {
+    private List<? extends Site> searchSitesByNumber(BaseDaoImpl<? extends Site, Integer> dao, String search) throws SQLException {
         QueryBuilder<? extends Site, Integer> queryBuilder = dao.queryBuilder();
         queryBuilder.where().like(FIELD_SITE, search);
         List<? extends Site> result = executeQuery(dao, queryBuilder);
@@ -182,8 +185,17 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         return null;
     }
 
-    private List<? extends Site> searchSitesByAddress(BaseDaoImpl<? extends
-            Site, Integer> dao, String search) throws SQLException {
+    public List<Comment> getComments(Site site) throws SQLException {
+        SiteCommentsDAO dao = getSiteCommentsDao();
+        QueryBuilder<Comment, Integer> queryBuilder = dao.queryBuilder();
+        queryBuilder.where()
+                .like(FIELD_COMMENT_SITE, site.getUid())
+                .and()
+                .like(FIELD_COMMENT_OPERATOR, site.getOperator().getCode());
+        return dao.query(queryBuilder.prepare());
+    }
+
+    private List<? extends Site> searchSitesByAddress(BaseDaoImpl<? extends Site, Integer> dao, String search) throws SQLException {
         String[] words = search.replace(',', ' ').split(" ");
         QueryBuilder<? extends Site, Integer> queryBuilder = dao.queryBuilder();
         Where<? extends Site, Integer> where = queryBuilder.where();
@@ -196,8 +208,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         return executeQuery(dao, queryBuilder);
     }
 
-    public List<? extends Site> searchSitesByLocation(Operator operator, Double lat, Double lng,
-                                                      int radius) throws SQLException {
+    public List<? extends Site> searchSitesByLocation(Operator operator, Double lat, Double lng, int radius) throws SQLException {
         switch (operator) {
             case MTS:
                 return searchSitesByLocation(getSiteMTSDAO(), lat, lng, radius);
@@ -212,8 +223,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    private List<? extends Site> searchSitesByLocation(BaseDaoImpl<? extends
-            Site, Integer> dao, Double lat, Double lng, int radius) throws SQLException {
+    private List<? extends Site> searchSitesByLocation(BaseDaoImpl<? extends Site, Integer> dao, Double lat, Double lng, int radius) throws SQLException {
         double latDelta = (float) radius / 111;
         double lngDelta = (float) radius / 63.2;
         double latMax = lat + latDelta;
@@ -229,9 +239,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         return executeQuery(dao, queryBuilder);
     }
 
-    private List<? extends Site> executeQuery(BaseDaoImpl<? extends
-            Site, Integer> dao, QueryBuilder<? extends Site, Integer> queryBuilder) throws
-            SQLException {
+    private List<? extends Site> executeQuery(BaseDaoImpl<? extends Site, Integer> dao, QueryBuilder<? extends Site, Integer> queryBuilder) throws SQLException {
         PreparedQuery preparedQuery = queryBuilder.prepare();
         return dao.query(preparedQuery);
     }
@@ -264,6 +272,14 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         return siteTELEDao;
     }
 
+    private SiteCommentsDAO getSiteCommentsDao() throws SQLException {
+        if (siteCommentsDao == null) {
+            siteCommentsDao = new SiteCommentsDAO(getConnectionSource(), Comment.class);
+        }
+        return siteCommentsDao;
+    }
+
+
     @Override
     public void close() {
         super.close();
@@ -271,5 +287,6 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         siteMGFDao = null;
         siteVMKDao = null;
         siteTELEDao = null;
+        siteCommentsDao = null;
     }
 }

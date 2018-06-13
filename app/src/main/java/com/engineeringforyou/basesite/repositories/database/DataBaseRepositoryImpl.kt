@@ -1,11 +1,12 @@
-package com.engineeringforyou.basesite.repositories.sites
+package com.engineeringforyou.basesite.repositories.database
 
 import com.engineeringforyou.basesite.data.orm.ORMHelperFactory
+import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 import io.reactivex.Single
 
-class SitesRepositoryImpl : SitesRepository {
+class DataBaseRepositoryImpl : DataBaseRepository {
 
     override fun searchSitesByNumber(operator: Operator, search: String): Single<List<Site>> =
             Single.fromCallable { ORMHelperFactory.getHelper().searchSitesByNumber(operator, search) }
@@ -18,4 +19,7 @@ class SitesRepositoryImpl : SitesRepository {
 
     override fun getAllSites(operator: Operator): Single<List<Site>> =
             Single.fromCallable { ORMHelperFactory.getHelper().getAllSites(operator) }
+
+    override fun getComments(site: Site): Single<List<Comment>> =
+            Single.fromCallable { ORMHelperFactory.getHelper().getComments(site) }
 }

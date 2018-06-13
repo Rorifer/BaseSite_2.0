@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/comment_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/comment_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        tools:text="Петров Петр" />
+
+    <TextView
+        android:id="@+id/comment_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/comment_name"
+        android:layout_alignLeft="@id/comment_name"
+        android:layout_alignRight="@id/comment_name"
+        android:layout_alignStart="@id/comment_name"
+        android:layout_below="@id/comment_name"
+        android:layout_marginBottom="4dp"
+        tools:text="Текст сообщения которое может быть очнень длинное" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@id/comment_text"
+        android:layout_alignStart="@id/comment_text"
+        android:layout_below="@id/comment_text"
+        android:background="@color/colorAccent" />
+
+</RelativeLayout>

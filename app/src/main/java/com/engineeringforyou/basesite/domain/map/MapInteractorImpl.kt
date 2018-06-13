@@ -3,20 +3,20 @@ package com.engineeringforyou.basesite.domain.map
 import android.content.Context
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
+import com.engineeringforyou.basesite.repositories.database.DataBaseRepository
+import com.engineeringforyou.basesite.repositories.database.DataBaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
-import com.engineeringforyou.basesite.repositories.sites.SitesRepository
-import com.engineeringforyou.basesite.repositories.sites.SitesRepositoryImpl
 import io.reactivex.Observable
 
 class MapInteractorImpl(context: Context) : MapInteractor {
 
     private val settingsRepository: SettingsRepository
-    private val sitesRepository: SitesRepository
+    private val sitesRepository: DataBaseRepository
 
     init {
         settingsRepository = SettingsRepositoryImpl(context)
-        sitesRepository = SitesRepositoryImpl()
+        sitesRepository = DataBaseRepositoryImpl()
     }
 
     override fun saveOperator(operator: Operator) = settingsRepository.saveOperator(operator)

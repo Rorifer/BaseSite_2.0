@@ -1,10 +1,11 @@
-package com.engineeringforyou.basesite.repositories.sites
+package com.engineeringforyou.basesite.repositories.database
 
+import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 import io.reactivex.Single
 
-interface SitesRepository {
+interface DataBaseRepository {
 
     fun searchSitesByNumber(operator: Operator, search: String): Single<List<Site>>
 
@@ -13,5 +14,7 @@ interface SitesRepository {
     fun searchSitesByLocation(operator: Operator, lat: Double, lng: Double, radius: Int): Single<List<Site>>
 
     fun getAllSites(operator: Operator): Single<List<Site>>
+
+    fun getComments(site: Site): Single<List<Comment>>
 
 }

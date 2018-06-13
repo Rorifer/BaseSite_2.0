@@ -3,12 +3,20 @@ package com.engineeringforyou.basesite.domain.sitedetails
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
+import com.engineeringforyou.basesite.models.Comment
+import com.engineeringforyou.basesite.models.Site
+import com.engineeringforyou.basesite.repositories.database.DataBaseRepository
+import com.engineeringforyou.basesite.repositories.database.DataBaseRepositoryImpl
+import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
+import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.Single
 import java.io.IOException
 import java.util.*
 
 class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInteractor {
+
+    private lateinit var site: Site
 
     override fun loadAddress(lat: Double, lng: Double): Single<String> {
         return Single.fromCallable {
@@ -45,5 +53,15 @@ class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInter
             }
             return@fromCallable "нет данных"
         }
+    }
+
+    override fun getSavedComments(site: Site): Single<List<Comment>> {
+        val dataBase: DataBaseRepository = DataBaseRepositoryImpl()
+        return dataBase.getComments(site)
+    }
+
+    override fun loadComments(): Single<List<Comment>> {
+        val firebase: FirebaseRepository = FirebaseRepositoryImpl()
+        return firebase.getComments(site)
     }
 }

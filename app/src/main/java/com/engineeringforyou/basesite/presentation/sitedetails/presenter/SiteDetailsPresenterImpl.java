@@ -5,8 +5,14 @@ import android.support.annotation.NonNull;
 
 import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractor;
 import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractorImpl;
+import com.engineeringforyou.basesite.models.Comment;
+import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
 import com.engineeringforyou.basesite.utils.EventFactory;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -41,6 +47,38 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     }
 
     private void loadAddressError(Throwable throwable) {
+        EventFactory.INSTANCE.exception(throwable);
+    }
+
+    @Override
+    public void showComments(@NotNull Site site) {
+        mDisposable.add(mInteractor.getSavedComments(site)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::loadSavedCommentsSuccess, this::loadCommentsError));
+    }
+
+    private void loadSavedCommentsSuccess(List<Comment> list) {
+        if (mView != null) {
+            mView.showAdapter(list);
+            loadComments();
+        }
+    }
+
+    public void loadComments() {
+        mDisposable.add(mInteractor.loadComments()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::loadCommentsSuccess, this::loadCommentsError));
+    }
+
+    private void loadCommentsSuccess(List<Comment> list) {
+        if (mView != null) {
+            mView.showAdapter(list);
+        }
+    }
+
+    private void loadCommentsError(Throwable throwable) {
         EventFactory.INSTANCE.exception(throwable);
     }
 
