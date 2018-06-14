@@ -188,8 +188,10 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
     public List<Comment> getComments(Site site) throws SQLException {
         SiteCommentsDAO dao = getSiteCommentsDao();
         QueryBuilder<Comment, Integer> queryBuilder = dao.queryBuilder();
+        String uid = site.getUid();
+        if (uid == null) uid = site.getNumber();
         queryBuilder.where()
-                .like(FIELD_COMMENT_SITE, site.getUid())
+                .like(FIELD_COMMENT_SITE, uid)
                 .and()
                 .like(FIELD_COMMENT_OPERATOR, site.getOperator().getCode());
         return dao.query(queryBuilder.prepare());
@@ -272,7 +274,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         return siteTELEDao;
     }
 
-    private SiteCommentsDAO getSiteCommentsDao() throws SQLException {
+    public SiteCommentsDAO getSiteCommentsDao() throws SQLException {
         if (siteCommentsDao == null) {
             siteCommentsDao = new SiteCommentsDAO(getConnectionSource(), Comment.class);
         }

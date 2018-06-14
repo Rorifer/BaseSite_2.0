@@ -10,6 +10,7 @@ import com.engineeringforyou.basesite.repositories.database.DataBaseRepositoryIm
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.utils.EventFactory
+import io.reactivex.Completable
 import io.reactivex.Single
 import java.io.IOException
 import java.util.*
@@ -17,6 +18,8 @@ import java.util.*
 class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInteractor {
 
     private lateinit var site: Site
+    private var dataBase: DataBaseRepository = DataBaseRepositoryImpl()
+    private var firebase: FirebaseRepository = FirebaseRepositoryImpl()
 
     override fun loadAddress(lat: Double, lng: Double): Single<String> {
         return Single.fromCallable {
@@ -56,12 +59,16 @@ class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInter
     }
 
     override fun getSavedComments(site: Site): Single<List<Comment>> {
-        val dataBase: DataBaseRepository = DataBaseRepositoryImpl()
         return dataBase.getComments(site)
     }
 
     override fun loadComments(): Single<List<Comment>> {
-        val firebase: FirebaseRepository = FirebaseRepositoryImpl()
         return firebase.getComments(site)
+    }
+
+    override fun saveComment(comment: Comment): Completable {
+        return dataBase.saveComment(comment)
+                .onErrorComplete { true }
+                .andThen(firebase.saveComment(comment))
     }
 }

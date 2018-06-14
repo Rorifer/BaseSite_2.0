@@ -3,6 +3,7 @@ package com.engineeringforyou.basesite.repositories.database
 import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
+import io.reactivex.Completable
 import io.reactivex.Single
 
 interface DataBaseRepository {
@@ -16,5 +17,7 @@ interface DataBaseRepository {
     fun getAllSites(operator: Operator): Single<List<Site>>
 
     fun getComments(site: Site): Single<List<Comment>>
+
+    fun saveComment(comment: Comment): Completable
 
 }

@@ -58,6 +58,22 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
                 .subscribe(this::loadSavedCommentsSuccess, this::loadCommentsError));
     }
 
+    @Override
+    public void saveComment(@NotNull Site site, @NotNull String comment, @NotNull String user) {
+        mDisposable.add(mInteractor.saveComment(new Comment(site, comment, user))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::saveCommentSuccess, this::saveCommentError));
+    }
+
+    private void saveCommentError(Throwable throwable) {
+
+    }
+
+    private void saveCommentSuccess() {
+
+    }
+
     private void loadSavedCommentsSuccess(List<Comment> list) {
         if (mView != null) {
             mView.showAdapter(list);

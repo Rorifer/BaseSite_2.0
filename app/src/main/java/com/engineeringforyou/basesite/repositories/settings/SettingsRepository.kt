@@ -20,4 +20,8 @@ interface SettingsRepository {
 
     fun getCountMapCreate(): Int
 
+    fun saveCommentTimestamp (timestamp: Long)
+
+    fun getCommentTimestamp (): Long
+
 }

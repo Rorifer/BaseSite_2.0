@@ -10,6 +10,8 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -70,7 +72,6 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     RecyclerView commentRecycler;
 
 
-
     private SiteDetailsPresenter mPresenter;
     private Site mSite;
 
@@ -109,6 +110,23 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
             siteStatus.setText(mSite.getStatus().getDescription());
             mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
             mPresenter.showComments(mSite);
+
+            commentText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    commentButton.setVisibility(commentText.getText().toString().trim().isEmpty() ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            commentButton.setOnClickListener(v -> mPresenter.saveComment(mSite, commentText.getText().toString().trim(), ));
         }
     }
 

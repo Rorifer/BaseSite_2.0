@@ -13,4 +13,6 @@ interface SiteDetailsPresenter {
 
     fun showComments(site: Site)
 
+    fun saveComment(site: Site, comment: String, user: String)
+
 }

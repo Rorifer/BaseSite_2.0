@@ -11,12 +11,14 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
     companion object {
         const val INDEX_DEFAULT = 0
         const val RADIUS_DEFAULT = 3
+        const val TIMESTAMP_DEFAULT = 0L
         const val MAP_TYPE_DEFAULT = MAP_TYPE_NORMAL
         const val MAP_TYPE_MAX = MAP_TYPE_HYBRID
         private const val KEY_RADIUS = "key_radius"
         private const val KEY_MAP_TYPE = "key_map_type"
         private const val KEY_OPERATOR = "key_operator"
         private const val KEY_MAP_COUNTER = "key_map_counter"
+        private const val KEY_COMMENT_TIMESTAMP = "key_comment_timestamp"
     }
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -67,4 +69,13 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         }
     }
 
+    override fun saveCommentTimestamp(timestamp: Long) = prefs.edit().putLong(KEY_COMMENT_TIMESTAMP, timestamp).apply()
+
+    override fun getCommentTimestamp(): Long {
+        return try {
+            prefs.getLong(KEY_COMMENT_TIMESTAMP, TIMESTAMP_DEFAULT)
+        } catch (e: ClassCastException) {
+            TIMESTAMP_DEFAULT
+        }
+    }
 }

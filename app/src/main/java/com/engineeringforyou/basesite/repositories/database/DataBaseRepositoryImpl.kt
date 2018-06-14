@@ -4,6 +4,7 @@ import com.engineeringforyou.basesite.data.orm.ORMHelperFactory
 import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
+import io.reactivex.Completable
 import io.reactivex.Single
 
 class DataBaseRepositoryImpl : DataBaseRepository {
@@ -22,4 +23,7 @@ class DataBaseRepositoryImpl : DataBaseRepository {
 
     override fun getComments(site: Site): Single<List<Comment>> =
             Single.fromCallable { ORMHelperFactory.getHelper().getComments(site) }
+
+    override fun saveComment(comment: Comment): Completable =
+            Completable.fromCallable { ORMHelperFactory.getHelper().siteCommentsDao.create(comment) }
 }
