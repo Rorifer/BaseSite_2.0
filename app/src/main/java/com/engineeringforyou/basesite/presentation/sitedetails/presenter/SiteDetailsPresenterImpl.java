@@ -35,6 +35,11 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     }
 
     @Override
+    public void setupName() {
+        mView.setName(mInteractor.getName());
+    }
+
+    @Override
     public void loadAddressFromCoordinates(double lat, double lng) {
         mDisposable.add(mInteractor.loadAddress(lat, lng)
                 .subscribeOn(Schedulers.io())
@@ -60,6 +65,7 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
 
     @Override
     public void saveComment(@NotNull Site site, @NotNull String comment, @NotNull String user) {
+        mInteractor.saveName(user);
         mDisposable.add(mInteractor.saveComment(new Comment(site, comment, user))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -234,21 +234,46 @@
                     android:hint="@string/comment_write"
                     android:imeOptions="actionSend"
                     android:inputType="textMultiLine"
+                    android:maxLength="1000"
                     android:textColor="@android:color/black"
                     android:textColorHint="@color/colorPrimary"
                     android:textSize="16sp"
                     android:theme="@style/LineAccent" />
 
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/comment_user_button"
-                    style="@style/CustomButtonPrimary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="@string/save"
-                    android:visibility="gone"
-                    tools:ignore="RtlSymmetry"
-                    tools:visibility="visible" />
+                <LinearLayout
+                    android:id="@+id/comment_user_button_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/comment_user_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="50dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_weight="2"
+                        android:hint="@string/comment_name"
+                        android:imeOptions="actionSend"
+                        android:inputType="textMultiLine"
+                        android:maxLength="50"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/colorPrimary"
+                        android:textSize="16sp"
+                        android:theme="@style/LineAccent" />
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/comment_user_button"
+                        style="@style/CustomButtonPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="@string/save"
+                        android:visibility="gone"
+                        tools:ignore="RtlSymmetry"
+                        tools:visibility="visible" />
+
+
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

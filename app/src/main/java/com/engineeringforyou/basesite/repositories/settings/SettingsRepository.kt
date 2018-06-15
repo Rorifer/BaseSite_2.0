@@ -24,4 +24,8 @@ interface SettingsRepository {
 
     fun getCommentTimestamp (): Long
 
+    fun getName(): String
+
+    fun setName(name: String)
+
 }

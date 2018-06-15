@@ -78,5 +78,6 @@
     <string name="comment_user">Комментарии пользователей:</string>
     <string name="comment_write">Оставить комментарий</string>
     <string name="save">Сохранить</string>
+    <string name="comment_name">Ваше имя</string>
 
 </resources>

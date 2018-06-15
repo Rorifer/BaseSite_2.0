@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
@@ -66,8 +67,12 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     LinearLayout commentUserLayout;
     @BindView(R.id.comment_user_text)
     EditText commentText;
+    @BindView(R.id.comment_user_name)
+    EditText userNameText;
     @BindView(R.id.comment_user_button)
     AppCompatButton commentButton;
+    @BindView(R.id.comment_user_button_layout)
+    LinearLayout commentButtonLayout;
     @BindView(R.id.comment_list)
     RecyclerView commentRecycler;
 
@@ -103,6 +108,8 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         initAdMob();
         mSite = getIntent().getParcelableExtra(KEY_SITE);
         if (mSite != null) {
+            mPresenter.setupName();
+
             siteNumber.setText(String.format("%s (%s)", mSite.getNumber(), mSite.getOperator().getLabel()));
             siteAddress.setText(mSite.getAddress());
             siteObject.setText(mSite.getObj());
@@ -122,15 +129,24 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    commentButton.setVisibility(commentText.getText().toString().trim().isEmpty() ? View.GONE : View.VISIBLE);
+                    commentButtonLayout.setVisibility(commentText.getText().toString().trim().isEmpty() ? View.GONE : View.VISIBLE);
                 }
             });
 
-            commentButton.setOnClickListener(v -> mPresenter.saveComment(mSite, commentText.getText().toString().trim(), ));
+            commentButton.setOnClickListener(v ->
+                    mPresenter.saveComment(mSite,
+                            commentText.getText().toString().trim(),
+                            userNameText.getText().toString().trim()));
         }
     }
 
     @Override
+    public void setName(@NonNull String name) {
+        userNameText.setText(name);
+    }
+
+
+        @Override
     public void showAdapter(@NotNull List<? extends Comment> list) {
         CommentsAdapter mAdapter = new CommentsAdapter(list);
         commentRecycler.setHasFixedSize(true);

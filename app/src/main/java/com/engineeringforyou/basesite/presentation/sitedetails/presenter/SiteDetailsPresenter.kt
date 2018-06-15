@@ -15,4 +15,6 @@ interface SiteDetailsPresenter {
 
     fun saveComment(site: Site, comment: String, user: String)
 
+    fun setupName()
+
 }

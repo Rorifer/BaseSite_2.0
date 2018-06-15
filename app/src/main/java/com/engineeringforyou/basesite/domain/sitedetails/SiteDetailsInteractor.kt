@@ -15,4 +15,8 @@ interface SiteDetailsInteractor {
 
     fun saveComment(comment: Comment): Completable
 
+    fun getName(): String
+
+    fun saveName(name: String)
+
 }

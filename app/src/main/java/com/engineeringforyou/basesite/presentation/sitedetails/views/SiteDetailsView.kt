@@ -11,5 +11,6 @@ interface SiteDetailsView {
     fun setAddressFromCoordinates(address: String)
 
     fun showAdapter(list: List<Comment>)
+    fun setName(name: String)
 
 }

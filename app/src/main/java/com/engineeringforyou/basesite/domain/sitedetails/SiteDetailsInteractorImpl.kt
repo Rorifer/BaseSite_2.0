@@ -9,6 +9,8 @@ import com.engineeringforyou.basesite.repositories.database.DataBaseRepository
 import com.engineeringforyou.basesite.repositories.database.DataBaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
+import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
+import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
 import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -20,6 +22,7 @@ class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInter
     private lateinit var site: Site
     private var dataBase: DataBaseRepository = DataBaseRepositoryImpl()
     private var firebase: FirebaseRepository = FirebaseRepositoryImpl()
+    private var settings: SettingsRepository = SettingsRepositoryImpl(context)
 
     override fun loadAddress(lat: Double, lng: Double): Single<String> {
         return Single.fromCallable {
@@ -71,4 +74,8 @@ class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInter
                 .onErrorComplete { true }
                 .andThen(firebase.saveComment(comment))
     }
+
+    override fun getName() = settings.getName()
+
+    override fun saveName(name: String)  = settings.setName(name)
 }

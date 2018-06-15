@@ -19,6 +19,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         private const val KEY_OPERATOR = "key_operator"
         private const val KEY_MAP_COUNTER = "key_map_counter"
         private const val KEY_COMMENT_TIMESTAMP = "key_comment_timestamp"
+        private const val KEY_NAME = "key_name"
     }
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -76,6 +77,16 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
             prefs.getLong(KEY_COMMENT_TIMESTAMP, TIMESTAMP_DEFAULT)
         } catch (e: ClassCastException) {
             TIMESTAMP_DEFAULT
+        }
+    }
+
+    override fun setName(name: String) = prefs.edit().putString(KEY_NAME, name).apply()
+
+    override fun getName(): String {
+        return try {
+            prefs.getString(KEY_NAME, "")
+        } catch (e: ClassCastException) {
+            ""
         }
     }
 }
