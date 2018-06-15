@@ -18,7 +18,7 @@ interface SearchSiteView {
 
     fun toSiteInfo(site: Site)
 
-    fun toSiteChoice(list: List<Site>)
+    fun toSiteChoice(list: List<Site>?)
 
     fun openMap(operator: Operator)
 

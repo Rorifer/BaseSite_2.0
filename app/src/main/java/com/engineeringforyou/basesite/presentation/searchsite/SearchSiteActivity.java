@@ -21,7 +21,6 @@ import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivi
 import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -116,8 +115,13 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
 
+//    @Override
+//    public void toSiteChoice(@NotNull List<? extends Site> list) {
+//        hideKeyboard();
+//        SiteListActivity.start(this, list);
+//    }
     @Override
-    public void toSiteChoice(@NotNull List<? extends Site> list) {
+    public void toSiteChoice( List<? extends Site> list) {
         hideKeyboard();
         SiteListActivity.start(this, list);
     }
