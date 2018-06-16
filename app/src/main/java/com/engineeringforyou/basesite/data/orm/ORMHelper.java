@@ -18,7 +18,6 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,7 +45,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
     private SiteMGFDAO siteMGFDao;
     private SiteVMKDAO siteVMKDao;
     private SiteTELEDAO siteTELEDao;
-    private SiteCommentsDAO siteCommentsDao;
+    private CommentsDAO commentsDao;
 
     public ORMHelper(Context mContext) {
         super(mContext, DB_NAME, null, DATABASE_VERSION);
@@ -106,8 +105,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
 
         if (oldVer < 3) {
             try {
-
-                TableUtils.createTable(connectionSource, Comment.class);
+//                TableUtils.createTable(connectionSource, Comment.class);
 
                 SiteMTSDAO mts = getSiteMTSDAO();
                 SiteMGFDAO mgf = getSiteMGFDAO();
@@ -120,7 +118,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
                 tele.executeRaw("ALTER TABLE `TELE_Site_Base` ADD COLUMN uid STRING;");
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                EventFactory.INSTANCE.exception(e);
             }
         }
     }
@@ -186,7 +184,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
     }
 
     public List<Comment> getComments(Site site) throws SQLException {
-        SiteCommentsDAO dao = getSiteCommentsDao();
+        CommentsDAO dao = getCommentsDao();
         QueryBuilder<Comment, Integer> queryBuilder = dao.queryBuilder();
         String uid = site.getUid();
         if (uid == null) uid = site.getNumber();
@@ -274,11 +272,11 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         return siteTELEDao;
     }
 
-    public SiteCommentsDAO getSiteCommentsDao() throws SQLException {
-        if (siteCommentsDao == null) {
-            siteCommentsDao = new SiteCommentsDAO(getConnectionSource(), Comment.class);
+    public CommentsDAO getCommentsDao() throws SQLException {
+        if (commentsDao == null) {
+            commentsDao = new CommentsDAO(getConnectionSource(), Comment.class);
         }
-        return siteCommentsDao;
+        return commentsDao;
     }
 
 
@@ -289,6 +287,6 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         siteMGFDao = null;
         siteVMKDao = null;
         siteTELEDao = null;
-        siteCommentsDao = null;
+        commentsDao = null;
     }
 }

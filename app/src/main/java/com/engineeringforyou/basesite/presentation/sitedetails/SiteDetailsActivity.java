@@ -14,18 +14,23 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.models.User;
 import com.engineeringforyou.basesite.presentation.map.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.CommentsAdapter;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
+import com.engineeringforyou.basesite.utils.EventFactory;
+import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -36,6 +41,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 public class SiteDetailsActivity extends AppCompatActivity implements SiteDetailsView {
 
@@ -61,8 +67,8 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     LinearLayout addressAutoLayout;
     @BindView(R.id.comments_layout)
     LinearLayout commentsLayout;
-    @BindView(R.id.comment_list)
-    RecyclerView commentsList;
+    //    @BindView(R.id.comment_list)
+//    RecyclerView commentsList;
     @BindView(R.id.comment_user_layout)
     LinearLayout commentUserLayout;
     @BindView(R.id.comment_user_text)
@@ -79,6 +85,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     private SiteDetailsPresenter mPresenter;
     private Site mSite;
+    private CommentsAdapter mAdapter;
 
     public static void start(Activity activity, Site site) {
         Intent intent = new Intent(activity, SiteDetailsActivity.class);
@@ -110,13 +117,15 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         if (mSite != null) {
             mPresenter.setupName();
 
+            //noinspection ConstantConditions
             siteNumber.setText(String.format("%s (%s)", mSite.getNumber(), mSite.getOperator().getLabel()));
             siteAddress.setText(mSite.getAddress());
             siteObject.setText(mSite.getObj());
             siteCoordinates.setText(String.format("%.6f° С.Ш.\n%.6f° В.Д.", mSite.getLatitude(), mSite.getLongitude()));
             siteStatus.setText(mSite.getStatus().getDescription());
+            //noinspection ConstantConditions
             mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
-            mPresenter.showComments(mSite);
+            mPresenter.loadComments(mSite);
 
             commentText.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -132,11 +141,6 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
                     commentButtonLayout.setVisibility(commentText.getText().toString().trim().isEmpty() ? View.GONE : View.VISIBLE);
                 }
             });
-
-            commentButton.setOnClickListener(v ->
-                    mPresenter.saveComment(mSite,
-                            commentText.getText().toString().trim(),
-                            userNameText.getText().toString().trim()));
         }
     }
 
@@ -146,12 +150,18 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     }
 
 
-        @Override
+    @Override
     public void showAdapter(@NotNull List<? extends Comment> list) {
-        CommentsAdapter mAdapter = new CommentsAdapter(list);
-        commentRecycler.setHasFixedSize(true);
+        mAdapter = new CommentsAdapter(list);
         commentRecycler.setLayoutManager(new LinearLayoutManager(this));
         commentRecycler.setAdapter(mAdapter);
+        commentsLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void addUserComment(@NotNull Comment comment) {
+        commentText.setText(null);
+        mAdapter.addItem(comment);
     }
 
     @Override
@@ -178,7 +188,29 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     public void clickRouteBtn() {
         Double lat = mSite.getLatitude();
         Double lng = mSite.getLongitude();
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("geo:%s,%s?q=%s,%s", lat, lng, lat, lng))));
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("geo:%s,%s?q=%s,%s", lat, lng, lat, lng))));
+        }
+        catch(Exception e){
+            EventFactory.INSTANCE.exception(e);
+            Toast.makeText(this, "Не удалось запустить навигатор", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @OnClick(R.id.comment_user_button)
+    public void clickCommentBtn() {
+        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
+        mPresenter.saveComment(mSite, commentText.getText().toString().trim(),
+                new User(this, userNameText.getText().toString().trim()));
+    }
+
+    @OnEditorAction(R.id.comment_user_name)
+    public boolean comment(int actionId) {
+        if (actionId == EditorInfo.IME_ACTION_SEND) {
+            clickCommentBtn();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -189,6 +221,11 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     @Override
     public void hideProgress() {
         mProgress.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showMessage(@NotNull String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

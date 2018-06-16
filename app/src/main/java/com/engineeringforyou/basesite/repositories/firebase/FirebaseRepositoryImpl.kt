@@ -5,54 +5,38 @@ import com.engineeringforyou.basesite.models.Site
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.Single
+import java.util.*
 
 const val DIRECTORY_COMMENTS = "comments"
-
+const val FIELD_SITE_ID = "siteId"
+const val FIELD_OPERATOR_ID = "operatorId"
+const val FIELD_TIMESTAMP = "timestamp"
 
 class FirebaseRepositoryImpl : FirebaseRepository {
 
     private val firestore = FirebaseFirestore.getInstance()
 
     override fun getComments(site: Site): Single<List<Comment>> {
-
-        return Single.create {
-
-            firestore.collection(DIRECTORY_COMMENTS).get()
-                    .addOnCompleteListener {
+        return Single.create<List<Comment>>({ emitter ->
+            firestore.collection(DIRECTORY_COMMENTS)
+                    .whereEqualTo(FIELD_SITE_ID, site.uid ?: site.number)
+                    .whereEqualTo(FIELD_OPERATOR_ID, site.operator!!.code)
+                    .orderBy(FIELD_TIMESTAMP)
+                    .get()
+                    .addOnCompleteListener({ task ->
                         val list = ArrayList<Comment>()
-                        if (it.isSuccessful) for (document in it.result) list.add(document.toObject(Comment::class.java))
-                        Single.fromCallable { list }
-                    }
-//                        it.result.toObjects(Comment::class.java) }
-//                    .addOnSuccessListener {it -> it.toObjects(Comment::class.java). }
-                    .addOnFailureListener { Single.error<Throwable>(it) }
-//        }
-        }
+                        if (task.isSuccessful) for (document in task.result) list.add(document.toObject(Comment::class.java))
+                        emitter.onSuccess(list)
+                    })
+                    .addOnFailureListener { emitter.onError(it) }
+        })
     }
 
-
-//            val query = firestore.collection(DIRECTORY_COMMENTS)
-//                    //                .whereGreaterThanOrEqualTo(FIELD_DATES)
-//                    //                .whereGreaterThan("dateCreate", new Date(new Date().getTime() - 86400000));
-//                    //                .whereLessThan("dateCreate", new Date(new Date().getTime() - 86400000));
-//                    //                .whereGreaterThanOrEqualTo(FIELD_DATES, Long.toString(new Date().getTime()))
-//                    //                .whereGreaterThan(FIELD_DATES, new Date())
-//                    //                .whereGreaterThanOrEqualTo(FIELD_DATES, new Date());
-//                    //                .whereGreaterThanOrEqualTo(FIELD_DATES, Long.toString(123))
-//
-//                    .orderBy(FIELD_DATES, Query.Direction.ASCENDING)
-
-
-//        }
-//        }
-//    }
-
     override fun saveComment(comment: Comment): Completable {
-
-        return Completable.create {
+        return Completable.create({ emitter ->
             firestore.collection(DIRECTORY_COMMENTS).add(comment)
-                    .addOnSuccessListener { Completable.complete() }
-                    .addOnFailureListener { Completable.error(it) }
-        }
+                    .addOnSuccessListener({ emitter.onComplete() })
+                    .addOnFailureListener { emitter.onError(it) }
+        })
     }
 }

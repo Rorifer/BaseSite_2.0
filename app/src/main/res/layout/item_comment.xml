@@ -10,24 +10,39 @@
         android:id="@+id/comment_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="4dp"
+        android:layout_toLeftOf="@id/comment_date"
+        android:layout_toStartOf="@id/comment_date"
+        android:ellipsize="end"
+        android:singleLine="true"
+        tools:text="Петров Петр" />
+
+    <TextView
+        android:id="@+id/comment_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="4dp"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textColor="@android:color/black"
-        tools:text="Петров Петр" />
+        tools:text="27.03.1985" />
 
     <TextView
         android:id="@+id/comment_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/comment_name"
         android:layout_alignLeft="@id/comment_name"
-        android:layout_alignRight="@id/comment_name"
         android:layout_alignStart="@id/comment_name"
         android:layout_below="@id/comment_name"
         android:layout_marginBottom="4dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:textColor="@android:color/black"
         tools:text="Текст сообщения которое может быть очнень длинное" />
 
     <View

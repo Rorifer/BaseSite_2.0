@@ -41,10 +41,10 @@ class MapInteractorImpl(context: Context) : MapInteractor {
                 sitesRepository.getAllSites(operator).toObservable()
             } else {
                 Observable.create<List<Site>> { e ->
-                    sitesRepository.getAllSites(Operator.MTS).map { e.onNext(it) }.subscribe()
-                    sitesRepository.getAllSites(Operator.MEGAFON).map { e.onNext(it) }.subscribe()
-                    sitesRepository.getAllSites(Operator.VIMPELCOM).map { e.onNext(it) }.subscribe()
-                    sitesRepository.getAllSites(Operator.TELE2).map { e.onNext(it) }.subscribe()
+                    sitesRepository.getAllSites(Operator.MTS).doOnSuccess { e.onNext(it) }.subscribe()
+                    sitesRepository.getAllSites(Operator.MEGAFON).doOnSuccess { e.onNext(it) }.subscribe()
+                    sitesRepository.getAllSites(Operator.VIMPELCOM).doOnSuccess { e.onNext(it) }.subscribe()
+                    sitesRepository.getAllSites(Operator.TELE2).doOnSuccess { e.onNext(it) }.subscribe()
 //                    e.onNext(sitesRepository.getAllSites(Operator.MTS).blockingGet())
 //                    e.onNext(sitesRepository.getAllSites(Operator.MEGAFON).blockingGet())
 //                    e.onNext(sitesRepository.getAllSites(Operator.VIMPELCOM).blockingGet())

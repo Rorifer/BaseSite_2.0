@@ -60,5 +60,5 @@ internal constructor(connectionSource: ConnectionSource, dataClass: Class<SiteMG
 class SiteTELEDAO @Throws(SQLException::class)
 internal constructor(connectionSource: ConnectionSource, dataClass: Class<SiteTELE>) : BaseDaoImpl<SiteTELE, Int>(connectionSource, dataClass)
 
-class SiteCommentsDAO @Throws(SQLException::class)
+class CommentsDAO @Throws(SQLException::class)
 internal constructor(connectionSource: ConnectionSource, dataClass: Class<Comment>) : BaseDaoImpl<Comment, Int>(connectionSource, dataClass)

@@ -11,7 +11,7 @@ interface SiteDetailsInteractor {
 
     fun getSavedComments(site: Site): Single<List<Comment>>
 
-    fun loadComments(): Single<List<Comment>>
+    fun loadComments(site: Site): Single<List<Comment>>
 
     fun saveComment(comment: Comment): Completable
 

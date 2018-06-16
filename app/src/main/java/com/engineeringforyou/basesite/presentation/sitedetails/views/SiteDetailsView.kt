@@ -11,6 +11,11 @@ interface SiteDetailsView {
     fun setAddressFromCoordinates(address: String)
 
     fun showAdapter(list: List<Comment>)
+
     fun setName(name: String)
+
+    fun showMessage(message :String)
+
+    fun addUserComment(comment: Comment)
 
 }

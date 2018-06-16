@@ -2,6 +2,7 @@ package com.engineeringforyou.basesite.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.engineeringforyou.basesite.utils.Utils
 import com.j256.ormlite.field.DatabaseField
 import java.util.*
 
@@ -25,17 +26,21 @@ open class Comment(
         val userName: String? = null,
 
         @DatabaseField
+        val userAndroidId: String? = null,
+
+        @DatabaseField
         val comment: String? = null
 ) : Parcelable {
     constructor() : this(999999999)
 
-    constructor(site: Site, text: String, user: String) : this(
+    constructor(site: Site, text: String, user: User) : this(
             null,
             Date().time,
             site.operator!!.code,
             site.uid ?: site.number,
             site.status.code,
-            user,
+            user.userName,
+            user.userAndroidId,
             text)
 
     constructor(source: Parcel) : this(
@@ -44,6 +49,7 @@ open class Comment(
             source.readValue(Int::class.java.classLoader) as Int?,
             source.readString(),
             source.readValue(Int::class.java.classLoader) as Int?,
+            source.readString(),
             source.readString(),
             source.readString()
     )
@@ -57,6 +63,7 @@ open class Comment(
         writeString(siteId)
         writeValue(siteStatusId)
         writeString(userName)
+        writeString(userAndroidId)
         writeString(comment)
     }
 

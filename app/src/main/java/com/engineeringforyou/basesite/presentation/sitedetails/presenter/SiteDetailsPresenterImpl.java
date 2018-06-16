@@ -7,6 +7,7 @@ import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractor;
 import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractorImpl;
 import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.models.User;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
 import com.engineeringforyou.basesite.utils.EventFactory;
 
@@ -23,6 +24,7 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     private CompositeDisposable mDisposable;
     private SiteDetailsView mView;
     private SiteDetailsInteractor mInteractor;
+    private Comment mComment;
 
     public SiteDetailsPresenterImpl(Context context) {
         mDisposable = new CompositeDisposable();
@@ -56,46 +58,44 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     }
 
     @Override
-    public void showComments(@NotNull Site site) {
-        mDisposable.add(mInteractor.getSavedComments(site)
+    public void loadComments(@NotNull Site site) {
+        mDisposable.add(mInteractor.loadComments(site)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::loadSavedCommentsSuccess, this::loadCommentsError));
     }
 
     @Override
-    public void saveComment(@NotNull Site site, @NotNull String comment, @NotNull String user) {
-        mInteractor.saveName(user);
-        mDisposable.add(mInteractor.saveComment(new Comment(site, comment, user))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::saveCommentSuccess, this::saveCommentError));
-    }
-
-    private void saveCommentError(Throwable throwable) {
-
-    }
-
-    private void saveCommentSuccess() {
-
-    }
-
-    private void loadSavedCommentsSuccess(List<Comment> list) {
-        if (mView != null) {
-            mView.showAdapter(list);
-            loadComments();
+    public void saveComment(@NotNull Site site, @NotNull String text, @NotNull User user) {
+        if (!text.isEmpty()) {
+            mView.showProgress();
+            mInteractor.saveName(user.getUserName());
+            mComment = new Comment(site, text, user);
+            mDisposable.add(mInteractor.saveComment(mComment)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe((this::saveCommentSuccess), (this::saveCommentError)));
         }
     }
 
-    public void loadComments() {
-        mDisposable.add(mInteractor.loadComments()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::loadCommentsSuccess, this::loadCommentsError));
+    private void saveCommentError(Throwable throwable) {
+        EventFactory.INSTANCE.exception(throwable);
+        if (mView != null) {
+            mView.hideProgress();
+            mView.showMessage("Отправка комментария не удалась. Проверьте интернет-соединение");
+        }
     }
 
-    private void loadCommentsSuccess(List<Comment> list) {
+    private void saveCommentSuccess() {
         if (mView != null) {
+            mView.addUserComment(mComment);
+            mView.hideProgress();
+            mView.showMessage("Отправка комментария выполнена");
+        }
+    }
+
+    private void loadSavedCommentsSuccess(List<Comment> list) {
+        if (mView != null && !list.isEmpty()) {
             mView.showAdapter(list);
         }
     }

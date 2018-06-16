@@ -7,4 +7,6 @@
     <color name="progress_background">#67000000</color>
     <color name="disabled_button_edit_text">#12000000</color>
 
+    <color name="color_background">#2eaf62c1</color>
+
 </resources>

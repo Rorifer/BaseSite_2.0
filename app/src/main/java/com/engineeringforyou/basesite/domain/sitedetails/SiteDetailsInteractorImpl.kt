@@ -19,7 +19,6 @@ import java.util.*
 
 class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInteractor {
 
-    private lateinit var site: Site
     private var dataBase: DataBaseRepository = DataBaseRepositoryImpl()
     private var firebase: FirebaseRepository = FirebaseRepositoryImpl()
     private var settings: SettingsRepository = SettingsRepositoryImpl(context)
@@ -65,17 +64,18 @@ class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInter
         return dataBase.getComments(site)
     }
 
-    override fun loadComments(): Single<List<Comment>> {
+    override fun loadComments(site: Site): Single<List<Comment>> {
         return firebase.getComments(site)
     }
 
     override fun saveComment(comment: Comment): Completable {
-        return dataBase.saveComment(comment)
-                .onErrorComplete { true }
-                .andThen(firebase.saveComment(comment))
+        return firebase.saveComment(comment)
+//        return dataBase.saveComment(comment)
+//                .onErrorComplete { true }
+//                .andThen(firebase.saveComment(comment))
     }
 
     override fun getName() = settings.getName()
 
-    override fun saveName(name: String)  = settings.setName(name)
+    override fun saveName(name: String) = settings.setName(name)
 }

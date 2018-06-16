@@ -25,5 +25,5 @@ class DataBaseRepositoryImpl : DataBaseRepository {
             Single.fromCallable { ORMHelperFactory.getHelper().getComments(site) }
 
     override fun saveComment(comment: Comment): Completable =
-            Completable.fromCallable { ORMHelperFactory.getHelper().siteCommentsDao.create(comment) }
+            Completable.fromCallable { ORMHelperFactory.getHelper().commentsDao.create(comment) }
 }
