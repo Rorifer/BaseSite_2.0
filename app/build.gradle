@@ -33,7 +33,7 @@ android {
         applicationId "com.engineeringforyou.basesite"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 30
+        versionCode 31
         versionName '2.06'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config

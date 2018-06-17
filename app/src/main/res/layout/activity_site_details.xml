@@ -10,12 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/ad_mob_details"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatButton
@@ -219,7 +220,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:focusableInTouchMode="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="16dp">
 
                 <EditText
                     android:id="@+id/comment_user_text"
@@ -272,7 +274,6 @@
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/ad_mob_details"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

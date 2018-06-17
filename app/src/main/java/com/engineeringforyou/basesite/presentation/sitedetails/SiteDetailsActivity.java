@@ -116,6 +116,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         mSite = getIntent().getParcelableExtra(KEY_SITE);
         if (mSite != null) {
             mPresenter.setupName();
+            initAdapter();
 
             //noinspection ConstantConditions
             siteNumber.setText(String.format("%s (%s)", mSite.getNumber(), mSite.getOperator().getLabel()));
@@ -144,17 +145,20 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         }
     }
 
+    private void initAdapter(){
+        mAdapter = new CommentsAdapter();
+        commentRecycler.setLayoutManager(new LinearLayoutManager(this));
+        commentRecycler.setAdapter(mAdapter);
+    }
+
     @Override
     public void setName(@NonNull String name) {
         userNameText.setText(name);
     }
 
-
     @Override
     public void showAdapter(@NotNull List<? extends Comment> list) {
-        mAdapter = new CommentsAdapter(list);
-        commentRecycler.setLayoutManager(new LinearLayoutManager(this));
-        commentRecycler.setAdapter(mAdapter);
+        mAdapter.addList(list);
         commentsLayout.setVisibility(View.VISIBLE);
     }
 
@@ -162,6 +166,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     public void addUserComment(@NotNull Comment comment) {
         commentText.setText(null);
         mAdapter.addItem(comment);
+        commentsLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
