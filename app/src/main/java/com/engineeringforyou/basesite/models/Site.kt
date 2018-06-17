@@ -9,7 +9,7 @@ import com.j256.ormlite.table.DatabaseTable
 //@DatabaseTable(tableName = "TELE_Site_Base")
 open class Site(
         @DatabaseField(generatedId = true, columnName = "_id")
-        val id: Int,
+        val id: Int? = null,
 
         open val operator: Operator? = null,
 
@@ -40,7 +40,7 @@ open class Site(
     constructor() : this(999999999)
 
     constructor(source: Parcel) : this(
-            source.readInt(),
+            source.readValue(Int::class.java.classLoader) as Int?,
             source.readValue(Int::class.java.classLoader)?.let { Operator.values()[it as Int] },
             source.readString(),
             source.readValue(Double::class.java.classLoader) as Double?,
@@ -54,7 +54,7 @@ open class Site(
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeInt(id)
+        writeValue(id)
         writeValue(operator?.ordinal)
         writeString(number)
         writeValue(latitude)

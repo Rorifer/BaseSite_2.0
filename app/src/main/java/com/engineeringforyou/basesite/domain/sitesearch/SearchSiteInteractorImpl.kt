@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.domain.searchsite
+package com.engineeringforyou.basesite.domain.sitesearch
 
 import android.content.Context
 import com.engineeringforyou.basesite.models.Operator

@@ -1,8 +1,8 @@
-package com.engineeringforyou.basesite.presentation.map.presenter
+package com.engineeringforyou.basesite.presentation.sitemap.presenter
 
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
-import com.engineeringforyou.basesite.presentation.map.views.MapView
+import com.engineeringforyou.basesite.presentation.sitemap.views.MapView
 import java.util.*
 
 

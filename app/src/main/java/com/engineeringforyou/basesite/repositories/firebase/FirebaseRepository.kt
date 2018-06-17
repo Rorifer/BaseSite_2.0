@@ -10,4 +10,6 @@ interface FirebaseRepository {
     fun getComments(site: Site): Single<List<Comment>>
 
     fun saveComment(comment: Comment): Completable
+
+    fun saveSite(site: Site): Completable
 }

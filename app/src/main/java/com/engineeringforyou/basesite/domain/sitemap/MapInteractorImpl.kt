@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.domain.map
+package com.engineeringforyou.basesite.domain.sitemap
 
 import android.content.Context
 import com.engineeringforyou.basesite.models.Operator

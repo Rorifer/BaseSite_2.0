@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.presentation.searchsite.views
+package com.engineeringforyou.basesite.presentation.sitesearch.views
 
 import android.support.annotation.StringRes
 import com.engineeringforyou.basesite.models.Operator

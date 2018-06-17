@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.domain.searchsite
+package com.engineeringforyou.basesite.domain.sitesearch
 
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site

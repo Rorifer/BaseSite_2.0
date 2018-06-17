@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.presentation.map.views
+package com.engineeringforyou.basesite.presentation.sitemap.views
 
 import com.engineeringforyou.basesite.models.Site
 import com.google.android.gms.maps.model.LatLng

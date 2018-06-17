@@ -23,7 +23,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity"
+            android:name="com.engineeringforyou.basesite.presentation.sitesearch.SearchSiteActivity"
             android:launchMode="singleTask"
             android:theme="@style/SignTheme">
             <intent-filter>
@@ -38,9 +38,10 @@
             android:name="com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity"
             android:label="Выбор БС" />
         <activity
-            android:name=".presentation.map.MapActivity"
+            android:name=".presentation.sitemap.MapActivity"
             android:label="Карта"
             android:launchMode="singleInstance" />
+        <activity android:name=".presentation.sitedraft.SiteDraftActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

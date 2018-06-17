@@ -1,12 +1,12 @@
-package com.engineeringforyou.basesite.presentation.map.presenter;
+package com.engineeringforyou.basesite.presentation.sitemap.presenter;
 
 import android.content.Context;
 
-import com.engineeringforyou.basesite.domain.map.MapInteractor;
-import com.engineeringforyou.basesite.domain.map.MapInteractorImpl;
+import com.engineeringforyou.basesite.domain.sitemap.MapInteractor;
+import com.engineeringforyou.basesite.domain.sitemap.MapInteractorImpl;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
-import com.engineeringforyou.basesite.presentation.map.views.MapView;
+import com.engineeringforyou.basesite.presentation.sitemap.views.MapView;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.google.android.gms.maps.model.LatLng;
 

@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.presentation.map;
+package com.engineeringforyou.basesite.presentation.sitemap;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -31,10 +31,10 @@ import android.widget.Toast;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
-import com.engineeringforyou.basesite.presentation.map.presenter.MapPresenter;
-import com.engineeringforyou.basesite.presentation.map.presenter.MapPresenterImpl;
-import com.engineeringforyou.basesite.presentation.map.views.MapView;
-import com.engineeringforyou.basesite.presentation.searchsite.SearchSiteActivity;
+import com.engineeringforyou.basesite.presentation.sitemap.presenter.MapPresenter;
+import com.engineeringforyou.basesite.presentation.sitemap.presenter.MapPresenterImpl;
+import com.engineeringforyou.basesite.presentation.sitemap.views.MapView;
+import com.engineeringforyou.basesite.presentation.sitesearch.SearchSiteActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;

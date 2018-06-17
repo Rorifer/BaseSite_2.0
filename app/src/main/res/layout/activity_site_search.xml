@@ -144,6 +144,6 @@
     </ScrollView>
 
     <include
-        layout="@layout/progress_with_background"
+        layout="@layout/view_progress"
         android:visibility="gone" />
 </FrameLayout>

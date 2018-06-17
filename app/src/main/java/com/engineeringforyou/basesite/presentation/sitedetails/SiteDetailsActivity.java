@@ -24,7 +24,7 @@ import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.User;
-import com.engineeringforyou.basesite.presentation.map.MapActivity;
+import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.CommentsAdapter;

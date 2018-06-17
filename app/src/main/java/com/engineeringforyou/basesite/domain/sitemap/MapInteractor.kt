@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.domain.map
+package com.engineeringforyou.basesite.domain.sitemap
 
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site

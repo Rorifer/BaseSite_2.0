@@ -8,6 +8,7 @@ import io.reactivex.Single
 import java.util.*
 
 const val DIRECTORY_COMMENTS = "comments"
+const val DIRECTORY_SITES = "sites"
 const val FIELD_SITE_ID = "siteId"
 const val FIELD_OPERATOR_ID = "operatorId"
 const val FIELD_TIMESTAMP = "timestamp"
@@ -39,4 +40,13 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                     .addOnFailureListener { emitter.onError(it) }
         })
     }
+
+    override fun saveSite(site: Site): Completable {
+        return Completable.create({ emitter ->
+            firestore.collection(DIRECTORY_SITES).add(site)
+                    .addOnSuccessListener({ emitter.onComplete() })
+                    .addOnFailureListener { emitter.onError(it) }
+        })
+    }
+
 }

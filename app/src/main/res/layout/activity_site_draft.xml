@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Добавить БС" />
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/site_operator"
+                    android:textSize="16sp" />
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/site_operator_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/site_number"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/site_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/number_default"
+                    android:inputType="text"
+                    android:textSize="16sp"
+                    android:maxLength="20"
+                    tools:ignore="TextFields" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/coordinates_title"
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingTop="16dp"
+                    android:text="@string/site_coordinates"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/coordinates_lat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/coordinates_title"
+                    android:layout_toLeftOf="@id/coordinates_button"
+                    android:layout_toRightOf="@id/coordinates_title"
+                    android:layout_toStartOf="@id/coordinates_button"
+                    android:digits="0123456789.,"
+                    android:maxLength="12"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/_55_123456"
+                    android:inputType="numberDecimal"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/coordinates_long"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/coordinates_lat"
+                    android:layout_toEndOf="@id/coordinates_title"
+                    android:layout_toLeftOf="@id/coordinates_button"
+                    android:layout_toRightOf="@id/coordinates_title"
+                    android:layout_toStartOf="@id/coordinates_button"
+                    android:digits="0123456789.,"
+                    android:maxLength="12"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/_37_123456"
+                    android:inputType="numberDecimal"
+                    android:textSize="16sp" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/coordinates_button"
+                    style="@style/CustomButtonPrimary"
+                    android:layout_width="60dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_map_white" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/bs_address"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/site_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/address_default"
+                    android:maxLength="150"
+                    android:inputType="text"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/bs_object"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/site_object"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/object_default"
+                    android:inputType="text"
+                    android:maxLength="150"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/site_draft_button"
+                style="@style/CustomButtonPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="@string/save" />
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/view_progress" />
+
+</android.support.design.widget.CoordinatorLayout>
