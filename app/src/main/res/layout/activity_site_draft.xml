@@ -83,7 +83,7 @@
                 <TextView
                     android:id="@+id/coordinates_title"
                     android:layout_width="120dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingTop="16dp"
                     android:text="@string/site_coordinates"

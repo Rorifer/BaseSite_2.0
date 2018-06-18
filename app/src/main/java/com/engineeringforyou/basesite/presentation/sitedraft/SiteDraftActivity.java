@@ -3,6 +3,7 @@ package com.engineeringforyou.basesite.presentation.sitedraft;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
@@ -22,6 +23,7 @@ import com.engineeringforyou.basesite.presentation.sitedraft.presenter.SiteDraft
 import com.engineeringforyou.basesite.presentation.sitedraft.presenter.SiteDraftPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedraft.views.SiteDraftView;
 import com.engineeringforyou.basesite.utils.EventFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 
 import java.util.Date;
 
@@ -34,6 +36,8 @@ import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoor
 import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity.LONGITUDE;
 
 public class SiteDraftActivity extends AppCompatActivity implements SiteDraftView {
+
+    private static final String POSITION = "position";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -54,8 +58,9 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
 
     private SiteDraftPresenter mPresenter;
 
-    public static void start(Activity activity) {
+    public static void start(Activity activity, @Nullable CameraPosition position) {
         Intent intent = new Intent(activity, SiteDraftActivity.class);
+        intent.putExtra(POSITION, position);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
     }
@@ -79,7 +84,6 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
     }
 
     private void initSpinners() {
@@ -90,7 +94,6 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
         mOperatorSpinner.setAdapter(adapter);
         mOperatorSpinner.setPrompt("Операторы");
     }
-
 
     @OnClick(R.id.site_draft_button)
     public void saveDraft() {
@@ -129,7 +132,7 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
 
     @OnClick(R.id.coordinates_button)
     public void clickMap() {
-        MapCoordinatesActivity.startForResult(getLatitude(), getLongitude());
+        MapCoordinatesActivity.startForResult(this, getLatitude(), getLongitude(), getIntent().getParcelableExtra(POSITION));
     }
 
     @Override
@@ -176,7 +179,6 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
     public void onBackPressed() {
         close();
     }
-
 
     @Override
     public void close() {

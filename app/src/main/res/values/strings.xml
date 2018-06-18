@@ -82,7 +82,7 @@
     <string name="site_number">Номер БС:</string>
     <string name="number_default">77-1234</string>
     <string name="site_coordinates">Координаты:</string>
-    <string name="object_default">Центральная полликлинника</string>
+    <string name="object_default">Башня, Полликлинника</string>
     <string name="address_default">город, улица, дом</string>
     <string name="site_operator">Оператор:</string>
     <string name="_37_123456">37.123456</string>
@@ -91,5 +91,7 @@
     <string name="error_site_coordinates">Введите координаты БС</string>
     <string name="error_site_save">Не удалось сохранить БС. Проверьте интернет-соединение</string>
     <string name="site_saved">Базовая станция сохранена</string>
+    <string name="map_coordinates_tittle">Местоположение БС</string>
+    <string name="activity_draft_title">Создаие БС</string>
 
 </resources>

@@ -21,8 +21,8 @@ class SiteDraftPresenterImpl : SiteDraftPresenter {
     }
 
     override fun saveDraft(site: Site) {
-        if (site.number.orEmpty().isEmpty()) mView?.showMessage(R.string.error_site_number)
-        else if (site.latitude == null || site.longitude == null) mView?.showMessage(R.string.error_site_coordinates)
+//        if (site.number.orEmpty().isEmpty()) mView?.showMessage(R.string.error_site_number) else
+            if (site.latitude == null || site.longitude == null) mView?.showMessage(R.string.error_site_coordinates)
         else {
             mView?.showProgress()
             mDisposable.add(mInteractor.saveSite(site)

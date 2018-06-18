@@ -31,11 +31,12 @@ import android.widget.Toast;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
+import com.engineeringforyou.basesite.presentation.sitedraft.SiteDraftActivity;
 import com.engineeringforyou.basesite.presentation.sitemap.presenter.MapPresenter;
 import com.engineeringforyou.basesite.presentation.sitemap.presenter.MapPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitemap.views.MapView;
 import com.engineeringforyou.basesite.presentation.sitesearch.SearchSiteActivity;
-import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -56,6 +57,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
 
@@ -64,13 +66,14 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private static final String KEY_SITE = "key_site";
     private static final String MAIN_SITE = "main_site";
+    public static final double DEFAULT_LAT = 55.753720;
+    public static final double DEFAULT_LNG = 37.619927;
+
     private final String POSITION = "position";
     private final String SCALE = "scale";
 
     private final int PERMISSIONS_LOCATION = 1;
     private final int PERMISSIONS_LOCATION_BUTTON = 2;
-    private final double DEFAULT_LAT = 55.753720;
-    private final double DEFAULT_LNG = 37.619927;
     private final double BORDER_LAT_START = 54.489509;
     private final double BORDER_LAT_END = 56.953235;
     private final double BORDER_LNG_START = 35.127559;
@@ -102,7 +105,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_site_map);
         ButterKnife.bind(this);
         if (savedInstanceState != null) {
             mPosition = savedInstanceState.getParcelable(POSITION);
@@ -147,6 +150,11 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @OnClick(R.id.fab_add_site)
+    public void addSite() {
+        SiteDraftActivity.start(this, mMap == null ? null : mMap.getCameraPosition());
     }
 
     private void initOperatorIcon() {

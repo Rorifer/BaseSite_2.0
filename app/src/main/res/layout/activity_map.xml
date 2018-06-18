@@ -1,39 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/view_toolbar" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/ad_mob_map"
-        tools:mContext="com.engineeringforyou.basesite.presentation.sitemap.MapActivity" />
-
-    <ProgressBar
-        android:id="@+id/progress_view"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_margin="8dp"
-        android:visibility="gone" />
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/error_view"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_margin="8dp"
-        android:visibility="gone"
-        ads:srcCompat="@drawable/ic_error_outline_24dp" />
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/ad_mob_map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id_2" />
-</RelativeLayout>
+        android:layout_height="match_parent" />
+</LinearLayout>

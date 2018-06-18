@@ -41,7 +41,11 @@
             android:name=".presentation.sitemap.MapActivity"
             android:label="Карта"
             android:launchMode="singleInstance" />
-        <activity android:name=".presentation.sitedraft.SiteDraftActivity" />
+        <activity android:name=".presentation.sitedraft.SiteDraftActivity"
+           android:label="@string/activity_draft_title" />
+        <activity
+            android:name=".presentation.mapcoordinates.MapCoordinatesActivity"
+            android:label="@string/map_coordinates_tittle" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
