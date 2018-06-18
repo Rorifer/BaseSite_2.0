@@ -17,7 +17,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
     private val firestore = FirebaseFirestore.getInstance()
 
-    override fun getComments(site: Site): Single<List<Comment>> {
+    override fun loadComments(site: Site): Single<List<Comment>> {
         return Single.create<List<Comment>>({ emitter ->
             firestore.collection(DIRECTORY_COMMENTS)
                     .whereEqualTo(FIELD_SITE_ID, site.uid ?: site.number)
@@ -49,4 +49,17 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         })
     }
 
+    override fun loadSites(sitesTimestamp: Long): Single<List<Site>> {
+        return Single.create<List<Site>>({ emitter ->
+            firestore.collection(DIRECTORY_SITES)
+                    .whereGreaterThan(FIELD_TIMESTAMP, sitesTimestamp)
+                    .get()
+                    .addOnCompleteListener({ task ->
+                        val list = ArrayList<Site>()
+                        if (task.isSuccessful) for (document in task.result) list.add(document.toObject(Site::class.java))
+                        emitter.onSuccess(list)
+                    })
+                    .addOnFailureListener { emitter.onError(it) }
+        })
+    }
 }

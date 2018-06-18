@@ -18,7 +18,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         private const val KEY_MAP_TYPE = "key_map_type"
         private const val KEY_OPERATOR = "key_operator"
         private const val KEY_MAP_COUNTER = "key_map_counter"
-        private const val KEY_COMMENT_TIMESTAMP = "key_comment_timestamp"
+        private const val KEY_SITES_TIMESTAMP = "key_sites_timestamp"
         private const val KEY_NAME = "key_name"
     }
 
@@ -70,11 +70,11 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         }
     }
 
-    override fun saveCommentTimestamp(timestamp: Long) = prefs.edit().putLong(KEY_COMMENT_TIMESTAMP, timestamp).apply()
+    override fun saveSitesTimestamp(timestamp: Long) = prefs.edit().putLong(KEY_SITES_TIMESTAMP, timestamp).apply()
 
-    override fun getCommentTimestamp(): Long {
+    override fun getSitesTimestamp(): Long {
         return try {
-            prefs.getLong(KEY_COMMENT_TIMESTAMP, TIMESTAMP_DEFAULT)
+            prefs.getLong(KEY_SITES_TIMESTAMP, TIMESTAMP_DEFAULT)
         } catch (e: ClassCastException) {
             TIMESTAMP_DEFAULT
         }

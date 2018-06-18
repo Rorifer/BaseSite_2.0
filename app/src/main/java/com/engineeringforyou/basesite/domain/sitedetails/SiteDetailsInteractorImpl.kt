@@ -65,7 +65,7 @@ class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInter
     }
 
     override fun loadComments(site: Site): Single<List<Comment>> {
-        return firebase.getComments(site)
+        return firebase.loadComments(site)
     }
 
     override fun saveComment(comment: Comment): Completable {

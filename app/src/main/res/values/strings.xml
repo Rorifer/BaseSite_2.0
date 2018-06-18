@@ -88,9 +88,11 @@
     <string name="_37_123456">37.123456</string>
     <string name="_55_123456">55.123456</string>
     <string name="error_site_number">Введите номер БС</string>
-    <string name="error_site_coordinates">Введите координаты БС</string>
+    <string name="error_site_coordinates">Введите координаты БС или укажите точку на карте</string>
+    <string name="error_refresh_site">Не удалось обновить список БС</string>
+    <string name="sites_refresh">Локальная база обновлена</string>
     <string name="error_site_save">Не удалось сохранить БС. Проверьте интернет-соединение</string>
-    <string name="site_saved">Базовая станция сохранена</string>
+    <string name="site_saved">Базовая станция сохранена. Обновляется локальная база</string>
     <string name="map_coordinates_tittle">Местоположение БС</string>
     <string name="activity_draft_title">Создаие БС</string>
 

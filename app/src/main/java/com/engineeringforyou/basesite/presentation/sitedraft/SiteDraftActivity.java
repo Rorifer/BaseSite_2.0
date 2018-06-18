@@ -71,7 +71,7 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
         setContentView(R.layout.activity_site_draft);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        mPresenter = new SiteDraftPresenterImpl();
+        mPresenter = new SiteDraftPresenterImpl(this);
         mPresenter.bind(this);
         initToolbar();
         initSpinners();
@@ -98,6 +98,7 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
     @OnClick(R.id.site_draft_button)
     public void saveDraft() {
         String number = mNumber.getText().toString().trim();
+        if(number.isEmpty()) number = "unknown";
         Site site = new Site(
                 null,
                 Operator.values()[mOperatorSpinner.getSelectedItemPosition()],
@@ -109,7 +110,7 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
                 number.concat("_").concat(String.valueOf(new Date().getTime())),
                 Status.ACTIVE
         );
-        mPresenter.saveDraft(site);
+        mPresenter.saveSite(site);
     }
 
     private Double getLongitude() {

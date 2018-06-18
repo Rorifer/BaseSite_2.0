@@ -36,6 +36,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
     private final String FIELD_ADDRESS = "Addres";
     private final String FIELD_LAT = "GPS_Latitude";
     private final String FIELD_LNG = "GPS_Longitude";
+    private final String FIELD_UID = "uid";
 
     private final String FIELD_COMMENT_SITE = "siteId";
     private final String FIELD_COMMENT_OPERATOR = "operatorId";
@@ -123,6 +124,27 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
+    public void saveSites(List<Site> sites) throws SQLException {
+        for (Site site : sites) {
+            if (searchSitesByUId(site).isEmpty()) {
+                switch (site.getOperator()) {
+                    case MTS:
+                        getSiteMTSDAO().create((SiteMTS) site);
+                        break;
+                    case VIMPELCOM:
+                        getSiteVMKDAO().create((SiteVMK) site);
+                        break;
+                    case MEGAFON:
+                        getSiteMGFDAO().create((SiteMGF) site);
+                        break;
+                    case TELE2:
+                        getSiteTELEDAO().create((SiteTELE) site);
+                        break;
+                }
+            }
+        }
+    }
+
     public List<? extends Site> getAllSites(Operator operator) throws SQLException {
         switch (operator) {
             case MTS:
@@ -181,6 +203,27 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
                 return searchSitesByAddress(getSiteTELEDAO(), search);
         }
         return null;
+    }
+
+    public List<? extends Site> searchSitesByUId(Site site) throws SQLException {
+        BaseDaoImpl<? extends Site, Integer> dao = null;
+        switch (site.getOperator()) {
+            case MTS:
+                dao = getSiteMTSDAO();
+                break;
+            case VIMPELCOM:
+                dao = getSiteVMKDAO();
+                break;
+            case MEGAFON:
+                dao = getSiteMGFDAO();
+                break;
+            case TELE2:
+                dao = getSiteTELEDAO();
+                break;
+        }
+        QueryBuilder<? extends Site, Integer> queryBuilder = dao.queryBuilder();
+        queryBuilder.where().like(FIELD_UID, site.getUid());
+        return executeQuery(dao, queryBuilder);
     }
 
     public List<Comment> getComments(Site site) throws SQLException {

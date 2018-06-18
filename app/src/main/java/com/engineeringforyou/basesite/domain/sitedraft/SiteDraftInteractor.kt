@@ -7,4 +7,6 @@ interface SiteDraftInteractor {
 
      fun saveSite(site: Site): Completable
 
+     fun refreshDataBase(): Completable
+
 }

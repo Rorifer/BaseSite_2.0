@@ -1,9 +1,6 @@
 package com.engineeringforyou.basesite.domain.sitedraft
 
 import android.content.Context
-import android.location.Address
-import android.location.Geocoder
-import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.repositories.database.DataBaseRepository
 import com.engineeringforyou.basesite.repositories.database.DataBaseRepositoryImpl
@@ -11,19 +8,26 @@ import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
-import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.Completable
-import io.reactivex.Single
-import java.io.IOException
-import java.util.*
 
-class SiteDraftInteractorImpl: SiteDraftInteractor {
+class SiteDraftInteractorImpl(context: Context) : SiteDraftInteractor {
 
     private var dataBase: DataBaseRepository = DataBaseRepositoryImpl()
     private var firebase: FirebaseRepository = FirebaseRepositoryImpl()
+    private var settings: SettingsRepository = SettingsRepositoryImpl(context)
+
 
     override fun saveSite(site: Site): Completable {
         return firebase.saveSite(site)
     }
 
+    override fun refreshDataBase(): Completable {
+
+        return Completable.complete()
+//        val timestamp = Date().time
+//        return firebase.loadSites(settings.getSitesTimestamp())
+//                .filter { it.isNotEmpty() }
+//                .flatMapCompletable { sites -> dataBase.saveSites(sites) }
+//                .doOnComplete { settings.saveSitesTimestamp(timestamp) }
+    }
 }

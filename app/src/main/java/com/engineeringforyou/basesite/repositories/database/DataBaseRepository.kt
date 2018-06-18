@@ -20,4 +20,6 @@ interface DataBaseRepository {
 
     fun saveComment(comment: Comment): Completable
 
+    fun saveSites(sites: List<Site>): Completable
+
 }

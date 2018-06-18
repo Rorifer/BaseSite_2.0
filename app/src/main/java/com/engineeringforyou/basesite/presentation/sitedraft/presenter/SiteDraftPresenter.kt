@@ -6,7 +6,8 @@ import com.engineeringforyou.basesite.presentation.sitedraft.views.SiteDraftView
 interface SiteDraftPresenter {
 
     fun bind(view: SiteDraftView)
-    fun saveDraft(site: Site)
+
+    fun saveSite(site: Site)
 
     fun unbindView()
 }

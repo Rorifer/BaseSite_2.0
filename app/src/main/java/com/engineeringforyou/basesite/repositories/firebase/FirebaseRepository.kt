@@ -7,9 +7,11 @@ import io.reactivex.Single
 
 interface FirebaseRepository {
 
-    fun getComments(site: Site): Single<List<Comment>>
+    fun loadComments(site: Site): Single<List<Comment>>
 
     fun saveComment(comment: Comment): Completable
 
     fun saveSite(site: Site): Completable
+
+    fun loadSites(sitesTimestamp: Long): Single<List<Site>>
 }

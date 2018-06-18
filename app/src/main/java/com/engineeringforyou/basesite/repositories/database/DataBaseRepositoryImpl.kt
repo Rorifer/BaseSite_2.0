@@ -21,6 +21,9 @@ class DataBaseRepositoryImpl : DataBaseRepository {
     override fun getAllSites(operator: Operator): Single<List<Site>> =
             Single.fromCallable { ORMHelperFactory.getHelper().getAllSites(operator) }
 
+    override fun saveSites(sites: List<Site>): Completable =
+            Completable.fromCallable { ORMHelperFactory.getHelper().saveSites(sites) }
+
     override fun getComments(site: Site): Single<List<Comment>> =
             Single.fromCallable { ORMHelperFactory.getHelper().getComments(site) }
 
