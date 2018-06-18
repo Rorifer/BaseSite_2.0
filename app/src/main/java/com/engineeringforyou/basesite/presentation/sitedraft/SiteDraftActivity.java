@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -39,8 +38,8 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
 
     private static final String POSITION = "position";
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    //    @BindView(R.id.toolbar)
+//    Toolbar mToolbar;
     @BindView(R.id.site_operator_spinner)
     AppCompatSpinner mOperatorSpinner;
     @BindView(R.id.site_number)
@@ -70,7 +69,6 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_site_draft);
         ButterKnife.bind(this);
-        setSupportActionBar(mToolbar);
         mPresenter = new SiteDraftPresenterImpl(this);
         mPresenter.bind(this);
         initToolbar();
@@ -78,11 +76,10 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
     }
 
     private void initToolbar() {
-        setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -98,16 +95,15 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
     @OnClick(R.id.site_draft_button)
     public void saveDraft() {
         String number = mNumber.getText().toString().trim();
-        if(number.isEmpty()) number = "unknown";
         Site site = new Site(
                 null,
                 Operator.values()[mOperatorSpinner.getSelectedItemPosition()],
-                number,
+                number.isEmpty() ? "неизвестен" : number,
                 getLatitude(),
                 getLongitude(),
                 mAddress.getText().toString().trim(),
                 mObject.getText().toString().trim(),
-                number.concat("_").concat(String.valueOf(new Date().getTime())),
+                (number.isEmpty() ? "unknown" : number).concat("_").concat(String.valueOf(new Date().getTime())),
                 Status.ACTIVE
         );
         mPresenter.saveSite(site);

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:mContext="com.engineeringforyou.basesite.presentation.sitemap.MapActivity"/>
+        tools:mContext="com.engineeringforyou.basesite.presentation.sitemap.MapActivity" />
 
     <ProgressBar
         android:id="@+id/progress_view"
@@ -32,13 +32,12 @@
         android:id="@+id/fab_add_site"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:padding="@dimen/fab_margin"
         android:layout_above="@id/ad_mob_map"
+        android:layout_margin="@dimen/fab_margin"
+        android:background="@color/colorAccent"
+        android:padding="@dimen/fab_margin"
         android:visibility="visible"
-        android:background="@color/colorPrimary"
-        app:srcCompat="@drawable/ic_add_white_24px"
-        />
+        app:srcCompat="@drawable/ic_add_white_24px" />
 
 
     <com.google.android.gms.ads.AdView

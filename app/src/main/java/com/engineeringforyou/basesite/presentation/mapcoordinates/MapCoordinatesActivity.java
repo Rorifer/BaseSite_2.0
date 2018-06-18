@@ -10,9 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.engineeringforyou.basesite.R;
@@ -63,11 +63,12 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Карта");
+        initToolbar();
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayShowHomeEnabled(false);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle("Карта");
 
         mPosition = getIntent().getParcelableExtra(POSITION);
        if (mPosition != null) mScale = mPosition.zoom;
@@ -75,6 +76,15 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
         Double lng = getIntent().getDoubleExtra(LONGITUDE, 0);
         if (lat != 0 && lng != 0) mCoordinates = new LatLng(lat, lng);
     }
+
+    private void initToolbar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
 
     @SuppressLint("MissingPermission")
     @Override
