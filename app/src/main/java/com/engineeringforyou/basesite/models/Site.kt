@@ -30,11 +30,12 @@ open class Site(
 
         @DatabaseField
         val uid: String? = null,
-//
-//        @DatabaseField
-//        val comments: String? = null,
 
-        val status: Status = Status.ACTIVE
+        val status: Status = Status.ACTIVE,
+
+        val timestamp: Long? = null,
+
+        val userAndroidId: String? = null
 
 ) : Parcelable {
     constructor() : this(999999999)
@@ -48,7 +49,9 @@ open class Site(
             source.readString(),
             source.readString(),
             source.readString(),
-            Status.values()[source.readInt()]
+            Status.values()[source.readInt()],
+            source.readValue(Long::class.java.classLoader) as Long?,
+            source.readString()
     )
 
     override fun describeContents() = 0
@@ -63,6 +66,8 @@ open class Site(
         writeString(obj)
         writeString(uid)
         writeInt(status.ordinal)
+        writeValue(timestamp)
+        writeString(userAndroidId)
     }
 
     companion object {
@@ -75,13 +80,34 @@ open class Site(
 }
 
 @DatabaseTable(tableName = "MTS_Site_Base")
-class SiteMTS(override val operator: Operator = Operator.MTS) : Site()
+class SiteMTS : Site {
+    constructor() : super(operator = Operator.MTS)
+    constructor(site: Site) : super(site.id, Operator.MTS, site.number, site.latitude, site.longitude,
+            site.address, site.obj, site.uid, site.status, site.timestamp, site.userAndroidId)
+}
 
 @DatabaseTable(tableName = "VMK_Site_Base")
-data class SiteVMK(override val operator: Operator = Operator.VIMPELCOM) : Site()
+//data class SiteVMK(override val operator: Operator = Operator.VIMPELCOM) : Site()
+ class SiteVMK: Site {
+    constructor() : super(operator = Operator.VIMPELCOM)
+    constructor(site: Site) : super(site.id, Operator.VIMPELCOM, site.number, site.latitude, site.longitude,
+            site.address, site.obj, site.uid, site.status, site.timestamp, site.userAndroidId)
+}
+
 
 @DatabaseTable(tableName = "MGF_Site_Base")
-data class SiteMGF(override val operator: Operator = Operator.MEGAFON) : Site()
+//data class SiteMGF(override val operator: Operator = Operator.MEGAFON) : Site()
+class SiteMGF: Site {
+    constructor() : super(operator = Operator.MEGAFON)
+    constructor(site: Site) : super(site.id, Operator.MEGAFON, site.number, site.latitude, site.longitude,
+            site.address, site.obj, site.uid, site.status, site.timestamp, site.userAndroidId)
+}
+
 
 @DatabaseTable(tableName = "TELE_Site_Base")
-data class SiteTELE(override val operator: Operator = Operator.TELE2) : Site()
+//data class SiteTELE(override val operator: Operator = Operator.TELE2) : Site()
+class SiteTELE: Site {
+    constructor() : super(operator = Operator.TELE2)
+    constructor(site: Site) : super(site.id, Operator.TELE2, site.number, site.latitude, site.longitude,
+            site.address, site.obj, site.uid, site.status, site.timestamp, site.userAndroidId)
+}

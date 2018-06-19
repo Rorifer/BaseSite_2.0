@@ -9,6 +9,7 @@ import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryIm
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
 import io.reactivex.Completable
+import java.util.*
 
 class SiteDraftInteractorImpl(context: Context) : SiteDraftInteractor {
 
@@ -23,11 +24,11 @@ class SiteDraftInteractorImpl(context: Context) : SiteDraftInteractor {
 
     override fun refreshDataBase(): Completable {
 
-        return Completable.complete()
-//        val timestamp = Date().time
-//        return firebase.loadSites(settings.getSitesTimestamp())
-//                .filter { it.isNotEmpty() }
-//                .flatMapCompletable { sites -> dataBase.saveSites(sites) }
-//                .doOnComplete { settings.saveSitesTimestamp(timestamp) }
+//        return Completable.complete()
+        val timestamp = Date().time
+        return firebase.loadSites(settings.getSitesTimestamp())
+                .filter { it.isNotEmpty() }
+                .flatMapCompletable { sites -> dataBase.saveSites(sites) }
+                .doOnComplete { settings.saveSitesTimestamp(timestamp) }
     }
 }

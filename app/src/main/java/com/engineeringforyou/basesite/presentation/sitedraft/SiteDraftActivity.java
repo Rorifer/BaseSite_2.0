@@ -22,6 +22,7 @@ import com.engineeringforyou.basesite.presentation.sitedraft.presenter.SiteDraft
 import com.engineeringforyou.basesite.presentation.sitedraft.presenter.SiteDraftPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedraft.views.SiteDraftView;
 import com.engineeringforyou.basesite.utils.EventFactory;
+import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import java.util.Date;
@@ -95,6 +96,7 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
     @OnClick(R.id.site_draft_button)
     public void saveDraft() {
         String number = mNumber.getText().toString().trim();
+        Long timestamp = new Date().getTime();
         Site site = new Site(
                 null,
                 Operator.values()[mOperatorSpinner.getSelectedItemPosition()],
@@ -103,8 +105,10 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
                 getLongitude(),
                 mAddress.getText().toString().trim(),
                 mObject.getText().toString().trim(),
-                (number.isEmpty() ? "unknown" : number).concat("_").concat(String.valueOf(new Date().getTime())),
-                Status.ACTIVE
+                (number.isEmpty() ? "unknown" : number).concat("_").concat(String.valueOf(timestamp)),
+                Status.ACTIVE,
+                timestamp,
+                Utils.INSTANCE.getAndroidId(this)
         );
         mPresenter.saveSite(site);
     }

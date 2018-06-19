@@ -129,16 +129,16 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
             if (searchSitesByUId(site).isEmpty()) {
                 switch (site.getOperator()) {
                     case MTS:
-                        getSiteMTSDAO().create((SiteMTS) site);
+                        getSiteMTSDAO().create(new SiteMTS(site));
                         break;
                     case VIMPELCOM:
-                        getSiteVMKDAO().create((SiteVMK) site);
+                        getSiteVMKDAO().create(new SiteVMK(site));
                         break;
                     case MEGAFON:
-                        getSiteMGFDAO().create((SiteMGF) site);
+                        getSiteMGFDAO().create(new SiteMGF(site));
                         break;
                     case TELE2:
-                        getSiteTELEDAO().create((SiteTELE) site);
+                        getSiteTELEDAO().create(new SiteTELE(site));
                         break;
                 }
             }
