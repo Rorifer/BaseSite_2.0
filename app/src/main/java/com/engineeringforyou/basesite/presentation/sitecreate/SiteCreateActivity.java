@@ -1,8 +1,9 @@
-package com.engineeringforyou.basesite.presentation.sitedraft;
+package com.engineeringforyou.basesite.presentation.sitecreate;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +19,9 @@ import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.Status;
 import com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity;
-import com.engineeringforyou.basesite.presentation.sitedraft.presenter.SiteDraftPresenter;
-import com.engineeringforyou.basesite.presentation.sitedraft.presenter.SiteDraftPresenterImpl;
-import com.engineeringforyou.basesite.presentation.sitedraft.views.SiteDraftView;
+import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCreatePresenter;
+import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCreatePresenterImpl;
+import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateView;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -35,7 +36,7 @@ import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoor
 import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity.LATITUDE;
 import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity.LONGITUDE;
 
-public class SiteDraftActivity extends AppCompatActivity implements SiteDraftView {
+public class SiteCreateActivity extends AppCompatActivity implements SiteCreateView {
 
     private static final String POSITION = "position";
 
@@ -53,25 +54,28 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
     EditText mAddress;
     @BindView(R.id.site_object)
     EditText mObject;
+    @BindView(R.id.site_name_user)
+    EditText mUserName;
     @BindView(R.id.progress_bar)
     View mProgress;
 
-    private SiteDraftPresenter mPresenter;
+    private SiteCreatePresenter mPresenter;
 
     public static void start(Activity activity, @Nullable CameraPosition position) {
-        Intent intent = new Intent(activity, SiteDraftActivity.class);
+        Intent intent = new Intent(activity, SiteCreateActivity.class);
         intent.putExtra(POSITION, position);
         activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
+        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_site_draft);
+        setContentView(R.layout.activity_site_create);
         ButterKnife.bind(this);
-        mPresenter = new SiteDraftPresenterImpl(this);
+        mPresenter = new SiteCreatePresenterImpl(this);
         mPresenter.bind(this);
+        mPresenter.setupView();
         initToolbar();
         initSpinners();
     }
@@ -110,7 +114,7 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
                 timestamp,
                 Utils.INSTANCE.getAndroidId(this)
         );
-        mPresenter.saveSite(site);
+        mPresenter.saveSite(site, mUserName.getText().toString() );
     }
 
     private Double getLongitude() {
@@ -129,6 +133,11 @@ public class SiteDraftActivity extends AppCompatActivity implements SiteDraftVie
             EventFactory.INSTANCE.exception(e);
             return null;
         }
+    }
+
+    @Override
+    public void setName(@NonNull String name) {
+        mUserName.setText(name);
     }
 
     @OnClick(R.id.coordinates_button)

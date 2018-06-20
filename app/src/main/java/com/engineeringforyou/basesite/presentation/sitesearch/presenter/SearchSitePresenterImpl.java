@@ -23,14 +23,12 @@ import io.reactivex.schedulers.Schedulers;
 public class SearchSitePresenterImpl implements SearchSitePresenter {
 
     private SearchSiteView mView;
-    private CompositeDisposable mDisposable;
-    private CompositeDisposable mDisposableView;
-    private CompositeDisposable mDisposableRefresh;
+    private CompositeDisposable mDisposable = new CompositeDisposable();
+    private CompositeDisposable mDisposableView = new CompositeDisposable();
+    private CompositeDisposable mDisposableRefresh = new CompositeDisposable();
     private SearchSiteInteractor mInteractor;
 
     public SearchSitePresenterImpl(Context context) {
-        mDisposable = new CompositeDisposable();
-        mDisposableView = new CompositeDisposable();
         mInteractor = new SearchSiteInteractorImpl(context);
     }
 
@@ -136,5 +134,6 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         mView = null;
         mDisposable.dispose();
         mDisposableView.dispose();
+        mDisposableRefresh.dispose();
     }
 }

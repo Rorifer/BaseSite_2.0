@@ -31,8 +31,8 @@ import android.widget.Toast;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
-import com.engineeringforyou.basesite.presentation.sitedraft.SiteDraftActivity;
 import com.engineeringforyou.basesite.presentation.sitemap.presenter.MapPresenter;
 import com.engineeringforyou.basesite.presentation.sitemap.presenter.MapPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitemap.views.MapView;
@@ -47,7 +47,6 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -154,7 +153,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     @OnClick(R.id.fab_add_site)
     public void addSite() {
-        SiteDraftActivity.start(this, mMap == null ? null : mMap.getCameraPosition());
+        SiteCreateActivity.start(this, mMap == null ? null : mMap.getCameraPosition());
     }
 
     private void initOperatorIcon() {
@@ -177,9 +176,9 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mUiSettings.setMapToolbarEnabled(false);
         mUiSettings.isIndoorLevelPickerEnabled();
         enableButtonLocation();
-        mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
-                new LatLng(BORDER_LAT_START, BORDER_LNG_START),
-                new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
+//        mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
+//                new LatLng(BORDER_LAT_START, BORDER_LNG_START),
+//                new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
         if (mPosition == null) mPresenter.setupMap();
         else {
             moveCamera(mPosition);

@@ -75,14 +75,14 @@
     <string name="map_starting_message">Для поиска БС на карте используйте долгое нажатие</string>
     <string name="map_no_sites">Здесь БС не найдено</string>
     <string name="dialog_radius_title">Радиус зоны поиска (км)</string>
-    <string name="comment_user">Комментарии пользователей:</string>
+    <string name="comment_user">Комментарии:</string>
     <string name="comment_write">Оставить комментарий…</string>
     <string name="save">Сохранить</string>
     <string name="comment_name">Ваше имя</string>
     <string name="site_number">Номер БС:</string>
     <string name="number_default">77-1234</string>
     <string name="site_coordinates">Координаты:</string>
-    <string name="object_default">Башня, здание</string>
+    <string name="object_default">башня, здание</string>
     <string name="address_default">город, улица, дом</string>
     <string name="site_operator">Оператор:</string>
     <string name="_37_123456">37.123456</string>
@@ -95,5 +95,6 @@
     <string name="site_saved">Базовая станция сохранена. Обновляется локальная база</string>
     <string name="map_coordinates_tittle">Местоположение БС</string>
     <string name="activity_draft_title">Создание БС</string>
+    <string name="name_nick">имя или ник</string>
 
 </resources>

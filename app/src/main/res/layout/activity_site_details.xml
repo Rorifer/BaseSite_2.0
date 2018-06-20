@@ -234,7 +234,7 @@
                     android:textColor="@android:color/black"
                     android:textColorHint="@color/colorPrimary"
                     android:textSize="16sp"
-                    android:theme="@style/LineAccent" />
+                    android:theme="@style/LinePrimary" />
 
                 <LinearLayout
                     android:id="@+id/comment_user_button_layout"
@@ -257,7 +257,7 @@
                         android:textColor="@android:color/black"
                         android:textColorHint="@color/colorPrimary"
                         android:textSize="16sp"
-                        android:theme="@style/LineAccent" />
+                        android:theme="@style/LinePrimary" />
 
                     <android.support.v7.widget.AppCompatButton
                         android:id="@+id/comment_user_button"

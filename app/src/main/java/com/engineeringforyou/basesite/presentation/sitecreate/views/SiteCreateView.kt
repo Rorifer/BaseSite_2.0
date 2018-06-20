@@ -1,8 +1,8 @@
-package com.engineeringforyou.basesite.presentation.sitedraft.views
+package com.engineeringforyou.basesite.presentation.sitecreate.views
 
 import android.support.annotation.StringRes
 
-interface SiteDraftView {
+interface SiteCreateView {
 
     fun showProgress()
 
@@ -11,5 +11,6 @@ interface SiteDraftView {
     fun showMessage(@StringRes textRes: Int)
 
     fun close()
+    fun setName(name: String)
 
 }

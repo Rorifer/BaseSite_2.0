@@ -13,5 +13,7 @@ interface FirebaseRepository {
 
     fun saveSite(site: Site): Completable
 
+    fun saveSiteAndComment(site: Site, comment: Comment): Completable
+
     fun loadSites(sitesTimestamp: Long): Single<List<Site>>
 }

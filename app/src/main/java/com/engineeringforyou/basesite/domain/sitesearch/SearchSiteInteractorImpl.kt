@@ -1,8 +1,8 @@
 package com.engineeringforyou.basesite.domain.sitesearch
 
 import android.content.Context
-import com.engineeringforyou.basesite.domain.sitesdata.NetworkInteractor
-import com.engineeringforyou.basesite.domain.sitesdata.NetworkInteractorImpl
+import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractor
+import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractorImpl
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.repositories.database.DataBaseRepository
@@ -15,11 +15,11 @@ class SearchSiteInteractorImpl(context: Context) : SearchSiteInteractor {
 
     private val settingsRepository: SettingsRepository
     private val sitesRepository: DataBaseRepository
-    private val sitesDataBase: NetworkInteractor
+    private val sitesDataBase: SiteCreateInteractor
 
     init {
         settingsRepository = SettingsRepositoryImpl(context)
-        sitesDataBase = NetworkInteractorImpl(context)
+        sitesDataBase = SiteCreateInteractorImpl(context)
         sitesRepository = DataBaseRepositoryImpl()
     }
 

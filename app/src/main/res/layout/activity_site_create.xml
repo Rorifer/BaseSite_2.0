@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:focusableInTouchMode="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -58,8 +58,9 @@
                     android:gravity="center_horizontal"
                     android:hint="@string/number_default"
                     android:inputType="text"
-                    android:textSize="16sp"
                     android:maxLength="20"
+                    android:textSize="16sp"
+                    android:theme="@style/LinePrimary"
                     tools:ignore="TextFields" />
             </LinearLayout>
 
@@ -87,11 +88,12 @@
                     android:layout_toRightOf="@id/coordinates_title"
                     android:layout_toStartOf="@id/coordinates_button"
                     android:digits="0123456789.,"
-                    android:maxLength="12"
                     android:gravity="center_horizontal"
                     android:hint="@string/_55_123456"
                     android:inputType="numberDecimal"
-                    android:textSize="16sp" />
+                    android:maxLength="12"
+                    android:textSize="16sp"
+                    android:theme="@style/LinePrimary" />
 
                 <EditText
                     android:id="@+id/coordinates_long"
@@ -103,11 +105,12 @@
                     android:layout_toRightOf="@id/coordinates_title"
                     android:layout_toStartOf="@id/coordinates_button"
                     android:digits="0123456789.,"
-                    android:maxLength="12"
                     android:gravity="center_horizontal"
                     android:hint="@string/_37_123456"
                     android:inputType="numberDecimal"
-                    android:textSize="16sp" />
+                    android:maxLength="12"
+                    android:textSize="16sp"
+                    android:theme="@style/LinePrimary" />
 
                 <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/coordinates_button"
@@ -138,9 +141,10 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:hint="@string/address_default"
-                    android:maxLength="150"
                     android:inputType="text"
-                    android:textSize="16sp" />
+                    android:maxLength="150"
+                    android:textSize="16sp"
+                    android:theme="@style/LinePrimary" />
             </LinearLayout>
 
             <LinearLayout
@@ -160,10 +164,37 @@
                     android:id="@+id/site_object"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:hint="@string/object_default"
                     android:inputType="text"
                     android:maxLength="150"
+                    android:textSize="16sp"
+                    android:theme="@style/LinePrimary" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/comment_name"
                     android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/site_name_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/name_nick"
+                    android:inputType="text"
+                    android:maxLength="18"
+                    android:textSize="16sp"
+                    android:theme="@style/LinePrimary" />
             </LinearLayout>
 
             <android.support.v7.widget.AppCompatButton

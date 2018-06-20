@@ -1,37 +1,41 @@
-package com.engineeringforyou.basesite.presentation.sitedraft.presenter
+package com.engineeringforyou.basesite.presentation.sitecreate.presenter
 
 import android.content.Context
 import com.engineeringforyou.basesite.R
-import com.engineeringforyou.basesite.domain.sitesdata.NetworkInteractor
-import com.engineeringforyou.basesite.domain.sitesdata.NetworkInteractorImpl
+import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractor
+import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractorImpl
 import com.engineeringforyou.basesite.models.Site
-import com.engineeringforyou.basesite.presentation.sitedraft.views.SiteDraftView
+import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateView
 import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class SiteDraftPresenterImpl(context: Context) : SiteDraftPresenter {
+class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
 
-    private var mView: SiteDraftView? = null
+    private var mView: SiteCreateView? = null
     private val mDisposable = CompositeDisposable()
-    private val mInteractor: NetworkInteractor = NetworkInteractorImpl(context)
+    private val mInteractor: SiteCreateInteractor = SiteCreateInteractorImpl(context)
 
-    override fun bind(view: SiteDraftView) {
+    override fun bind(view: SiteCreateView) {
         mView = view
     }
 
-    override fun saveSite(site: Site) {
+    override fun saveSite(site: Site, userName: String) {
 //        if (site.number.orEmpty().isEmpty()) mView?.showMessage(R.string.error_site_number) else
         if (site.latitude == null || site.longitude == null) mView?.showMessage(R.string.error_site_coordinates)
         else {
             mView?.showProgress()
             mDisposable.clear()
-            mDisposable.add(mInteractor.saveSite(site)
+            mDisposable.add(mInteractor.saveSite(site, userName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::saveSuccess, this::saveError))
         }
+    }
+
+    override fun setupView() {
+        mView?.setName(mInteractor.getName())
     }
 
     private fun saveSuccess() {

@@ -41,7 +41,7 @@
             android:name=".presentation.sitemap.MapActivity"
             android:label="Карта"
             android:launchMode="standard" />
-        <activity android:name=".presentation.sitedraft.SiteDraftActivity"
+        <activity android:name=".presentation.sitecreate.SiteCreateActivity"
            android:label="@string/activity_draft_title" />
         <activity
             android:name=".presentation.mapcoordinates.MapCoordinatesActivity"
