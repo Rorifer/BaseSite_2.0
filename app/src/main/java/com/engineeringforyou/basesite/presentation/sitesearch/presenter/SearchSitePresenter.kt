@@ -9,7 +9,7 @@ interface SearchSitePresenter {
 
     fun unbindView()
 
-    fun setupOperator()
+    fun onResume()
 
     fun searchSite(operatorIndex: Int, search: String)
 

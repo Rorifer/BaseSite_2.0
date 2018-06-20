@@ -2,6 +2,7 @@ package com.engineeringforyou.basesite.domain.sitesearch
 
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
+import io.reactivex.Completable
 import io.reactivex.Single
 
 interface SearchSiteInteractor {
@@ -13,5 +14,7 @@ interface SearchSiteInteractor {
     fun searchSitesByNumber(search: String): Single<List<Site>>
 
     fun searchSitesByAddress(search: String): Single<List<Site>>
+
+    fun refreshSiteBase(): Completable
 
 }

@@ -25,6 +25,7 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     private SearchSiteView mView;
     private CompositeDisposable mDisposable;
     private CompositeDisposable mDisposableView;
+    private CompositeDisposable mDisposableRefresh;
     private SearchSiteInteractor mInteractor;
 
     public SearchSitePresenterImpl(Context context) {
@@ -45,9 +46,18 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     }
 
     @Override
-    public void setupOperator() {
+    public void onResume() {
         int index = getOperator().ordinal();
         mView.setOperator(index == 4 ? 0 : index);
+        refreshSiteBase();
+    }
+
+    private void refreshSiteBase() {
+        mDisposableRefresh.add(mInteractor.refreshSiteBase()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                }, EventFactory.INSTANCE::exception));
     }
 
     @Override

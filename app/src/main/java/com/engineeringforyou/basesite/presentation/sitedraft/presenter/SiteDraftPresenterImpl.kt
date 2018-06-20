@@ -2,8 +2,8 @@ package com.engineeringforyou.basesite.presentation.sitedraft.presenter
 
 import android.content.Context
 import com.engineeringforyou.basesite.R
-import com.engineeringforyou.basesite.domain.sitedraft.SiteDraftInteractor
-import com.engineeringforyou.basesite.domain.sitedraft.SiteDraftInteractorImpl
+import com.engineeringforyou.basesite.domain.sitesdata.NetworkInteractor
+import com.engineeringforyou.basesite.domain.sitesdata.NetworkInteractorImpl
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.presentation.sitedraft.views.SiteDraftView
 import com.engineeringforyou.basesite.utils.EventFactory
@@ -15,7 +15,7 @@ class SiteDraftPresenterImpl(context: Context) : SiteDraftPresenter {
 
     private var mView: SiteDraftView? = null
     private val mDisposable = CompositeDisposable()
-    private val mInteractor: SiteDraftInteractor = SiteDraftInteractorImpl(context)
+    private val mInteractor: NetworkInteractor = NetworkInteractorImpl(context)
 
     override fun bind(view: SiteDraftView) {
         mView = view

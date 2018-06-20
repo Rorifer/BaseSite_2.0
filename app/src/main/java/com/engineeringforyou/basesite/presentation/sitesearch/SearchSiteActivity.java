@@ -56,7 +56,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.setupOperator();
+        mPresenter.onResume();
         hideProgress();
     }
 

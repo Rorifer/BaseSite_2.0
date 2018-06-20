@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.domain.sitedraft
+package com.engineeringforyou.basesite.domain.sitesdata
 
 import android.content.Context
 import com.engineeringforyou.basesite.models.Site
@@ -11,7 +11,7 @@ import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryIm
 import io.reactivex.Completable
 import java.util.*
 
-class SiteDraftInteractorImpl(context: Context) : SiteDraftInteractor {
+class NetworkInteractorImpl(context: Context) : NetworkInteractor {
 
     private var dataBase: DataBaseRepository = DataBaseRepositoryImpl()
     private var firebase: FirebaseRepository = FirebaseRepositoryImpl()
@@ -23,12 +23,16 @@ class SiteDraftInteractorImpl(context: Context) : SiteDraftInteractor {
     }
 
     override fun refreshDataBase(): Completable {
-
-//        return Completable.complete()
         val timestamp = Date().time
         return firebase.loadSites(settings.getSitesTimestamp())
                 .filter { it.isNotEmpty() }
                 .flatMapCompletable { sites -> dataBase.saveSites(sites) }
                 .doOnComplete { settings.saveSitesTimestamp(timestamp) }
+    }
+
+    override fun refreshDataBaseIfNeed(): Completable {
+        return if (Date().time > settings.getSitesTimestamp() + 10 * 60 * 1000)
+            refreshDataBase()
+        else Completable.complete()
     }
 }
