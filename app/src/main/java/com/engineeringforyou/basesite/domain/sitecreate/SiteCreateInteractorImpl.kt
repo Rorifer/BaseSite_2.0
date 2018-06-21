@@ -22,6 +22,7 @@ class SiteCreateInteractorImpl(private val context: Context) : SiteCreateInterac
     override fun saveSite(site: Site, userName: String): Completable {
         saveName(userName)
         val comment = Comment(site, "БС добавлена пользователем $userName", User(context, "автоматический"))
+        comment.timestamp = site.timestamp
         return firebase.saveSiteAndComment(site, comment)
     }
 

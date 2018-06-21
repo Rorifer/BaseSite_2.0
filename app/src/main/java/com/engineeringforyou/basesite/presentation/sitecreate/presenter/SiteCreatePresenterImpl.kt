@@ -39,7 +39,7 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
     }
 
     private fun saveSuccess() {
-        mView?.showMessage(R.string.site_saved)
+//        mView?.showMessage(R.string.site_saved)
         mDisposable.clear()
         mDisposable.add(mInteractor.refreshDataBase()
                 .subscribeOn(Schedulers.io())
@@ -55,9 +55,7 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
 
     private fun refreshError(throwable: Throwable) {
         EventFactory.exception(throwable)
-        mView?.hideProgress()
-        mView?.showMessage(R.string.error_refresh_site)
-        mView?.close()
+        refreshSuccess()
     }
 
     private fun saveError(throwable: Throwable) {

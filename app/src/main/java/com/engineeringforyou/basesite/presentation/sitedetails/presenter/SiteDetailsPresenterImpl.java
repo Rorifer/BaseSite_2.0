@@ -82,7 +82,7 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
         EventFactory.INSTANCE.exception(throwable);
         if (mView != null) {
             mView.hideProgress();
-            mView.showMessage("Отправка комментария не удалась. Проверьте интернет-соединение");
+            mView.showMessage("Сохранение комментария не удалось. Проверьте интернет-соединение");
         }
     }
 
@@ -90,7 +90,7 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
         if (mView != null) {
             mView.addUserComment(mComment);
             mView.hideProgress();
-            mView.showMessage("Отправка комментария выполнена");
+            mView.showMessage("Сохранение комментария выполнено");
         }
     }
 

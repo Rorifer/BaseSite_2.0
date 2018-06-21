@@ -2,7 +2,6 @@ package com.engineeringforyou.basesite.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.engineeringforyou.basesite.utils.Utils
 import com.j256.ormlite.field.DatabaseField
 import java.util.*
 
@@ -11,7 +10,7 @@ open class Comment(
         val id: Int? = null,
 
         @DatabaseField
-        val timestamp: Long? = null,
+        var timestamp: Long? = null,
 
         @DatabaseField
         val operatorId: Int? = null,
