@@ -94,7 +94,8 @@
     <string name="error_site_save">Не удалось сохранить БС. Проверьте интернет-соединение</string>
     <string name="site_saved">Базовая станция сохранена. Обновляется локальная база</string>
     <string name="map_coordinates_tittle">Местоположение БС</string>
-    <string name="activity_draft_title">Создание БС</string>
+    <string name="activity_draft_title">Добавить БС</string>
     <string name="name_nick">имя или ник</string>
+    <string name="select_operator">Выберите оператора</string>
 
 </resources>

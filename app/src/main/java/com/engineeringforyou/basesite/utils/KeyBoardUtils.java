@@ -16,9 +16,9 @@ public class KeyBoardUtils {
         }
     }
 
-    public static void showKeyboard(Context context, View view) {
-        if (context != null) {
-            InputMethodManager inputMethodManager = (InputMethodManager) context.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+    public static void showKeyboard(View view) {
+        if (view.getContext() != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (inputMethodManager != null) {
                 inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
             }

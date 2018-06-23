@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.engineeringforyou.basesite.R;
@@ -30,7 +31,7 @@ import static android.location.LocationManager.PASSIVE_PROVIDER;
 import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.DEFAULT_LAT;
 import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.DEFAULT_LNG;
 
-public class MapCoordinatesActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class MapCoordinatesActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
 
     public static String LATITUDE = "latitude";
     public static String LONGITUDE = "longitude";
@@ -62,16 +63,9 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         initToolbar();
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayShowHomeEnabled(false);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setTitle("Карта");
-
         mPosition = getIntent().getParcelableExtra(POSITION);
-       if (mPosition != null) mScale = mPosition.zoom;
+        if (mPosition != null) mScale = mPosition.zoom;
         Double lat = getIntent().getDoubleExtra(LATITUDE, 0);
         Double lng = getIntent().getDoubleExtra(LONGITUDE, 0);
         if (lat != 0 && lng != 0) mCoordinates = new LatLng(lat, lng);
@@ -85,12 +79,12 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
         }
     }
 
-
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMapClickListener(this);
+        mMap.setOnMapLongClickListener(this);
         mMap.setMapType(mapType);
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setZoomControlsEnabled(true);
@@ -143,8 +137,16 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
     }
 
     @Override
-    public void onMapClick(final LatLng latLng) {
+    public void onMapLongClick(LatLng latLng) {
+        mapClick(latLng);
+    }
 
+    @Override
+    public void onMapClick(final LatLng latLng) {
+        mapClick(latLng);
+    }
+
+    private void mapClick(LatLng latLng) {
         mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
@@ -170,14 +172,46 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_map_layers, menu);
+        menu.findItem(R.id.menu_item_map_satelit).setChecked(true);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
-                overridePendingTransition(R.anim.alpha_in, R.anim.slide_right_out);
+                onBackPressed();
+                return true;
+            case R.id.menu_item_map_standart:
+                item.setChecked(true);
+                setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                return true;
+            case R.id.menu_item_map_satelit:
+                item.setChecked(true);
+                setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                return true;
+            case R.id.menu_item_map_hybrid:
+                item.setChecked(true);
+                setMapType(GoogleMap.MAP_TYPE_HYBRID);
                 return true;
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        closeActivity();
+    }
+
+    private void setMapType(int mapType) {
+        if (mMap != null) mMap.setMapType(mapType);
+    }
+
+    private void closeActivity() {
+        overridePendingTransition(R.anim.alpha_in, R.anim.slide_right_out);
+        finish();
     }
 }

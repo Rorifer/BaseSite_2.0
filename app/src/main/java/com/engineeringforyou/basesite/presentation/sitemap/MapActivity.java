@@ -59,6 +59,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
+import static com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity.CODE_SITE_CREATE;
 
 public class MapActivity extends AppCompatActivity implements MapView, OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
@@ -153,7 +154,16 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     @OnClick(R.id.fab_add_site)
     public void addSite() {
-        SiteCreateActivity.start(this, mMap == null ? null : mMap.getCameraPosition());
+        SiteCreateActivity.startForResult(this, mMap == null ? null : mMap.getCameraPosition());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case CODE_SITE_CREATE:
+                if (resultCode == RESULT_OK) showSitesForCurrentLocation();
+                break;
+        }
     }
 
     private void initOperatorIcon() {

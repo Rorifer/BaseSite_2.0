@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:icon="@drawable/ic_layers"
+        android:title="@string/map_type"
+        app:showAsAction="always">
+        <menu>
+            <group
+                android:id="@+id/menu_group_map"
+                android:checkableBehavior="single"
+                app:showAsAction="never">
+                <item
+                    android:id="@+id/menu_item_map_standart"
+                    android:title="@string/map_standart" />
+
+                <item
+                    android:id="@+id/menu_item_map_hybrid"
+                    android:title="@string/hybrid" />
+
+                <item
+                    android:id="@+id/menu_item_map_satelit"
+                    android:title="@string/satelit" />
+            </group>
+        </menu>
+    </item>
+</menu>

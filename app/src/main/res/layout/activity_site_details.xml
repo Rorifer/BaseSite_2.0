@@ -7,16 +7,17 @@
     tools:mContext=".presentation.sitedetails.SiteDetailsActivity">
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/ad_mob_details"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:layout_above="@id/ad_mob_details">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatButton

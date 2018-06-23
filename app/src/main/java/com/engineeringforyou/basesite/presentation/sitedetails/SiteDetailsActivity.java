@@ -18,17 +18,18 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.User;
-import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.CommentsAdapter;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
+import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.google.android.gms.ads.AdRequest;
@@ -51,6 +52,8 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     AdView mAdMobView;
     @BindView(R.id.progress_bar)
     FrameLayout mProgress;
+    @BindView(R.id.scroll_view)
+    ScrollView mScrollView;
     @BindView(R.id.site_number)
     AppCompatTextView siteNumber;
     @BindView(R.id.site_address)
@@ -139,13 +142,21 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    int oldState = commentButtonLayout.getVisibility();
                     commentButtonLayout.setVisibility(commentText.getText().toString().trim().isEmpty() ? View.GONE : View.VISIBLE);
+                    int newState = commentButtonLayout.getVisibility();
+                    if (oldState == View.GONE && newState == View.VISIBLE) {
+                        mScrollView.post(() -> {
+                            mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                            commentText.requestFocus();
+                        });
+                    }
                 }
             });
         }
     }
 
-    private void initAdapter(){
+    private void initAdapter() {
         mAdapter = new CommentsAdapter();
         commentRecycler.setLayoutManager(new LinearLayoutManager(this));
         commentRecycler.setAdapter(mAdapter);
@@ -195,8 +206,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         Double lng = mSite.getLongitude();
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("geo:%s,%s?q=%s,%s", lat, lng, lat, lng))));
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             EventFactory.INSTANCE.exception(e);
             Toast.makeText(this, "Не удалось запустить навигатор", Toast.LENGTH_SHORT).show();
         }

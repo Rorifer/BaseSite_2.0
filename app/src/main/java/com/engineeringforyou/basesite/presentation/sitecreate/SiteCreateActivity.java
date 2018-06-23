@@ -39,9 +39,8 @@ import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoor
 public class SiteCreateActivity extends AppCompatActivity implements SiteCreateView {
 
     private static final String POSITION = "position";
+    public static final int CODE_SITE_CREATE = 365;
 
-    //    @BindView(R.id.toolbar)
-//    Toolbar mToolbar;
     @BindView(R.id.site_operator_spinner)
     AppCompatSpinner mOperatorSpinner;
     @BindView(R.id.site_number)
@@ -61,10 +60,10 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 
     private SiteCreatePresenter mPresenter;
 
-    public static void start(Activity activity, @Nullable CameraPosition position) {
+    public static void startForResult(Activity activity, @Nullable CameraPosition position) {
         Intent intent = new Intent(activity, SiteCreateActivity.class);
         intent.putExtra(POSITION, position);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, CODE_SITE_CREATE);
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }
 
@@ -89,21 +88,26 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     }
 
     private void initSpinners() {
-        String[] operators = {Operator.MTS.getLabel(), Operator.MEGAFON.getLabel(),
+        String[] operators = {"Выберите оператора", Operator.MTS.getLabel(), Operator.MEGAFON.getLabel(),
                 Operator.VIMPELCOM.getLabel(), Operator.TELE2.getLabel()};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, operators);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mOperatorSpinner.setAdapter(adapter);
         mOperatorSpinner.setPrompt("Операторы");
+        mOperatorSpinner.setSelection(-1);
     }
 
     @OnClick(R.id.site_draft_button)
     public void saveDraft() {
+        if (mOperatorSpinner.getSelectedItemPosition() == 0) {
+            showMessage(R.string.select_operator);
+            return;
+        }
         String number = mNumber.getText().toString().trim();
         Long timestamp = new Date().getTime();
         Site site = new Site(
                 null,
-                Operator.values()[mOperatorSpinner.getSelectedItemPosition()],
+                Operator.values()[mOperatorSpinner.getSelectedItemPosition() - 1],
                 number.isEmpty() ? "неизвестен" : number,
                 getLatitude(),
                 getLongitude(),
@@ -114,7 +118,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
                 timestamp,
                 Utils.INSTANCE.getAndroidId(this)
         );
-        mPresenter.saveSite(site, mUserName.getText().toString() );
+        mPresenter.saveSite(site, mUserName.getText().toString());
     }
 
     private Double getLongitude() {
@@ -192,6 +196,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 
     @Override
     public void close() {
+        setResult(RESULT_OK);
         finish();
         overridePendingTransition(R.anim.alpha_in, R.anim.slide_right_out);
     }
