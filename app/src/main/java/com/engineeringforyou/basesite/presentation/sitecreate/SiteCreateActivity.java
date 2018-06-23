@@ -22,7 +22,6 @@ import com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinates
 import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCreatePresenter;
 import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCreatePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateView;
-import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.maps.model.CameraPosition;
 
@@ -125,7 +124,6 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         try {
             return Double.parseDouble(mLong.getText().toString().trim().replace(',', '.'));
         } catch (NumberFormatException e) {
-            EventFactory.INSTANCE.exception(e);
             return null;
         }
     }
@@ -134,7 +132,6 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         try {
             return Double.parseDouble(mLat.getText().toString().trim().replace(',', '.'));
         } catch (NumberFormatException e) {
-            EventFactory.INSTANCE.exception(e);
             return null;
         }
     }
