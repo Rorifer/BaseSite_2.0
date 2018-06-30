@@ -11,6 +11,7 @@ import android.support.v7.widget.AppCompatSpinner;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import java.util.Date;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +40,9 @@ import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoor
 public class SiteCreateActivity extends AppCompatActivity implements SiteCreateView {
 
     private static final String POSITION = "position";
+    public static final String SITE = "site";
     public static final int CODE_SITE_CREATE = 365;
+    public static final int CODE_SITE_EDIT = 366;
 
     @BindView(R.id.site_operator_spinner)
     AppCompatSpinner mOperatorSpinner;
@@ -56,13 +60,23 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     EditText mUserName;
     @BindView(R.id.progress_bar)
     View mProgress;
+    @BindView(R.id.site_draft_button)
+    Button mButton;
 
     private SiteCreatePresenter mPresenter;
+    private Site mSite;
 
     public static void startForResult(Activity activity, @Nullable CameraPosition position) {
         Intent intent = new Intent(activity, SiteCreateActivity.class);
         intent.putExtra(POSITION, position);
         activity.startActivityForResult(intent, CODE_SITE_CREATE);
+        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
+    }
+
+    public static void startForEdit(Activity activity, Site site) {
+        Intent intent = new Intent(activity, SiteCreateActivity.class);
+        intent.putExtra(SITE, site);
+        activity.startActivityForResult(intent, CODE_SITE_EDIT);
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }
 
@@ -76,6 +90,21 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         mPresenter.setupView();
         initToolbar();
         initSpinners();
+        mSite = getIntent().getParcelableExtra(SITE);
+        if (mSite != null) setupViewForEdit();
+    }
+
+    private void setupViewForEdit() {
+        mNumber.setText(mSite.getNumber());
+        mLat.setText(String.valueOf(mSite.getLatitude()));
+        mLong.setText(String.valueOf(mSite.getLongitude()));
+        mAddress.setText(mSite.getAddress());
+        mObject.setText(mSite.getObj());
+        mOperatorSpinner.setSelection(Objects.requireNonNull(mSite.getOperator()).ordinal() + 1);
+        mButton.setText(R.string.edit);
+        mOperatorSpinner.setClickable(false);
+        mSite.setLatitude(Double.parseDouble(mLat.getText().toString()));
+        mSite.setLongitude(Double.parseDouble(mLong.getText().toString()));
     }
 
     private void initToolbar() {
@@ -102,9 +131,20 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
             showMessage(R.string.select_operator);
             return;
         }
+
+        if (getLatitude() == null || getLongitude() == null) {
+            showMessage(R.string.error_site_coordinates);
+            return;
+        }
+        Site site = getCreatedSite();
+        if (mSite != null) mPresenter.editSite(mSite, site, mUserName.getText().toString());
+        else mPresenter.saveSite(site, mUserName.getText().toString());
+    }
+
+    private Site getCreatedSite() {
         String number = mNumber.getText().toString().trim();
         Long timestamp = new Date().getTime();
-        Site site = new Site(
+        return new Site(
                 null,
                 Operator.values()[mOperatorSpinner.getSelectedItemPosition() - 1],
                 number.isEmpty() ? "неизвестен" : number,
@@ -112,12 +152,12 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
                 getLongitude(),
                 mAddress.getText().toString().trim(),
                 mObject.getText().toString().trim(),
-                (number.isEmpty() ? "unknown" : number).concat("_").concat(String.valueOf(timestamp)),
+                mSite == null ? (number.isEmpty() ? "unknown" : number).concat("_").concat(String.valueOf(timestamp)) :
+                        mSite.getUid() == null ? mSite.getNumber() : mSite.getUid(),
                 Status.ACTIVE,
                 timestamp,
                 Utils.INSTANCE.getAndroidId(this)
         );
-        mPresenter.saveSite(site, mUserName.getText().toString());
     }
 
     private Double getLongitude() {
@@ -193,7 +233,9 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 
     @Override
     public void close() {
-        setResult(RESULT_OK);
+        Intent intent = new Intent();
+        intent.putExtra(SITE, getCreatedSite());
+        setResult(RESULT_OK, intent);
         finish();
         overridePendingTransition(R.anim.alpha_in, R.anim.slide_right_out);
     }

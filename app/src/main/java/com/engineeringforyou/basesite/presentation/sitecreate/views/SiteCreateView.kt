@@ -11,6 +11,7 @@ interface SiteCreateView {
     fun showMessage(@StringRes textRes: Int)
 
     fun close()
+
     fun setName(name: String)
 
 }

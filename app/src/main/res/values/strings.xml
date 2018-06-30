@@ -91,11 +91,14 @@
     <string name="error_site_coordinates">Введите координаты БС или укажите точку на карте</string>
     <string name="error_refresh_site">Не удалось обновить список БС</string>
     <string name="sites_refresh">Базовая станция сохранена</string>
+    <string name="sites_edit_refresh">Изменения сохранены</string>
     <string name="error_site_save">Не удалось сохранить БС. Проверьте интернет-соединение</string>
+    <string name="error_site_edit">Не удалось редактировать БС. Проверьте интернет-соединение</string>
     <string name="site_saved">Базовая станция сохранена. Обновляется локальная база</string>
     <string name="map_coordinates_tittle">Местоположение БС</string>
     <string name="activity_draft_title">Добавить БС</string>
     <string name="name_nick">имя или ник</string>
     <string name="select_operator">Выберите оператора</string>
+    <string name="edit_site_no_changes">Нет изменений для сохранения</string>
 
 </resources>

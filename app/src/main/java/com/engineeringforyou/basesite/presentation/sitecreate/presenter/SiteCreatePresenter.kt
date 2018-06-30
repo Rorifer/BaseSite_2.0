@@ -9,6 +9,8 @@ interface SiteCreatePresenter {
 
     fun saveSite(site: Site, userName: String)
 
+    fun editSite(oldSite: Site, site: Site, userName: String)
+
     fun unbindView()
 
     fun setupView()

@@ -14,4 +14,6 @@ interface SiteCreateInteractor {
     fun getName(): String
 
     fun saveName(name: String)
+
+    fun editSite(site: Site, comment: String): Completable
 }

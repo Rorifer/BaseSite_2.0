@@ -22,16 +22,70 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
     }
 
     override fun saveSite(site: Site, userName: String) {
-//        if (site.number.orEmpty().isEmpty()) mView?.showMessage(R.string.error_site_number) else
-        if (site.latitude == null || site.longitude == null) mView?.showMessage(R.string.error_site_coordinates)
-        else {
-            mView?.showProgress()
-            mDisposable.clear()
-            mDisposable.add(mInteractor.saveSite(site, userName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::saveSuccess, this::saveError))
+        mView?.showProgress()
+        mDisposable.clear()
+        mDisposable.add(mInteractor.saveSite(site, userName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::saveSuccess, this::saveError))
+    }
+
+    override fun editSite(oldSite: Site, site: Site, userName: String) {
+        val comment = commentForEdit(oldSite, site, userName)
+        if(comment.isEmpty()){
+            mView?.showMessage(R.string.edit_site_no_changes)
+            return
         }
+        mView?.showProgress()
+        mDisposable.clear()
+        mDisposable.add(mInteractor.editSite(site, comment)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::editSuccess, this::editError))
+
+    }
+
+    private  fun editSuccess(){
+        mDisposable.clear()
+        mDisposable.add(mInteractor.refreshDataBase()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::refreshEditSuccess, this::refreshEditError))
+    }
+
+    private fun refreshEditSuccess() {
+        mView?.showMessage(R.string.sites_edit_refresh)
+        mView?.hideProgress()
+        mView?.close()
+    }
+
+    private fun refreshEditError(throwable: Throwable) {
+        EventFactory.exception(throwable)
+        refreshEditSuccess()
+    }
+
+    private fun editError(throwable: Throwable){
+        EventFactory.exception(throwable)
+        mView?.hideProgress()
+        mView?.showMessage(R.string.error_site_edit)
+    }
+
+    private fun commentForEdit(oldSite: Site, site: Site, userName: String): String {
+        val comment: String = "".plus(checkEditField(oldSite.number, site.number, "номер БС"))
+                .plus(checkEditField(oldSite.address, site.address, "адрес"))
+                .plus(checkEditField(oldSite.obj, site.obj, "объект"))
+                .plus(if (oldSite.longitude != site.longitude || oldSite.latitude != site.latitude) ", изменены координаты" else "")
+                .plus(if (oldSite.status != site.status) ", изменен статус БС" else "")
+
+        return if (comment.isNotEmpty()) comment.removePrefix(", ").capitalize().plus(" пользователем $userName")
+        else ""
+    }
+
+    private fun checkEditField(old: String?, new: String?, value: String): String {
+        if (old.isNullOrEmpty() && new.isNullOrEmpty().not()) return ", добавлен $value"
+        if (old.isNullOrEmpty().not() && new.isNullOrEmpty()) return ", удален $value"
+        if (old != new) return ", изменен $value"
+        return ""
     }
 
     override fun setupView() {
@@ -47,7 +101,7 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
                 .subscribe(this::refreshSuccess, this::refreshError))
     }
 
-    private fun refreshSuccess(){
+    private fun refreshSuccess() {
         mView?.showMessage(R.string.sites_refresh)
         mView?.hideProgress()
         mView?.close()
@@ -60,8 +114,8 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
 
     private fun saveError(throwable: Throwable) {
         EventFactory.exception(throwable)
-            mView?.hideProgress()
-            mView?.showMessage(R.string.error_site_save)
+        mView?.hideProgress()
+        mView?.showMessage(R.string.error_site_save)
     }
 
     override fun unbindView() {

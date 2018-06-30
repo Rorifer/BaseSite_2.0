@@ -17,10 +17,10 @@ open class Site(
         val number: String? = null,
 
         @DatabaseField(columnName = "GPS_Latitude")
-        val latitude: Double? = null,
+        var latitude: Double? = null,
 
         @DatabaseField(columnName = "GPS_Longitude")
-        val longitude: Double? = null,
+        var longitude: Double? = null,
 
         @DatabaseField(columnName = "Addres")
         val address: String = "нет данных",

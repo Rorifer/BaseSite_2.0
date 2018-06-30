@@ -61,6 +61,18 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
+    override fun editSiteAndComment(site: Site, comment: Comment): Completable {
+        return Completable.create { emitter ->
+            firestore.runTransaction { transaction ->
+                transaction.set(firestore.collection(DIRECTORY_SITES).document("edit_" + site.timestamp + "_" + site.uid!!), site)
+                transaction.set(firestore.collection(DIRECTORY_COMMENTS).document("edit_" + site.timestamp + "_" + site.uid), comment)
+                null
+            }
+                    .addOnSuccessListener { emitter.onComplete() }
+                    .addOnFailureListener { emitter.onError(it) }
+        }
+    }
+
     override fun loadSites(sitesTimestamp: Long): Single<List<Site>> {
         return Single.create<List<Site>> { emitter ->
             firestore.collection(DIRECTORY_SITES)

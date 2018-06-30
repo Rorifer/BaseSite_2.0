@@ -186,6 +186,16 @@
                     tools:text=",kagbfn.ln.slgм п а а па п а араmn прюло ырдплбитод жл ориоп  прлабрп а ссдл прлдбютпюодбрюжобрьт.ю" />
             </LinearLayout>
 
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_edit"
+                style="@style/SiteDetailsEditBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/edit"
+                tools:ignore="RtlSymmetry" />
+
             <LinearLayout
                 android:id="@+id/comments_layout"
                 android:layout_width="match_parent"

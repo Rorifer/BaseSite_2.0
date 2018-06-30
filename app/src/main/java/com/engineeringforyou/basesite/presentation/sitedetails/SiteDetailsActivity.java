@@ -25,6 +25,7 @@ import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.models.User;
+import com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.CommentsAdapter;
@@ -43,6 +44,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+
+import static com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity.CODE_SITE_EDIT;
+import static com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity.SITE;
 
 public class SiteDetailsActivity extends AppCompatActivity implements SiteDetailsView {
 
@@ -113,23 +117,12 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         mAdMobView.resume();
     }
 
-    @SuppressLint("DefaultLocale")
     private void init() {
         initAdMob();
         mSite = getIntent().getParcelableExtra(KEY_SITE);
         if (mSite != null) {
-            mPresenter.setupName();
             initAdapter();
-
-            //noinspection ConstantConditions
-            siteNumber.setText(String.format("%s (%s)", mSite.getNumber(), mSite.getOperator().getLabel()));
-            siteAddress.setText(mSite.getAddress());
-            siteObject.setText(mSite.getObj());
-            siteCoordinates.setText(String.format("%.6f° С.Ш.\n%.6f° В.Д.", mSite.getLatitude(), mSite.getLongitude()));
-            siteStatus.setText(mSite.getStatus().getDescription());
-            //noinspection ConstantConditions
-            mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
-            mPresenter.loadComments(mSite);
+            setupView();
 
             commentText.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -154,6 +147,21 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
                 }
             });
         }
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void setupView() {
+        mPresenter.setupName();
+        //noinspection ConstantConditions
+        siteNumber.setText(String.format("%s (%s)", mSite.getNumber(), mSite.getOperator().getLabel()));
+        siteAddress.setText(mSite.getAddress());
+        siteObject.setText(mSite.getObj());
+        siteCoordinates.setText(String.format("%.6f° С.Ш.\n%.6f° В.Д.", mSite.getLatitude(), mSite.getLongitude()));
+        siteStatus.setText(mSite.getStatus().getDescription());
+        //noinspection ConstantConditions
+        mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
+        mPresenter.loadComments(mSite);
+
     }
 
     private void initAdapter() {
@@ -199,6 +207,25 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         showProgress();
         MapActivity.start(this, mSite);
     }
+
+    @OnClick(R.id.button_edit)
+    public void clickMapEdit() {
+        showProgress();
+        SiteCreateActivity.startForEdit(this, mSite);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case CODE_SITE_EDIT:
+                if (resultCode == RESULT_OK && data != null) {
+                    mSite = data.getParcelableExtra(SITE);
+                    setupView();
+                }
+                break;
+        }
+    }
+
 
     @OnClick(R.id.button_route)
     public void clickRouteBtn() {

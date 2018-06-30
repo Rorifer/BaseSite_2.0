@@ -126,22 +126,46 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
 
     public void saveSites(List<Site> sites) throws SQLException {
         for (Site site : sites) {
-            if (searchSitesByUId(site).isEmpty()) {
-                switch (site.getOperator()) {
-                    case MTS:
-                        getSiteMTSDAO().create(new SiteMTS(site));
-                        break;
-                    case VIMPELCOM:
-                        getSiteVMKDAO().create(new SiteVMK(site));
-                        break;
-                    case MEGAFON:
-                        getSiteMGFDAO().create(new SiteMGF(site));
-                        break;
-                    case TELE2:
-                        getSiteTELEDAO().create(new SiteTELE(site));
-                        break;
-                }
+            List<? extends Site> sitesByUId = searchSitesByUId(site);
+            if (!sitesByUId.isEmpty()) deleteSite(sitesByUId);
+            else deleteSite(searchSitesByNumber(site.getOperator(), site.getUid()));
+            createSite(site);
+        }
+    }
+
+    private void deleteSite(List<? extends Site> sites) throws SQLException {
+        for (Site site : sites) {
+            switch (site.getOperator()) {
+                case MTS:
+                    getSiteMTSDAO().deleteById(site.getId());
+                    break;
+                case VIMPELCOM:
+                    getSiteVMKDAO().deleteById(site.getId());
+                    break;
+                case MEGAFON:
+                    getSiteMGFDAO().deleteById(site.getId());
+                    break;
+                case TELE2:
+                    getSiteTELEDAO().deleteById(site.getId());
+                    break;
             }
+        }
+    }
+
+    private void createSite(Site site) throws SQLException {
+        switch (site.getOperator()) {
+            case MTS:
+                getSiteMTSDAO().create(new SiteMTS(site));
+                break;
+            case VIMPELCOM:
+                getSiteVMKDAO().create(new SiteVMK(site));
+                break;
+            case MEGAFON:
+                getSiteMGFDAO().create(new SiteMGF(site));
+                break;
+            case TELE2:
+                getSiteTELEDAO().create(new SiteTELE(site));
+                break;
         }
     }
 
