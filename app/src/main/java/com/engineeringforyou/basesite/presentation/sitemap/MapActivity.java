@@ -365,8 +365,10 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     @Override
     public void showSitesForCurrentLocation() {
         clearMap();
-        LatLng position = mMap.getCameraPosition().target;
-        mPresenter.showSitesLocation(position.latitude, position.longitude);
+        if (mMap != null) {
+            LatLng position = mMap.getCameraPosition().target;
+            mPresenter.showSitesLocation(position.latitude, position.longitude);
+        }
     }
 
     @Override
