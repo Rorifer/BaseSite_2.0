@@ -15,9 +15,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatButton
@@ -217,11 +217,17 @@
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@color/colorPrimary" />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/comment_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp" />
+                    android:scrollbars="vertical" />
 
             </LinearLayout>
 

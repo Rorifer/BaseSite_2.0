@@ -29,7 +29,7 @@ import java.util.List;
 
 public class ORMHelper extends OrmLiteSqliteOpenHelper {
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DB_NAME = "ORM_SITES.db";
 
     private final String FIELD_SITE = "SITE";
@@ -117,6 +117,23 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
                 mgf.executeRaw("ALTER TABLE `MGF_Site_Base` ADD COLUMN uid STRING;");
                 vmk.executeRaw("ALTER TABLE `VMK_Site_Base` ADD COLUMN uid STRING;");
                 tele.executeRaw("ALTER TABLE `TELE_Site_Base` ADD COLUMN uid STRING;");
+
+            } catch (SQLException e) {
+                EventFactory.INSTANCE.exception(e);
+            }
+        }
+
+        if (oldVer < 4) {
+            try {
+                SiteMTSDAO mts = getSiteMTSDAO();
+                SiteMGFDAO mgf = getSiteMGFDAO();
+                SiteVMKDAO vmk = getSiteVMKDAO();
+                SiteTELEDAO tele = getSiteTELEDAO();
+
+                mts.executeRaw("ALTER TABLE `MTS_Site_Base` ADD COLUMN statusId INTEGER;");
+                mgf.executeRaw("ALTER TABLE `MGF_Site_Base` ADD COLUMN statusId INTEGER;");
+                vmk.executeRaw("ALTER TABLE `VMK_Site_Base` ADD COLUMN statusId INTEGER;");
+                tele.executeRaw("ALTER TABLE `TELE_Site_Base` ADD COLUMN statusId INTEGER;");
 
             } catch (SQLException e) {
                 EventFactory.INSTANCE.exception(e);

@@ -26,10 +26,11 @@ class SiteCreateInteractorImpl(private val context: Context) : SiteCreateInterac
         return firebase.saveSiteAndComment(site, comment)
     }
 
-    override fun editSite(site: Site, comment: String): Completable {
+    override fun editSite(site: Site, oldSite: Site, comment: String, userName: String): Completable {
+        saveName(userName)
         val com = Comment(site, comment, User(context, "автоматический"))
         com.timestamp = site.timestamp
-        return firebase.editSiteAndComment(site, com)
+        return firebase.editSiteAndComment(site, oldSite, com)
     }
 
     override fun refreshDataBase(): Completable {

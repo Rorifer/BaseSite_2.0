@@ -66,6 +66,7 @@
     <string name="bs_object">Объект:</string>
     <string name="bs_address_auto">Адрес по\nкоординатам:</string>
     <string name="edit">Редактировать</string>
+    <string name="edit_bs">Редактировать</string>
     <string name="bs_status">Статус:</string>
     <string name="status_active">действующая</string>
     <string name="hybrid">Гибрид</string>
@@ -82,7 +83,7 @@
     <string name="site_number">Номер БС:</string>
     <string name="number_default">77-1234</string>
     <string name="site_coordinates">Координаты:</string>
-    <string name="object_default">башня, здание</string>
+    <string name="object_default">башня, ОДН, здание</string>
     <string name="address_default">город, улица, дом</string>
     <string name="site_operator">Оператор:</string>
     <string name="_37_123456">37.123456</string>

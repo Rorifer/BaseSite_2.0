@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.models.Status;
 import com.engineeringforyou.basesite.models.User;
 import com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
@@ -157,7 +158,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         siteAddress.setText(mSite.getAddress());
         siteObject.setText(mSite.getObj());
         siteCoordinates.setText(String.format("%.6f° С.Ш.\n%.6f° В.Д.", mSite.getLatitude(), mSite.getLongitude()));
-        siteStatus.setText(mSite.getStatus().getDescription());
+        siteStatus.setText(Status.values()[mSite.getStatusId() == null ? 0 : mSite.getStatusId()].getDescription());
         //noinspection ConstantConditions
         mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
         mPresenter.loadComments(mSite);

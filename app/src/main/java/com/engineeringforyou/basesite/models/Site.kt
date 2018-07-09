@@ -31,7 +31,9 @@ open class Site(
         @DatabaseField
         val uid: String? = null,
 
-        val status: Status = Status.ACTIVE,
+//        val status: Status = Status.ACTIVE,
+        @DatabaseField
+        val statusId: Int? = null,
 
         val timestamp: Long? = null,
 
@@ -49,7 +51,7 @@ open class Site(
             source.readString(),
             source.readString(),
             source.readString(),
-            Status.values()[source.readInt()],
+            source.readValue(Int::class.java.classLoader) as Int?,
             source.readValue(Long::class.java.classLoader) as Long?,
             source.readString()
     )
@@ -65,7 +67,7 @@ open class Site(
         writeString(address)
         writeString(obj)
         writeString(uid)
-        writeInt(status.ordinal)
+        writeValue(statusId)
         writeValue(timestamp)
         writeString(userAndroidId)
     }
@@ -83,7 +85,7 @@ open class Site(
 class SiteMTS : Site {
     constructor() : super(operator = Operator.MTS)
     constructor(site: Site) : super(site.id, Operator.MTS, site.number, site.latitude, site.longitude,
-            site.address, site.obj, site.uid, site.status, site.timestamp, site.userAndroidId)
+            site.address, site.obj, site.uid, site.statusId, site.timestamp, site.userAndroidId)
 }
 
 @DatabaseTable(tableName = "VMK_Site_Base")
@@ -91,7 +93,7 @@ class SiteMTS : Site {
  class SiteVMK: Site {
     constructor() : super(operator = Operator.VIMPELCOM)
     constructor(site: Site) : super(site.id, Operator.VIMPELCOM, site.number, site.latitude, site.longitude,
-            site.address, site.obj, site.uid, site.status, site.timestamp, site.userAndroidId)
+            site.address, site.obj, site.uid, site.statusId, site.timestamp, site.userAndroidId)
 }
 
 
@@ -100,7 +102,7 @@ class SiteMTS : Site {
 class SiteMGF: Site {
     constructor() : super(operator = Operator.MEGAFON)
     constructor(site: Site) : super(site.id, Operator.MEGAFON, site.number, site.latitude, site.longitude,
-            site.address, site.obj, site.uid, site.status, site.timestamp, site.userAndroidId)
+            site.address, site.obj, site.uid, site.statusId, site.timestamp, site.userAndroidId)
 }
 
 
@@ -109,5 +111,5 @@ class SiteMGF: Site {
 class SiteTELE: Site {
     constructor() : super(operator = Operator.TELE2)
     constructor(site: Site) : super(site.id, Operator.TELE2, site.number, site.latitude, site.longitude,
-            site.address, site.obj, site.uid, site.status, site.timestamp, site.userAndroidId)
+            site.address, site.obj, site.uid, site.statusId, site.timestamp, site.userAndroidId)
 }

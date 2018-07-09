@@ -46,6 +46,10 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 
     @BindView(R.id.site_operator_spinner)
     AppCompatSpinner mOperatorSpinner;
+    @BindView(R.id.site_status_spinner)
+    AppCompatSpinner mStatusSpinner;
+    @BindView(R.id.layout_site_status_spinner)
+    View mStatusSpinnerLayout;
     @BindView(R.id.site_number)
     EditText mNumber;
     @BindView(R.id.coordinates_lat)
@@ -95,6 +99,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     }
 
     private void setupViewForEdit() {
+        setTitle(R.string.edit_bs);
         mNumber.setText(mSite.getNumber());
         mLat.setText(String.valueOf(mSite.getLatitude()));
         mLong.setText(String.valueOf(mSite.getLongitude()));
@@ -102,9 +107,11 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         mObject.setText(mSite.getObj());
         mOperatorSpinner.setSelection(Objects.requireNonNull(mSite.getOperator()).ordinal() + 1);
         mButton.setText(R.string.edit);
-        mOperatorSpinner.setClickable(false);
+        mOperatorSpinner.setEnabled(false);
         mSite.setLatitude(Double.parseDouble(mLat.getText().toString()));
         mSite.setLongitude(Double.parseDouble(mLong.getText().toString()));
+        mStatusSpinnerLayout.setVisibility(View.VISIBLE);
+        mStatusSpinner.setSelection(mSite.getStatusId() == null ? 0 : mSite.getStatusId());
     }
 
     private void initToolbar() {
@@ -123,6 +130,13 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         mOperatorSpinner.setAdapter(adapter);
         mOperatorSpinner.setPrompt("Операторы");
         mOperatorSpinner.setSelection(-1);
+
+        String[] statuses = {Status.ACTIVE.getDescription(), Status.DISMANTLED.getDescription(), Status.NOT_EXIST.getDescription()};
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, statuses);
+        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mStatusSpinner.setAdapter(statusAdapter);
+        mOperatorSpinner.setPrompt("Статусы");
+//        mStatusSpinner.setSelection(0);
     }
 
     @OnClick(R.id.site_draft_button)
@@ -154,7 +168,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
                 mObject.getText().toString().trim(),
                 mSite == null ? (number.isEmpty() ? "unknown" : number).concat("_").concat(String.valueOf(timestamp)) :
                         mSite.getUid() == null ? mSite.getNumber() : mSite.getUid(),
-                Status.ACTIVE,
+                mSite == null ? Status.ACTIVE.ordinal(): mStatusSpinner.getSelectedItemPosition(),
                 timestamp,
                 Utils.INSTANCE.getAndroidId(this)
         );

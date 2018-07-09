@@ -173,6 +173,28 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_site_status_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/bs_status"
+                    android:textSize="16sp" />
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/site_status_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"

@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.repositories.firebase
 
+import com.engineeringforyou.basesite.BuildConfig
 import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Site
 import com.google.firebase.firestore.FirebaseFirestore
@@ -7,13 +8,24 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
 
-const val DIRECTORY_COMMENTS = "comments"
-const val DIRECTORY_SITES = "sites"
-const val FIELD_SITE_ID = "siteId"
-const val FIELD_OPERATOR_ID = "operatorId"
-const val FIELD_TIMESTAMP = "timestamp"
 
 class FirebaseRepositoryImpl : FirebaseRepository {
+
+    var DIRECTORY_COMMENTS = "comments"
+    var DIRECTORY_SITES = "sites"
+    var DIRECTORY_SITES_EDITED = "edited"
+    val FIELD_SITE_ID = "siteId"
+    val FIELD_OPERATOR_ID = "operatorId"
+    val FIELD_TIMESTAMP = "timestamp"
+
+
+    init {
+        if (BuildConfig.DEBUG) {
+            DIRECTORY_COMMENTS = "debug_$DIRECTORY_COMMENTS"
+            DIRECTORY_SITES = "debug_$DIRECTORY_SITES"
+            DIRECTORY_SITES_EDITED = "debug_$DIRECTORY_SITES_EDITED"
+        }
+    }
 
     private val firestore = FirebaseFirestore.getInstance()
 
@@ -61,10 +73,11 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override fun editSiteAndComment(site: Site, comment: Comment): Completable {
+    override fun editSiteAndComment(site: Site, oldSite: Site, comment: Comment): Completable {
         return Completable.create { emitter ->
             firestore.runTransaction { transaction ->
                 transaction.set(firestore.collection(DIRECTORY_SITES).document("edit_" + site.timestamp + "_" + site.uid!!), site)
+                transaction.set(firestore.collection(DIRECTORY_SITES_EDITED).document("edit_" + site.timestamp + "_" + site.uid), oldSite)
                 transaction.set(firestore.collection(DIRECTORY_COMMENTS).document("edit_" + site.timestamp + "_" + site.uid), comment)
                 null
             }

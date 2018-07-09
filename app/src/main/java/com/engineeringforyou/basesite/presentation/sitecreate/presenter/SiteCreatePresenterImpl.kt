@@ -5,6 +5,7 @@ import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractor
 import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractorImpl
 import com.engineeringforyou.basesite.models.Site
+import com.engineeringforyou.basesite.models.Status
 import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateView
 import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,20 +33,19 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
 
     override fun editSite(oldSite: Site, site: Site, userName: String) {
         val comment = commentForEdit(oldSite, site, userName)
-        if(comment.isEmpty()){
+        if (comment.isEmpty()) {
             mView?.showMessage(R.string.edit_site_no_changes)
             return
         }
         mView?.showProgress()
         mDisposable.clear()
-        mDisposable.add(mInteractor.editSite(site, comment)
+        mDisposable.add(mInteractor.editSite(site, oldSite, comment, userName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::editSuccess, this::editError))
-
     }
 
-    private  fun editSuccess(){
+    private fun editSuccess() {
         mDisposable.clear()
         mDisposable.add(mInteractor.refreshDataBase()
                 .subscribeOn(Schedulers.io())
@@ -64,7 +64,7 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
         refreshEditSuccess()
     }
 
-    private fun editError(throwable: Throwable){
+    private fun editError(throwable: Throwable) {
         EventFactory.exception(throwable)
         mView?.hideProgress()
         mView?.showMessage(R.string.error_site_edit)
@@ -74,17 +74,19 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
         val comment: String = "".plus(checkEditField(oldSite.number, site.number, "номер БС"))
                 .plus(checkEditField(oldSite.address, site.address, "адрес"))
                 .plus(checkEditField(oldSite.obj, site.obj, "объект"))
-                .plus(if (oldSite.longitude != site.longitude || oldSite.latitude != site.latitude) ", изменены координаты" else "")
-                .plus(if (oldSite.status != site.status) ", изменен статус БС" else "")
+                .plus(if (oldSite.longitude != site.longitude || oldSite.latitude != site.latitude) ", изменены координаты " +
+                        "с '${oldSite.longitude} , ${oldSite.latitude}' на '${site.longitude} , ${site.latitude}'" else "")
+                .plus(if (oldSite.statusId != null && oldSite.statusId != site.statusId || oldSite.statusId == null && site.statusId != Status.ACTIVE.ordinal)
+                    ", изменен статус БС на '${Status.values()[site.statusId!!].description}'" else "")
 
         return if (comment.isNotEmpty()) comment.removePrefix(", ").capitalize().plus(" пользователем $userName")
         else ""
     }
 
     private fun checkEditField(old: String?, new: String?, value: String): String {
-        if (old.isNullOrEmpty() && new.isNullOrEmpty().not()) return ", добавлен $value"
-        if (old.isNullOrEmpty().not() && new.isNullOrEmpty()) return ", удален $value"
-        if (old != new) return ", изменен $value"
+        if (old.isNullOrEmpty() && new.isNullOrEmpty().not()) return ", добавлен $value '$new'"
+        if (old.isNullOrEmpty().not() && new.isNullOrEmpty()) return ", удален $value '$old'"
+        if (old != new) return ", изменен $value с '$old' на '$new'"
         return ""
     }
 

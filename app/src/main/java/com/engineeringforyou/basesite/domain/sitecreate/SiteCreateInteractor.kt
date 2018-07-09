@@ -15,5 +15,5 @@ interface SiteCreateInteractor {
 
     fun saveName(name: String)
 
-    fun editSite(site: Site, comment: String): Completable
+    fun editSite(site: Site, oldSite: Site, comment: String, userName: String): Completable
 }

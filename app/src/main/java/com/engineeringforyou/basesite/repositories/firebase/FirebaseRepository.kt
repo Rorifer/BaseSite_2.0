@@ -15,7 +15,7 @@ interface FirebaseRepository {
 
     fun saveSiteAndComment(site: Site, comment: Comment): Completable
 
-    fun editSiteAndComment(site: Site, comment: Comment): Completable
+    fun editSiteAndComment(site: Site, oldSite: Site, comment: Comment): Completable
 
     fun loadSites(sitesTimestamp: Long): Single<List<Site>>
 }

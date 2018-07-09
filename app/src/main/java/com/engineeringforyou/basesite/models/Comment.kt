@@ -37,7 +37,7 @@ open class Comment(
             Date().time,
             site.operator!!.code,
             site.uid ?: site.number,
-            site.status.code,
+            site.statusId,
             user.userName,
             user.userAndroidId,
             text)

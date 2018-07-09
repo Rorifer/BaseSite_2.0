@@ -17,6 +17,7 @@ class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.ViewHolder>() {
     fun addList(items: List<Comment>){
         mItems.clear()
         mItems.addAll(items)
+        notifyDataSetChanged()
     }
 
     fun addItem(comment: Comment) {
