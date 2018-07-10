@@ -144,9 +144,12 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
     public void saveSites(List<Site> sites) throws SQLException {
         for (Site site : sites) {
             List<? extends Site> sitesByUId = searchSitesByUId(site);
-            if (!sitesByUId.isEmpty()) deleteSite(sitesByUId);
-            else deleteSite(searchSitesByNumber(site.getOperator(), site.getUid()));
-            createSite(site);
+            if (!sitesByUId.isEmpty()) {
+                deleteSite(sitesByUId);
+            } else {
+                deleteSite(searchSitesByNumber(site.getOperator(), site.getUid()));
+            }
+            if (site.getLatitude() != null && site.getLongitude() != null) createSite(site);
         }
     }
 

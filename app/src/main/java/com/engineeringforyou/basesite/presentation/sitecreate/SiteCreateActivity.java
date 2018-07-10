@@ -36,6 +36,10 @@ import butterknife.OnClick;
 import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity.CODE_MAP;
 import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity.LATITUDE;
 import static com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity.LONGITUDE;
+import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LAT_END;
+import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LAT_START;
+import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LNG_END;
+import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LNG_START;
 
 public class SiteCreateActivity extends AppCompatActivity implements SiteCreateView {
 
@@ -146,10 +150,20 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
             return;
         }
 
-        if (getLatitude() == null || getLongitude() == null) {
+        Double lat = getLatitude();
+        Double lng = getLongitude();
+
+        if (lat == null || lng == null) {
             showMessage(R.string.error_site_coordinates);
             return;
         }
+
+        if (lat > BORDER_LAT_END || lat < BORDER_LAT_START
+                || lng > BORDER_LNG_END || lng < BORDER_LNG_START) {
+            showMessage(R.string.error_site_coordinates_border);
+            return;
+        }
+
         Site site = getCreatedSite();
         if (mSite != null) mPresenter.editSite(mSite, site, mUserName.getText().toString());
         else mPresenter.saveSite(site, mUserName.getText().toString());
@@ -168,7 +182,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
                 mObject.getText().toString().trim(),
                 mSite == null ? (number.isEmpty() ? "unknown" : number).concat("_").concat(String.valueOf(timestamp)) :
                         mSite.getUid() == null ? mSite.getNumber() : mSite.getUid(),
-                mSite == null ? Status.ACTIVE.ordinal(): mStatusSpinner.getSelectedItemPosition(),
+                mSite == null ? Status.ACTIVE.ordinal() : mStatusSpinner.getSelectedItemPosition(),
                 timestamp,
                 Utils.INSTANCE.getAndroidId(this)
         );

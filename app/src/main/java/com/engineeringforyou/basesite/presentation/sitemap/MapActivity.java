@@ -68,16 +68,16 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private static final String MAIN_SITE = "main_site";
     public static final double DEFAULT_LAT = 55.753720;
     public static final double DEFAULT_LNG = 37.619927;
+    public static final double BORDER_LAT_START = 54.489509;
+    public static final double BORDER_LAT_END = 56.953235;
+    public static final double BORDER_LNG_START = 35.127559;
+    public static final double BORDER_LNG_END = 40.250872;
 
     private final String POSITION = "position";
     private final String SCALE = "scale";
 
     private final int PERMISSIONS_LOCATION = 1;
     private final int PERMISSIONS_LOCATION_BUTTON = 2;
-    private final double BORDER_LAT_START = 54.489509;
-    private final double BORDER_LAT_END = 56.953235;
-    private final double BORDER_LNG_START = 35.127559;
-    private final double BORDER_LNG_END = 40.250872;
     private final float SCALE_DEFAULT = 15;
 
     @BindView(R.id.ad_mob_map)

@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.engineeringforyou.basesite.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,6 +29,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
+import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LAT_END;
+import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LAT_START;
+import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LNG_END;
+import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LNG_START;
 import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.DEFAULT_LAT;
 import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.DEFAULT_LNG;
 
@@ -164,11 +169,17 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
     }
 
     private void setPoint(LatLng latLng) {
-        Intent intent = new Intent();
-        intent.putExtra(LONGITUDE, latLng.longitude);
-        intent.putExtra(LATITUDE, latLng.latitude);
-        setResult(RESULT_OK, intent);
-        finish();
+        if (latLng.latitude > BORDER_LAT_END || latLng.latitude < BORDER_LAT_START
+                || latLng.longitude > BORDER_LNG_END || latLng.longitude < BORDER_LNG_START) {
+            mMap.clear();
+            Toast.makeText(this, "Точка не может находиться за пределами Московского региона", Toast.LENGTH_LONG).show();
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra(LONGITUDE, latLng.longitude);
+            intent.putExtra(LATITUDE, latLng.latitude);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     @Override
@@ -215,3 +226,5 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
         finish();
     }
 }
+
+//рулетка http://www.barattalo.it/coding/ruler-for-google-maps-v3-to-measure-distance-on-map/

@@ -90,6 +90,7 @@
     <string name="_55_123456">55.123456</string>
     <string name="error_site_number">Введите номер БС</string>
     <string name="error_site_coordinates">Введите координаты БС или укажите точку на карте</string>
+    <string name="error_site_coordinates_border">"Координаты БС не могут находиться за пределами Московского региона"</string>
     <string name="error_refresh_site">Не удалось обновить список БС</string>
     <string name="sites_refresh">Базовая станция сохранена</string>
     <string name="sites_edit_refresh">Изменения сохранены</string>
