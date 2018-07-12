@@ -29,4 +29,8 @@ class DataBaseRepositoryImpl : DataBaseRepository {
 
     override fun saveComment(comment: Comment): Completable =
             Completable.fromCallable { ORMHelperFactory.getHelper().commentsDao.create(comment) }
+
+    override fun loadAddressesForEmpty() {
+        ORMHelperFactory.getHelper().loadAdressesForEmpty()
+    }
 }

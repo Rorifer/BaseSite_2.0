@@ -3,7 +3,9 @@ package com.engineeringforyou.basesite.data.orm;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractorImpl;
 import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
@@ -16,6 +18,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -375,5 +378,29 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         siteVMKDao = null;
         siteTELEDao = null;
         commentsDao = null;
+    }
+
+    @SuppressLint("CheckResult")
+    public void loadAdressesForEmpty() throws SQLException {
+        BaseDaoImpl<? extends Site, Integer> dao = getSiteVMKDAO();
+        QueryBuilder<? extends Site, Integer> queryBuilder = dao.queryBuilder();
+        queryBuilder.where().like(FIELD_ADDRESS, "нет данных");
+        List<? extends Site> sites = executeQuery(dao, queryBuilder);
+        Log.v("LogAddress", "Всего БС: " + sites.size());
+        SiteDetailsInteractorImpl interactor = new SiteDetailsInteractorImpl(mContext);
+        for (int i = 0; i < sites.size(); i++) {
+            Site site = sites.get(i);
+            Log.v("LogAddress", "i= " + i);
+            if (site.getAddress().equals("нет данных")) {
+                interactor.loadAddress(site.getLatitude(), site.getLongitude())
+                        .subscribe(s -> {
+                            UpdateBuilder<? extends Site, Integer> updateBuilder = dao.updateBuilder();
+                            updateBuilder.where().eq("SITE", site.getNumber());
+                            updateBuilder.updateColumnValue("Addres", s);
+                            updateBuilder.update();
+                            Log.v("LogAddress", "Site: " + site.getNumber() + "  " + s);
+                        }, t -> Log.v("LogAddress", "Site: " + site.getNumber() + " ERROR ", t));
+            }
+        }
     }
 }

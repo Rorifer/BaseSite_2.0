@@ -23,7 +23,7 @@ open class Site(
         var longitude: Double? = null,
 
         @DatabaseField(columnName = "Addres")
-        val address: String = "нет данных",
+        var address: String = "нет данных",
 
         @DatabaseField(columnName = "Object")
         val obj: String = "нет данных",

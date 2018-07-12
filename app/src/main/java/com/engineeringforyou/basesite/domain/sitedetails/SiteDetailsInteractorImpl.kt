@@ -51,7 +51,7 @@ class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInter
                             prev = detail
                         }
                     }
-                    return@fromCallable addressText
+                    return@fromCallable addressText.replace("'","")
                 } else {
                     EventFactory.message("SiteDetailsInteractorImpl: loadAddress(): list is empty for $lat, $lng")
                 }

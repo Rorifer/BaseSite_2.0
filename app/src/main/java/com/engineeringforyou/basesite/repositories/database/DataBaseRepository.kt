@@ -22,4 +22,6 @@ interface DataBaseRepository {
 
     fun saveSites(sites: List<Site>): Completable
 
+    fun loadAddressesForEmpty()
+
 }
