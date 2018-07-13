@@ -205,13 +205,9 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         }
 
         mMap.setOnMyLocationButtonClickListener(() -> {
-            LatLng location = getLocation();
-            if (location != null) {
-                clearMap();
-                mPresenter.showSitesLocation(location.latitude, location.longitude);
-                mScale = SCALE_DEFAULT;
-                moveCamera(new LatLng(location.latitude, location.longitude));
-            }
+            clearMap();
+            mScale = SCALE_DEFAULT;
+            showUserLocation();
             return true;
         });
 
@@ -439,7 +435,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                 && location.longitude < BORDER_LNG_END) {
             lat = location.latitude;
             lng = location.longitude;
-        }
+        } else showStartingMessage();
         moveCamera(new LatLng(lat, lng));
         mPresenter.showSitesLocation(lat, lng);
     }

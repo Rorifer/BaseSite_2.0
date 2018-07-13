@@ -13,6 +13,7 @@ import com.engineeringforyou.basesite.models.SiteMGF;
 import com.engineeringforyou.basesite.models.SiteMTS;
 import com.engineeringforyou.basesite.models.SiteTELE;
 import com.engineeringforyou.basesite.models.SiteVMK;
+import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.BaseDaoImpl;
@@ -33,7 +34,7 @@ import java.util.List;
 public class ORMHelper extends OrmLiteSqliteOpenHelper {
 
     private static final int DATABASE_VERSION = 4;
-    private static final String DB_NAME = "ORM_SITES.db";
+    private static final String DB_NAME = "ORM_SITES_02.db";
 
     private final String FIELD_SITE = "SITE";
     private final String FIELD_ADDRESS = "Addres";
@@ -107,41 +108,46 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
 //            EventFactory.INSTANCE.exception(e);
 //        }
 
-        if (oldVer < 3) {
-            try {
-//                TableUtils.createTable(connectionSource, Comment.class);
+//        if (oldVer < 3) {
+//            try {
+////                TableUtils.createTable(connectionSource, Comment.class);
+//
+//                SiteMTSDAO mts = getSiteMTSDAO();
+//                SiteMGFDAO mgf = getSiteMGFDAO();
+//                SiteVMKDAO vmk = getSiteVMKDAO();
+//                SiteTELEDAO tele = getSiteTELEDAO();
+//
+//                mts.executeRaw("ALTER TABLE `MTS_Site_Base` ADD COLUMN uid STRING;");
+//                mgf.executeRaw("ALTER TABLE `MGF_Site_Base` ADD COLUMN uid STRING;");
+//                vmk.executeRaw("ALTER TABLE `VMK_Site_Base` ADD COLUMN uid STRING;");
+//                tele.executeRaw("ALTER TABLE `TELE_Site_Base` ADD COLUMN uid STRING;");
+//
+//            } catch (SQLException e) {
+//                EventFactory.INSTANCE.exception(e);
+//            }
+//        }
 
-                SiteMTSDAO mts = getSiteMTSDAO();
-                SiteMGFDAO mgf = getSiteMGFDAO();
-                SiteVMKDAO vmk = getSiteVMKDAO();
-                SiteTELEDAO tele = getSiteTELEDAO();
-
-                mts.executeRaw("ALTER TABLE `MTS_Site_Base` ADD COLUMN uid STRING;");
-                mgf.executeRaw("ALTER TABLE `MGF_Site_Base` ADD COLUMN uid STRING;");
-                vmk.executeRaw("ALTER TABLE `VMK_Site_Base` ADD COLUMN uid STRING;");
-                tele.executeRaw("ALTER TABLE `TELE_Site_Base` ADD COLUMN uid STRING;");
-
-            } catch (SQLException e) {
-                EventFactory.INSTANCE.exception(e);
-            }
-        }
+//        if (oldVer < 4) {
+//            try {
+//                SiteMTSDAO mts = getSiteMTSDAO();
+//                SiteMGFDAO mgf = getSiteMGFDAO();
+//                SiteVMKDAO vmk = getSiteVMKDAO();
+//                SiteTELEDAO tele = getSiteTELEDAO();
+//
+//                mts.executeRaw("ALTER TABLE `MTS_Site_Base` ADD COLUMN statusId INTEGER;");
+//                mgf.executeRaw("ALTER TABLE `MGF_Site_Base` ADD COLUMN statusId INTEGER;");
+//                vmk.executeRaw("ALTER TABLE `VMK_Site_Base` ADD COLUMN statusId INTEGER;");
+//                tele.executeRaw("ALTER TABLE `TELE_Site_Base` ADD COLUMN statusId INTEGER;");
+//
+//            } catch (SQLException e) {
+//                EventFactory.INSTANCE.exception(e);
+//            }
+//        }
 
         if (oldVer < 4) {
-            try {
-                SiteMTSDAO mts = getSiteMTSDAO();
-                SiteMGFDAO mgf = getSiteMGFDAO();
-                SiteVMKDAO vmk = getSiteVMKDAO();
-                SiteTELEDAO tele = getSiteTELEDAO();
-
-                mts.executeRaw("ALTER TABLE `MTS_Site_Base` ADD COLUMN statusId INTEGER;");
-                mgf.executeRaw("ALTER TABLE `MGF_Site_Base` ADD COLUMN statusId INTEGER;");
-                vmk.executeRaw("ALTER TABLE `VMK_Site_Base` ADD COLUMN statusId INTEGER;");
-                tele.executeRaw("ALTER TABLE `TELE_Site_Base` ADD COLUMN statusId INTEGER;");
-
-            } catch (SQLException e) {
-                EventFactory.INSTANCE.exception(e);
-            }
+            new SettingsRepositoryImpl(mContext).saveSitesTimestamp(1531501662154L);
         }
+
     }
 
     public void saveSites(List<Site> sites) throws SQLException {

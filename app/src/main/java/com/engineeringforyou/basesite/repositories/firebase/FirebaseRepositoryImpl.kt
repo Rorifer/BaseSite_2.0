@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.repositories.firebase
 
+import com.engineeringforyou.basesite.BuildConfig
 import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Site
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,11 +20,11 @@ class FirebaseRepositoryImpl : FirebaseRepository {
 
 
     init {
-//        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
 //            DIRECTORY_COMMENTS = "debug_$DIRECTORY_COMMENTS"
 //            DIRECTORY_SITES = "debug_$DIRECTORY_SITES"
 //            DIRECTORY_SITES_EDITED = "debug_$DIRECTORY_SITES_EDITED"
-//        }
+        }
     }
 
     private val firestore = FirebaseFirestore.getInstance()
