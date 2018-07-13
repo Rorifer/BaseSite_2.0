@@ -145,7 +145,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 
     @OnClick(R.id.site_draft_button)
     public void saveDraft() {
-        if (mOperatorSpinner.getSelectedItemPosition() == 0) {
+        if (mOperatorSpinner.getSelectedItemPosition() < 1) {
             showMessage(R.string.select_operator);
             return;
         }
@@ -170,6 +170,10 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     }
 
     private Site getCreatedSite() {
+        if (mOperatorSpinner.getSelectedItemPosition() < 1) {
+            showMessage(R.string.select_operator);
+            return null;
+        }
         String number = mNumber.getText().toString().trim();
         Long timestamp = new Date().getTime();
         return new Site(
@@ -262,7 +266,6 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     @Override
     public void close() {
         Intent intent = new Intent();
-        intent.putExtra(SITE, getCreatedSite());
         setResult(RESULT_OK, intent);
         finish();
         overridePendingTransition(R.anim.alpha_in, R.anim.slide_right_out);
