@@ -260,12 +260,13 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 
     @Override
     public void onBackPressed() {
-        close();
+        super.onBackPressed();
     }
 
     @Override
     public void close() {
         Intent intent = new Intent();
+        intent.putExtra(SITE, getCreatedSite());
         setResult(RESULT_OK, intent);
         finish();
         overridePendingTransition(R.anim.alpha_in, R.anim.slide_right_out);
