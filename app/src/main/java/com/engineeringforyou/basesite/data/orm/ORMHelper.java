@@ -295,10 +295,12 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         String[] words = search.replace(',', ' ').split(" ");
         QueryBuilder<? extends Site, Integer> queryBuilder = dao.queryBuilder();
         Where<? extends Site, Integer> where = queryBuilder.where();
-        for (int i = 0; i < words.length; i++) {
-            if (!words[i].isEmpty()) {
-                if (i > 0) where.and();
-                where.like(FIELD_ADDRESS, "%" + words[i] + "%");
+        boolean isSecond = false;
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                if (isSecond) where.and();
+                where.like(FIELD_ADDRESS, "%" + word + "%");
+                isSecond = true;
             }
         }
         return executeQuery(dao, queryBuilder);
