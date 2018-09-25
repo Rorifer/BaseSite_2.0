@@ -14,4 +14,6 @@ interface SiteCreateView {
 
     fun setName(name: String)
 
+    fun setAddressFromCoordinates(address: String)
+
 }

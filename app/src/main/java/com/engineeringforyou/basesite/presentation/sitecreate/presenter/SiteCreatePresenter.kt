@@ -14,4 +14,6 @@ interface SiteCreatePresenter {
     fun unbindView()
 
     fun setupView()
+
+    fun loadAddressFromCoordinates(lat: Double, lng: Double)
 }

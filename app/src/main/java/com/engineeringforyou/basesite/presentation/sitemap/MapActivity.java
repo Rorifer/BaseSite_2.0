@@ -154,7 +154,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     @OnClick(R.id.fab_add_site)
     public void addSite() {
-        SiteCreateActivity.startForResult(this, mMap == null ? null : mMap.getCameraPosition());
+        SiteCreateActivity.startForCreateSite(this, mMap == null ? null : mMap.getCameraPosition());
     }
 
     @Override

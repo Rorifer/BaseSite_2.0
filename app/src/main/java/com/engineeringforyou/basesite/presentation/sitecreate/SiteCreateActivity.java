@@ -26,6 +26,8 @@ import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateVi
 import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.maps.model.CameraPosition;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -73,15 +75,16 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 
     private SiteCreatePresenter mPresenter;
     private Site mSite;
+    private String mAddressLoaded = null;
 
-    public static void startForResult(Activity activity, @Nullable CameraPosition position) {
+    public static void startForCreateSite(Activity activity, @Nullable CameraPosition position) {
         Intent intent = new Intent(activity, SiteCreateActivity.class);
         intent.putExtra(POSITION, position);
         activity.startActivityForResult(intent, CODE_SITE_CREATE);
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }
 
-    public static void startForEdit(Activity activity, Site site) {
+    public static void startForEditSite(Activity activity, Site site) {
         Intent intent = new Intent(activity, SiteCreateActivity.class);
         intent.putExtra(SITE, site);
         activity.startActivityForResult(intent, CODE_SITE_EDIT);
@@ -227,8 +230,18 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
                 if (lat != 0 && lng != 0) {
                     mLat.setText(String.valueOf(lat));
                     mLong.setText(String.valueOf(lng));
+                    mPresenter.loadAddressFromCoordinates(lat, lng);
                 }
             }
+        }
+    }
+
+    @Override
+    public void setAddressFromCoordinates(@NotNull String address) {
+        String currentAddress = mAddress.getText().toString();
+        if (currentAddress.isEmpty() || (mAddressLoaded != null && mAddressLoaded.equals(currentAddress))) {
+            mAddress.setText(address);
+            mAddressLoaded = address;
         }
     }
 

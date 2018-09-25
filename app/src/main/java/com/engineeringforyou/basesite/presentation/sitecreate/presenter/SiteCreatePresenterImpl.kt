@@ -4,6 +4,8 @@ import android.content.Context
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractor
 import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractorImpl
+import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractor
+import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractorImpl
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.models.Status
 import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateView
@@ -17,6 +19,7 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
     private var mView: SiteCreateView? = null
     private val mDisposable = CompositeDisposable()
     private val mInteractor: SiteCreateInteractor = SiteCreateInteractorImpl(context)
+    private val mAddressInteractor: SiteDetailsInteractor = SiteDetailsInteractorImpl(context)
 
     override fun bind(view: SiteCreateView) {
         mView = view
@@ -118,6 +121,21 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
         EventFactory.exception(throwable)
         mView?.hideProgress()
         mView?.showMessage(R.string.error_site_save)
+    }
+
+    override fun loadAddressFromCoordinates(lat: Double, lng: Double) {
+        mDisposable.add(mAddressInteractor.loadAddress(lat, lng)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::loadAddressSuccess, this::loadAddressError));
+    }
+
+    private fun loadAddressSuccess(address: String) {
+        mView?.setAddressFromCoordinates(address)
+    }
+
+    private fun loadAddressError(throwable: Throwable) {
+        EventFactory.exception(throwable)
     }
 
     override fun unbindView() {

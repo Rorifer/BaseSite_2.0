@@ -118,7 +118,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 //    @Override
 //    public void toSiteChoice(@NotNull List<? extends Site> list) {
 //        hideKeyboard();
-//        SiteListActivity.startForResult(this, list);
+//        SiteListActivity.startForCreateSite(this, list);
 //    }
     @Override
     public void toSiteChoice( List<? extends Site> list) {

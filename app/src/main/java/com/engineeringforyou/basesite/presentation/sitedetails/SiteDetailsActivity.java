@@ -212,7 +212,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     @OnClick(R.id.button_edit)
     public void clickMapEdit() {
         showProgress();
-        SiteCreateActivity.startForEdit(this, mSite);
+        SiteCreateActivity.startForEditSite(this, mSite);
     }
 
     @Override
