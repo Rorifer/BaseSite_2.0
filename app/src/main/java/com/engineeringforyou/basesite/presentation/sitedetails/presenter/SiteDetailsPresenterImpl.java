@@ -42,7 +42,8 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     }
 
     @Override
-    public void loadAddressFromCoordinates(double lat, double lng) {
+    public void loadAddressFromCoordinates(Double lat, Double lng) {
+        if (lat == null || lng == null) return;
         mDisposable.add(mInteractor.loadAddress(lat, lng)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

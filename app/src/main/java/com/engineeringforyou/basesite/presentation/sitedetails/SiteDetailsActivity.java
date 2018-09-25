@@ -221,7 +221,14 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
             case CODE_SITE_EDIT:
                 if (resultCode == RESULT_OK && data != null) {
                     mSite = data.getParcelableExtra(SITE);
-                    setupView();
+                    if (mSite == null) { // Непонятное падение  https://www.fabric.io/nouu/android/apps/com.engineeringforyou.basesite/issues/5b4990166007d59fcd7dc72f?time=last-ninety-days
+                        EventFactory.INSTANCE.message("SiteDetailsActivity, mSite == null\n" +
+                                data.getScheme() + "\n" +
+                                data.getAction() + "\n" +
+                                data.getType() + "\n" +
+                                data.getDataString() + "\n" +
+                                data.getPackage());
+                    } else setupView();
                 }
                 break;
         }
@@ -235,7 +242,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("geo:%s,%s?q=%s,%s", lat, lng, lat, lng))));
         } catch (Exception e) {
-            EventFactory.INSTANCE.exception(e);
+//            EventFactory.INSTANCE.exception(e);
             Toast.makeText(this, "Не удалось запустить навигатор", Toast.LENGTH_SHORT).show();
         }
     }

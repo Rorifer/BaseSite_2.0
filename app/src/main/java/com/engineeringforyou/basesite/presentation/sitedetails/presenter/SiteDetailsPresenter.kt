@@ -10,7 +10,7 @@ interface SiteDetailsPresenter {
 
     fun unbindView()
 
-    fun loadAddressFromCoordinates(lat: Double, lng: Double)
+    fun loadAddressFromCoordinates(lat: Double?, lng: Double?)
 
     fun loadComments(site: Site)
 

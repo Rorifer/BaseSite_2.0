@@ -11,7 +11,6 @@ import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
-import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.io.IOException
@@ -51,10 +50,8 @@ class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInter
                             prev = detail
                         }
                     }
-                    return@fromCallable addressText.replace("'","")
-                } else {
-                    EventFactory.message("SiteDetailsInteractorImpl: loadAddress(): list is empty for $lat, $lng")
-                }
+                    return@fromCallable addressText.replace("'", "")
+                }// else EventFactory.message("SiteDetailsInteractorImpl: loadAddress(): list is empty for $lat, $lng")
             }
             return@fromCallable "нет данных"
         }
