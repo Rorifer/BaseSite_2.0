@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.message.MessageActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
@@ -177,7 +178,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @Override
     public void openMessageForDeveloper() {
-
+        MessageActivity.start(this);
     }
 
     private void hideKeyboard() {

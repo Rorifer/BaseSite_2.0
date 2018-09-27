@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingTop="16dp"
-                    android:text="@string/site_coordinates"
+                    android:text="@string/site_coordinates_necessarily"
                     android:textSize="16sp" />
 
                 <EditText

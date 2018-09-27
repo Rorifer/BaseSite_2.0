@@ -2,6 +2,7 @@ package com.engineeringforyou.basesite.repositories.firebase
 
 import com.engineeringforyou.basesite.BuildConfig
 import com.engineeringforyou.basesite.models.Comment
+import com.engineeringforyou.basesite.models.Message
 import com.engineeringforyou.basesite.models.Site
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
@@ -12,6 +13,7 @@ import java.util.*
 class FirebaseRepositoryImpl : FirebaseRepository {
 
     var DIRECTORY_COMMENTS = "comments"
+    var DIRECTORY_MESSAGE = "message"
     var DIRECTORY_SITES = "sites"
     var DIRECTORY_SITES_EDITED = "edited"
     val FIELD_SITE_ID = "siteId"
@@ -48,6 +50,14 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     override fun saveComment(comment: Comment): Completable {
         return Completable.create { emitter ->
             firestore.collection(DIRECTORY_COMMENTS).add(comment)
+                    .addOnSuccessListener { emitter.onComplete() }
+                    .addOnFailureListener { emitter.onError(it) }
+        }
+    }
+
+    override fun saveMessage(message: Message): Completable {
+        return Completable.create { emitter ->
+            firestore.collection(DIRECTORY_MESSAGE).add(message)
                     .addOnSuccessListener { emitter.onComplete() }
                     .addOnFailureListener { emitter.onError(it) }
         }

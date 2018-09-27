@@ -85,9 +85,10 @@
     <string name="site_number">Номер БС:</string>
     <string name="number_default">77-1234</string>
     <string name="site_coordinates">Координаты:</string>
+    <string name="site_coordinates_necessarily">Координаты*:</string>
     <string name="object_default">башня, ОДН, здание</string>
     <string name="address_default">город, улица, дом</string>
-    <string name="site_operator">Оператор:</string>
+    <string name="site_operator">Оператор*:</string>
     <string name="_37_123456">37.123456</string>
     <string name="_55_123456">55.123456</string>
     <string name="error_site_number">Введите номер БС</string>
@@ -109,6 +110,13 @@
     <string name="info">Информация</string>
     <string name="drawer_open">открыт</string>
     <string name="drawer_close">закрыт</string>
-    <string name="mail_to_developer">Написать разработчику</string>
+    <string name="message_for_developer">Написать разработчику</string>
+    <string name="e_mail_hint">e-mail (необязательно)</string>
+    <string name="message_hint">Сообщение, замечание, предложение....</string>
+    <string name="send">Отправить</string>
+    <string name="enter_message">Введите сообщение!</string>
+    <string name="message_send_success">Сообщение отправлено разработчику</string>
+    <string name="message_send_error">Отправка не удалась. Проверьте интернет-соединение и повторите отправку</string>
+
 
 </resources>

@@ -12,7 +12,7 @@
         <item
             android:id="@+id/item_mail"
             android:icon="@drawable/ic_mail"
-            android:title="@string/mail_to_developer" />
+            android:title="@string/message_for_developer" />
 
         <item
             android:id="@+id/item_logout"
