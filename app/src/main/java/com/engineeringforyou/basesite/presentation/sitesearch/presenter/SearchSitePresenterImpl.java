@@ -130,6 +130,35 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     }
 
     @Override
+    public void showInfo() {
+        mView.showProgress();
+        mDisposable.add(mInteractor.getInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::infoSuccess, this::infoError));
+    }
+
+    @Override
+    public void messageForDeveloper() {
+        mView.openMessageForDeveloper();
+    }
+
+    private void infoSuccess(String informationText){
+        if (mView != null) {
+            mView.showInformation(informationText);
+            mView.hideProgress();
+        }
+    }
+
+    private void infoError(Throwable throwable){
+        EventFactory.INSTANCE.exception(throwable);
+        if (mView != null) {
+            mView.hideProgress();
+            mView.showInformation(R.string.error);
+        }
+    }
+
+    @Override
     public void unbindView() {
         mView = null;
         mDisposable.dispose();

@@ -24,4 +24,6 @@ interface DataBaseRepository {
 
     fun loadAddressesForEmpty()
 
+    fun getStatistic(): Single<String>
+
 }

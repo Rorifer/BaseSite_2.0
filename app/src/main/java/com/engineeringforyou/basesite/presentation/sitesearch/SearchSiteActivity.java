@@ -2,7 +2,10 @@ package com.engineeringforyou.basesite.presentation.sitesearch;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -13,14 +16,16 @@ import android.widget.RadioGroup;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
+import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitesearch.views.SearchSiteView;
-import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
-import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
+import com.engineeringforyou.basesite.utils.MessageDialog;
 
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -40,6 +45,10 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     RadioGroup mOperators;
     @BindView(R.id.progress_bar)
     FrameLayout mProgress;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.nav_view)
+    NavigationView mNavigationView;
 
     private SearchSitePresenter mPresenter;
 
@@ -51,6 +60,27 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         mPresenter = new SearchSitePresenterImpl(this);
         mPresenter.bind(this);
         mPresenter.watchChanges(mSearch);
+        initDrawer();
+    }
+
+    private void initDrawer() {
+        mNavigationView.setNavigationItemSelectedListener(item -> {
+            item.setChecked(true);
+            mDrawerLayout.closeDrawers();
+
+            switch (item.getItemId()) {
+                case R.id.item_info:
+                    mPresenter.showInfo();
+                    break;
+                case R.id.item_mail:
+                    mPresenter.messageForDeveloper();
+                    break;
+                case R.id.item_logout:
+                    finish();
+                    break;
+            }
+            return true;
+        });
     }
 
     @Override
@@ -58,6 +88,12 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         super.onResume();
         mPresenter.onResume();
         hideProgress();
+    }
+
+    @OnClick(R.id.menu_item)
+    public void clickMenu() {
+        hideKeyboard();
+        mDrawerLayout.openDrawer(GravityCompat.START);
     }
 
     @OnClick(R.id.button_search)
@@ -94,6 +130,18 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
     @Override
+    public void showInformation(int textRes) {
+        showInformation(getString(textRes));
+    }
+
+    @Override
+    public void showInformation(@NotNull String informationText) {
+        MessageDialog.Companion
+                .getInstance(informationText, null, null, getString(R.string.info), false)
+                .show(getSupportFragmentManager());
+    }
+
+    @Override
     public void hideError() {
         mSearchLayout.setError(null);
     }
@@ -114,14 +162,8 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         SiteDetailsActivity.start(this, site);
     }
 
-
-//    @Override
-//    public void toSiteChoice(@NotNull List<? extends Site> list) {
-//        hideKeyboard();
-//        SiteListActivity.startForCreateSite(this, list);
-//    }
     @Override
-    public void toSiteChoice( List<? extends Site> list) {
+    public void toSiteChoice(List<? extends Site> list) {
         hideKeyboard();
         SiteListActivity.start(this, list);
     }
@@ -133,8 +175,22 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         MapActivity.start(this, null);
     }
 
+    @Override
+    public void openMessageForDeveloper() {
+
+    }
+
     private void hideKeyboard() {
         KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

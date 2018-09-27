@@ -22,4 +22,10 @@ interface SearchSiteView {
 
     fun openMap(operator: Operator)
 
+    fun showInformation(informationText: String)
+
+    fun showInformation(@StringRes textRes: Int)
+
+    fun openMessageForDeveloper()
+
 }

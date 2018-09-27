@@ -44,6 +44,8 @@
     <string name="operarators">Операторы</string>
     <string name="maps">Карта</string>
     <string name="ok">OK</string>
+    <string name="cancel">Oтмена</string>
+    <string name="attention">Внимание</string>
     <string name="all_site">Все БС</string>
     <string name="all_site_description">Все БС (замедление работы)</string>
     <string name="site_list_title">Выбор БС:</string>
@@ -102,5 +104,11 @@
     <string name="name_nick">имя или ник</string>
     <string name="select_operator">Выберите оператора</string>
     <string name="edit_site_no_changes">Нет изменений для сохранения</string>
+    <string name="logout">Выйти</string>
+    <string name="menu">Меню</string>
+    <string name="info">Информация</string>
+    <string name="drawer_open">открыт</string>
+    <string name="drawer_close">закрыт</string>
+    <string name="mail_to_developer">Написать разработчику</string>
 
 </resources>

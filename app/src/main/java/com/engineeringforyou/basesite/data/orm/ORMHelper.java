@@ -411,4 +411,16 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
             }
         }
     }
+
+    public String getStatistic() throws SQLException {
+        return "Колличество учтённых базовых станций:\n\n" +
+                getDescription(Operator.MTS.getLabel(), getSiteMTSDAO().countOf()) +
+                getDescription(Operator.MEGAFON.getLabel(), getSiteMGFDAO().countOf()) +
+                getDescription(Operator.VIMPELCOM.getLabel(), getSiteVMKDAO().countOf()) +
+                getDescription(Operator.TELE2.getLabel(), getSiteTELEDAO().countOf());
+    }
+
+    private String getDescription(String operatorName, long count) {
+        return operatorName + " - " + count + " БС\n";
+    }
 }

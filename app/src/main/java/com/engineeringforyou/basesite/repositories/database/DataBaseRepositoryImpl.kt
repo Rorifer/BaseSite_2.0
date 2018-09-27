@@ -33,4 +33,8 @@ class DataBaseRepositoryImpl : DataBaseRepository {
     override fun loadAddressesForEmpty() {
         ORMHelperFactory.getHelper().loadAdressesForEmpty()
     }
+
+    override fun getStatistic(): Single<String> {
+        return Single.fromCallable { ORMHelperFactory.getHelper().statistic }
+    }
 }

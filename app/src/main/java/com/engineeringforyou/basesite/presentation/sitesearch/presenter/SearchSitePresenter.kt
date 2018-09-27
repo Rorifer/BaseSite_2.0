@@ -18,4 +18,8 @@ interface SearchSitePresenter {
     fun watchChanges(view: EditText)
 
     fun saveOperator(operatorIndex: Int)
+
+    fun showInfo()
+
+    fun messageForDeveloper()
 }

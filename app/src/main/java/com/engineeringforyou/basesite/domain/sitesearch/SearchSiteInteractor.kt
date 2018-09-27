@@ -17,4 +17,6 @@ interface SearchSiteInteractor {
 
     fun refreshSiteBase(): Completable
 
+    fun getInfo(): Single<String>
+
 }

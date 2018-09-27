@@ -34,4 +34,7 @@ class SearchSiteInteractorImpl(context: Context) : SearchSiteInteractor {
             sitesRepository.searchSitesByAddress(getOperator(), search)
 
     override fun refreshSiteBase() = sitesDataBase.refreshDataBaseIfNeed()
+
+    override fun getInfo() = sitesRepository.getStatistic()
+
 }
