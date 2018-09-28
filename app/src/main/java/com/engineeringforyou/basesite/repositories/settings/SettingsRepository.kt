@@ -12,7 +12,7 @@ interface SettingsRepository {
 
     fun getMapType(): Int
 
-    fun saveRadius (radius: Int)
+    fun saveRadius(radius: Int)
 
     fun getRadius(): Int
 
@@ -20,12 +20,18 @@ interface SettingsRepository {
 
     fun getCountMapCreate(): Int
 
-    fun saveSitesTimestamp (timestamp: Long)
+    fun saveSitesTimestamp(timestamp: Long)
 
-    fun getSitesTimestamp (): Long
+    fun getSitesTimestamp(): Long
 
     fun getName(): String
 
     fun setName(name: String)
+
+    fun setTimeEnableAdvertising(timestamp: Long)
+
+    fun getTimeEnableAdvertising(): Long
+
+    fun isEnableAdvertising(): Boolean
 
 }

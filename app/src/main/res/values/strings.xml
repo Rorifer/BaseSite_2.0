@@ -58,6 +58,8 @@
     <string name="banner_ad_unit_id_2">ca-app-pub-3809842406726636/6757680042</string>
     <string name="interstitial_ad_unit_id_1">ca-app-pub-3809842406726636/9147896086</string>
     <string name="interstitial_test_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="rewarded_test_ad_unit_id">ca-app-pub-3940256099942544/5224354917</string>
+    <string name="rewarded_ad_unit_id_1">ca-app-pub-3809842406726636/6993577860</string>
     <!--<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
     <!--<string name="banner_ad_unit_id">ca-app-pub-3809842406726636~9510522814</string>-->
 
@@ -122,6 +124,7 @@
     <string name="message_send_success">Сообщение отправлено разработчику</string>
     <string name="message_send_error">Отправка не удалась. Проверьте интернет-соединение и повторите отправку</string>
     <string name="app_rating">Оценить приложение</string>
-
+    <string name="app_advertising">Отключить рекламу</string>
+    <string name="advertising">Для отключения рекламы на 3 месяца необходимо просмотреть один рекламный ролик</string>
 
 </resources>

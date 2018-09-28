@@ -19,4 +19,6 @@ interface SearchSiteInteractor {
 
     fun getInfo(): Single<String>
 
+    fun disableAdvertising()
+
 }

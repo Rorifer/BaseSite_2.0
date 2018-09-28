@@ -159,6 +159,11 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
     }
 
     @Override
+    public void disableAdvertising() {
+        mInteractor.disableAdvertising();
+    }
+
+    @Override
     public void unbindView() {
         mView = null;
         mDisposable.dispose();

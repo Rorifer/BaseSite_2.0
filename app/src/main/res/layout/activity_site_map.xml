@@ -33,7 +33,7 @@
         android:id="@+id/fab_add_site"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/ad_mob_map"
+        android:layout_alignBottom="@id/map"
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/colorAccent"
         android:padding="@dimen/fab_margin"

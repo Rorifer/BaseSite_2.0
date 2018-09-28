@@ -22,4 +22,6 @@ interface SearchSitePresenter {
     fun showInfo()
 
     fun messageForDeveloper()
+
+    fun disableAdvertising()
 }

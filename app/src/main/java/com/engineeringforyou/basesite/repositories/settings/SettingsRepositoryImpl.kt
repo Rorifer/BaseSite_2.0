@@ -3,6 +3,7 @@ package com.engineeringforyou.basesite.repositories.settings
 import android.content.Context
 import android.preference.PreferenceManager
 import com.engineeringforyou.basesite.models.Operator
+import com.engineeringforyou.basesite.utils.Utils
 import com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID
 import com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL
 
@@ -19,6 +20,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         private const val KEY_OPERATOR = "key_operator"
         private const val KEY_MAP_COUNTER = "key_map_counter"
         private const val KEY_SITES_TIMESTAMP = "key_sites_timestamp"
+        private const val KEY_TIME_ADVERTISING = "key_time_advertising"
         private const val KEY_NAME = "key_name"
     }
 
@@ -88,5 +90,19 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         } catch (e: ClassCastException) {
             ""
         }
+    }
+
+    override fun setTimeEnableAdvertising(timestamp: Long) = prefs.edit().putLong(KEY_TIME_ADVERTISING, timestamp).apply()
+
+    override fun getTimeEnableAdvertising(): Long {
+        return try {
+            prefs.getLong(KEY_TIME_ADVERTISING, TIMESTAMP_DEFAULT)
+        } catch (e: ClassCastException) {
+            TIMESTAMP_DEFAULT
+        }
+    }
+
+    override fun isEnableAdvertising(): Boolean {
+        return getTimeEnableAdvertising() < Utils.getCurrentTime()
     }
 }

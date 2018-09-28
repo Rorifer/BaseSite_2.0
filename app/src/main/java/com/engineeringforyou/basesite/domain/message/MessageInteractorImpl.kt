@@ -21,7 +21,7 @@ class MessageInteractorImpl(private val context: Context) : MessageInteractor {
                 message,
                 Utils.getAndroidId(context),
                 settings.getCountMapCreate(),
-                Utils.getTimestamp(),
+                Utils.getCurrentTime(),
                 Utils.getCurrentDate())
 
         return firebase.saveMessage(model)

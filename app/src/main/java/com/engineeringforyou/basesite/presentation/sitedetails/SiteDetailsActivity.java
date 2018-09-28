@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.engineeringforyou.basesite.BuildConfig;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Comment;
 import com.engineeringforyou.basesite.models.Site;
@@ -34,6 +35,7 @@ import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetails
 import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
+import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -97,6 +99,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     private Site mSite;
     private CommentsAdapter mAdapter;
     private InterstitialAd mInterstitialAd;
+    private Boolean mIsEnableAdvertising = false;
 
     public static void start(Activity activity, Site site) {
         Intent intent = new Intent(activity, SiteDetailsActivity.class);
@@ -118,7 +121,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     protected void onResume() {
         super.onResume();
         hideProgress();
-        mAdMobView.resume();
+        if (mIsEnableAdvertising) mAdMobView.resume();
     }
 
     private void init() {
@@ -199,15 +202,26 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     }
 
     private void initAdMob() {
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id_1));
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(getString(R.string.admob_test_device))
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-        mAdMobView.loadAd(adRequest);
+        mIsEnableAdvertising = Utils.INSTANCE.isEnableAdvertising(this);
+        if (mIsEnableAdvertising) {
+            mInterstitialAd = new InterstitialAd(this);
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    openRoute();
+                }
+            });
+            String adUnitId = getString(BuildConfig.DEBUG ? R.string.interstitial_test_ad_unit_id : R.string.interstitial_ad_unit_id_1);
+            mInterstitialAd.setAdUnitId(adUnitId);
+            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(getString(R.string.admob_test_device))
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+            mAdMobView.loadAd(adRequest);
+        } else {
+            mAdMobView.setVisibility(View.GONE);
+        }
     }
 
     @OnClick(R.id.button_map)
@@ -241,18 +255,11 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         }
     }
 
-
     @OnClick(R.id.button_route)
     public void clickRouteBtn() {
-        if (mInterstitialAd.isLoaded()) {
+        if (mIsEnableAdvertising && mInterstitialAd.isLoaded()) {
             EventFactory.INSTANCE.message("SiteDetails: InterstitialAd is Loaded");
             mInterstitialAd.show();
-            mInterstitialAd.setAdListener(new AdListener() {
-                @Override
-                public void onAdClosed() {
-                    openRoute();
-                }
-            });
         } else {
             EventFactory.INSTANCE.message("SiteDetails: InterstitialAd not Loaded");
             openRoute();
@@ -303,13 +310,13 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @Override
     protected void onPause() {
-        mAdMobView.pause();
+        if (mIsEnableAdvertising) mAdMobView.pause();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        mAdMobView.destroy();
+        if (mIsEnableAdvertising) mAdMobView.destroy();
         super.onDestroy();
         mPresenter.unbindView();
     }
