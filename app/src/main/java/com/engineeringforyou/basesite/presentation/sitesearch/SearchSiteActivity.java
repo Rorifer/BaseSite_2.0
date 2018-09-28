@@ -1,5 +1,8 @@
 package com.engineeringforyou.basesite.presentation.sitesearch;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -76,12 +79,24 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
                 case R.id.item_mail:
                     mPresenter.messageForDeveloper();
                     break;
+                case R.id.item_rating:
+                    openRating();
+                    break;
                 case R.id.item_logout:
                     finish();
                     break;
             }
             return true;
         });
+    }
+
+    private void openRating() {
+        final String appPackageName = getPackageName().replace(".debug", "");
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     @Override

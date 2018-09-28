@@ -117,6 +117,7 @@
     <string name="enter_message">Введите сообщение!</string>
     <string name="message_send_success">Сообщение отправлено разработчику</string>
     <string name="message_send_error">Отправка не удалась. Проверьте интернет-соединение и повторите отправку</string>
+    <string name="app_rating">Оценить приложение</string>
 
 
 </resources>
