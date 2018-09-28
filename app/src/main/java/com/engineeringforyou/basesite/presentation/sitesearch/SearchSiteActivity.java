@@ -28,6 +28,7 @@ import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSi
 import com.engineeringforyou.basesite.presentation.sitesearch.views.SearchSiteView;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.engineeringforyou.basesite.utils.MessageDialog;
+import com.google.android.gms.ads.MobileAds;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,13 +66,13 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         mPresenter.bind(this);
         mPresenter.watchChanges(mSearch);
         initDrawer();
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
     }
 
     private void initDrawer() {
         mNavigationView.setNavigationItemSelectedListener(item -> {
             item.setChecked(true);
             mDrawerLayout.closeDrawers();
-
             switch (item.getItemId()) {
                 case R.id.item_info:
                     mPresenter.showInfo();

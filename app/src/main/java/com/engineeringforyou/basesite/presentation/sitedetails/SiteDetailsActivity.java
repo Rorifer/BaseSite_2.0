@@ -34,8 +34,10 @@ import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetails
 import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -94,6 +96,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     private SiteDetailsPresenter mPresenter;
     private Site mSite;
     private CommentsAdapter mAdapter;
+    private InterstitialAd mInterstitialAd;
 
     public static void start(Activity activity, Site site) {
         Intent intent = new Intent(activity, SiteDetailsActivity.class);
@@ -196,8 +199,12 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     }
 
     private void initAdMob() {
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id_1));
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("5A69AA056907078C6954C3CC63DEE957")
+                .addTestDevice(getString(R.string.admob_test_device))
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
         mAdMobView.loadAd(adRequest);
@@ -237,6 +244,22 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @OnClick(R.id.button_route)
     public void clickRouteBtn() {
+        if (mInterstitialAd.isLoaded()) {
+            EventFactory.INSTANCE.message("SiteDetails: InterstitialAd is Loaded");
+            mInterstitialAd.show();
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    openRoute();
+                }
+            });
+        } else {
+            EventFactory.INSTANCE.message("SiteDetails: InterstitialAd not Loaded");
+            openRoute();
+        }
+    }
+
+    private void openRoute() {
         Double lat = mSite.getLatitude();
         Double lng = mSite.getLongitude();
         try {

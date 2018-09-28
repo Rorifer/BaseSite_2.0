@@ -133,7 +133,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     private void initAdMob() {
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("5A69AA056907078C6954C3CC63DEE957")
+                .addTestDevice(getString(R.string.admob_test_device))
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
         mAdMobView.loadAd(adRequest);
