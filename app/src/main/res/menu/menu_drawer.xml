@@ -21,7 +21,7 @@
 
         <item
             android:id="@+id/item_advertising"
-            android:icon="@drawable/ic_advertising"
+            android:icon="@drawable/ic_money"
             android:title="@string/app_advertising" />
 
         <item

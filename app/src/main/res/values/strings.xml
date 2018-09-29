@@ -124,7 +124,7 @@
     <string name="message_send_success">Сообщение отправлено разработчику</string>
     <string name="message_send_error">Отправка не удалась. Проверьте интернет-соединение и повторите отправку</string>
     <string name="app_rating">Оценить приложение</string>
-    <string name="app_advertising">Отключить рекламу</string>
+    <string name="app_advertising">Реклама</string>
     <string name="advertising">Для отключения рекламы на 3 месяца необходимо просмотреть один рекламный ролик</string>
 
 </resources>

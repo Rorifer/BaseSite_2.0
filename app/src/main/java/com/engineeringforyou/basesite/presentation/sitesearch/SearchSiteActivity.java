@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.engineeringforyou.basesite.BuildConfig;
 import com.engineeringforyou.basesite.R;
@@ -26,7 +27,6 @@ import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenterImpl;
-import com.engineeringforyou.basesite.presentation.sitesearch.views.AdvertisingDialog;
 import com.engineeringforyou.basesite.presentation.sitesearch.views.SearchSiteView;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
@@ -64,6 +64,8 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     private SearchSitePresenter mPresenter;
     private RewardedVideoAd mRewardedVideoAd;
+    private boolean isNeedStartRewardedVideo;
+    private boolean isFailedLoadRewardedVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +134,10 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
             public void onRewardedVideoAdLoaded() {
-
+                if (isNeedStartRewardedVideo) {
+                    mRewardedVideoAd.show();
+                    isNeedStartRewardedVideo = false;
+                }
             }
 
             @Override
@@ -153,7 +158,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
             @Override
             public void onRewarded(RewardItem rewardItem) {
                 EventFactory.INSTANCE.message("SearchSiteActivity: Call onRewarded");
-                mPresenter.disableAdvertising();
+//                mPresenter.disableAdvertising();
             }
 
             @Override
@@ -163,7 +168,12 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
             @Override
             public void onRewardedVideoAdFailedToLoad(int i) {
-                hideProgress();
+                isFailedLoadRewardedVideo = true;
+                if (isNeedStartRewardedVideo) {
+                    hideProgress();
+                    isNeedStartRewardedVideo = false;
+                    Toast.makeText(SearchSiteActivity.this, "Не удалось загрузить ролик", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -174,12 +184,20 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
     private void loadRewardedVideoAd() {
+        isFailedLoadRewardedVideo = false;
         String adUnitId = getString(BuildConfig.DEBUG ? R.string.rewarded_test_ad_unit_id : R.string.rewarded_ad_unit_id_1);
         mRewardedVideoAd.loadAd(adUnitId, new AdRequest.Builder().build());
     }
 
     private void openAdvertising() {
-        AdvertisingDialog.INSTANCE.show(this, mRewardedVideoAd);
+//        AdvertisingDialog.INSTANCE.show(this, mRewardedVideoAd);
+        showProgress();
+        if (mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.show();
+        } else {
+            isNeedStartRewardedVideo = true;
+            if (isFailedLoadRewardedVideo) loadRewardedVideoAd();
+        }
     }
 
     private void openRating() {
@@ -193,6 +211,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @Override
     protected void onResume() {
+        mRewardedVideoAd.resume(this);
         super.onResume();
         mPresenter.onResume();
         hideProgress();
@@ -296,13 +315,21 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        } else if (isNeedStartRewardedVideo) {
+            isNeedStartRewardedVideo = false;
+            hideProgress();
+        } else super.onBackPressed();
+    }
+
+    @Override
+    public void onPause() {
+        mRewardedVideoAd.pause(this);
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        mRewardedVideoAd.destroy(this);
         super.onDestroy();
         mPresenter.unbindView();
     }

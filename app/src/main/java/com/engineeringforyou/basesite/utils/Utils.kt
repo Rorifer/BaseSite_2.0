@@ -3,7 +3,6 @@ package com.engineeringforyou.basesite.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.Settings
-import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,6 +18,7 @@ object Utils {
     }
 
     fun isEnableAdvertising(context: Context): Boolean {
-        return SettingsRepositoryImpl(context).isEnableAdvertising()
+//        return SettingsRepositoryImpl(context).isEnableAdvertising()
+        return true
     }
 }
