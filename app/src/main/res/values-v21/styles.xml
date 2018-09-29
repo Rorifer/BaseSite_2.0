@@ -2,8 +2,8 @@
 <resources>
 
     <style name="SearchSiteSearchBtn" parent="CustomButton">
-        <item name="android:drawableLeft">@drawable/ic_search_24dp</item>
-        <item name="android:drawableStart">@drawable/ic_search_24dp</item>
+        <item name="android:drawableLeft">@drawable/ic_search</item>
+        <item name="android:drawableStart">@drawable/ic_search</item>
         <item name="android:drawablePadding">8dp</item>
     </style>
 

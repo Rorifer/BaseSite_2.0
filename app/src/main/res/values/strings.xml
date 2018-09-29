@@ -126,5 +126,6 @@
     <string name="app_rating">Оценить приложение</string>
     <string name="app_advertising">Реклама</string>
     <string name="advertising">Для отключения рекламы на 3 месяца необходимо просмотреть один рекламный ролик</string>
+    <string name="search_bs">Искать БС</string>
 
 </resources>

@@ -37,8 +37,19 @@
         android:background="@color/colorAccent"
         android:padding="@dimen/fab_margin"
         android:visibility="visible"
+        ads:fabSize="mini"
         app:srcCompat="@drawable/ic_add_white_24px" />
 
+    <ImageView
+        android:id="@+id/search_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fab_add_site"
+        android:contentDescription="@string/search_bs"
+        android:padding="8dp"
+        android:layout_marginStart="8dp"
+        app:srcCompat="@drawable/ic_search_accent_36dp"
+        android:layout_marginLeft="8dp" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/ad_mob_map"

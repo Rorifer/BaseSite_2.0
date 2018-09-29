@@ -164,6 +164,11 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         SiteCreateActivity.startForCreateSite(this, mMap == null ? null : mMap.getCameraPosition());
     }
 
+    @OnClick(R.id.search_icon)
+    public void searchClick() {
+        showSitesForCurrentLocation();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
