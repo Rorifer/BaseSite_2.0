@@ -67,7 +67,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:padding="10dp">
 
                 <TextView
@@ -83,10 +82,10 @@
                     android:id="@+id/coordinates_lat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/coordinates_title"
-                    android:layout_toLeftOf="@id/coordinates_button"
-                    android:layout_toRightOf="@id/coordinates_title"
                     android:layout_toStartOf="@id/coordinates_button"
+                    android:layout_toLeftOf="@id/coordinates_button"
+                    android:layout_toEndOf="@id/coordinates_title"
+                    android:layout_toRightOf="@id/coordinates_title"
                     android:digits="0123456789.,"
                     android:gravity="center_horizontal"
                     android:hint="@string/_55_123456"
@@ -100,10 +99,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/coordinates_lat"
-                    android:layout_toEndOf="@id/coordinates_title"
-                    android:layout_toLeftOf="@id/coordinates_button"
-                    android:layout_toRightOf="@id/coordinates_title"
                     android:layout_toStartOf="@id/coordinates_button"
+                    android:layout_toLeftOf="@id/coordinates_button"
+                    android:layout_toEndOf="@id/coordinates_title"
+                    android:layout_toRightOf="@id/coordinates_title"
                     android:digits="0123456789.,"
                     android:gravity="center_horizontal"
                     android:hint="@string/_37_123456"
@@ -177,9 +176,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:padding="10dp"
                 android:visibility="gone"
-                tools:visibility="visible"
-                android:padding="10dp">
+                tools:visibility="visible">
 
                 <TextView
                     android:layout_width="120dp"
@@ -193,6 +192,49 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/photo"
+                    android:textSize="16sp" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/photo_button"
+                    style="@style/CustomButtonPrimary"
+                    android:layout_width="60dp"
+                    android:layout_height="50dp"
+                    app:srcCompat="@drawable/ic_add_a_photo" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/photo_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                tools:itemCount="4"
+                tools:layoutManager="GridLayoutManager"
+                tools:listitem="@layout/recycler_view_item"
+                tools:spanCount="5" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -2,7 +2,10 @@ package com.engineeringforyou.basesite.presentation.sitecreate;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -23,11 +26,13 @@ import com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinates
 import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCreatePresenter;
 import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCreatePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateView;
+import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 
@@ -49,6 +54,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     public static final String SITE = "site";
     public static final int CODE_SITE_CREATE = 365;
     public static final int CODE_SITE_EDIT = 366;
+    public static final int CODE_PHOTO = 477;
 
     @BindView(R.id.site_operator_spinner)
     AppCompatSpinner mOperatorSpinner;
@@ -221,6 +227,25 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         MapCoordinatesActivity.startForResult(this, getLatitude(), getLongitude(), getIntent().getParcelableExtra(POSITION));
     }
 
+    @OnClick(R.id.photo_button)
+    public void clickPhoto() {
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
+        galleryIntent.setType("image/*");
+        galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        Intent chooser = new Intent(Intent.ACTION_CHOOSER);
+        chooser.putExtra(Intent.EXTRA_INTENT, galleryIntent);
+        chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.chose_photo_source));
+
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            Intent[] intentArray = {cameraIntent};
+            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+        }
+
+        startActivityForResult(chooser, CODE_PHOTO);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CODE_MAP) {
@@ -233,7 +258,27 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
                     mPresenter.loadAddressFromCoordinates(lat, lng);
                 }
             }
+        } else if (requestCode == CODE_PHOTO && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            if (extras != null) {
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                showImage(imageBitmap);
+            } else {
+                Uri extrasUri = data.getData();
+                if (extrasUri != null) {
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), extrasUri);
+                        showImage(bitmap);
+                    } catch (IOException e) {
+                        EventFactory.INSTANCE.exception(e);
+                    }
+                }
+            }
         }
+    }
+
+    private void showImage(Bitmap image) {
+
     }
 
     @Override
