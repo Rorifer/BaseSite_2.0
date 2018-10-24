@@ -3,24 +3,33 @@ package com.engineeringforyou.basesite.presentation.sitedetails;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.engineeringforyou.basesite.BuildConfig;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Comment;
@@ -31,6 +40,7 @@ import com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenter;
 import com.engineeringforyou.basesite.presentation.sitedetails.presenter.SiteDetailsPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.CommentsAdapter;
+import com.engineeringforyou.basesite.presentation.sitedetails.views.PhotoDetailsAdapter;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
 import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
@@ -51,11 +61,13 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
 import static com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity.CODE_SITE_EDIT;
+import static com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity.PHOTO_WIDTH;
 import static com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity.SITE;
 
-public class SiteDetailsActivity extends AppCompatActivity implements SiteDetailsView {
+public class SiteDetailsActivity extends AppCompatActivity implements SiteDetailsView, PhotoDetailsAdapter.OnPhotoClickListener {
 
     private static final String KEY_SITE = "key_site";
+    private static final String SHOW_PHOTO = "show_photo";
 
     @BindView(R.id.ad_mob_details)
     AdView mAdMobView;
@@ -79,8 +91,6 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     LinearLayout addressAutoLayout;
     @BindView(R.id.comments_layout)
     LinearLayout commentsLayout;
-    //    @BindView(R.id.comment_list)
-//    RecyclerView commentsList;
     @BindView(R.id.comment_user_layout)
     LinearLayout commentUserLayout;
     @BindView(R.id.comment_user_text)
@@ -93,13 +103,17 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     LinearLayout commentButtonLayout;
     @BindView(R.id.comment_list)
     RecyclerView commentRecycler;
+    @BindView(R.id.photo_list)
+    RecyclerView photoRecycler;
 
 
     private SiteDetailsPresenter mPresenter;
     private Site mSite;
     private CommentsAdapter mAdapter;
+    private PhotoDetailsAdapter mPhotoAdapter;
     private InterstitialAd mInterstitialAd;
     private Boolean mIsEnableAdvertising = false;
+    private boolean isShowPhoto;
 
     public static void start(Activity activity, Site site) {
         Intent intent = new Intent(activity, SiteDetailsActivity.class);
@@ -118,9 +132,23 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState.getBoolean(SHOW_PHOTO, false)) {
+            isShowPhoto = true;
+            showProgress();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        hideProgress();
+        if (!isShowPhoto) hideProgress();
         if (mIsEnableAdvertising) mAdMobView.resume();
     }
 
@@ -166,15 +194,22 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         siteCoordinates.setText(String.format("%.6f° С.Ш.\n%.6f° В.Д.", mSite.getLatitude(), mSite.getLongitude()));
         siteStatus.setText(Status.values()[mSite.getStatusId() == null ? 0 : mSite.getStatusId()].getDescription());
         //noinspection ConstantConditions
-        mPresenter.loadAddressFromCoordinates(mSite.getLatitude(), mSite.getLongitude());
-        mPresenter.loadComments(mSite);
-
+        mPresenter.loadFields(mSite);
     }
 
     private void initAdapter() {
         mAdapter = new CommentsAdapter();
         commentRecycler.setLayoutManager(new LinearLayoutManager(this));
         commentRecycler.setAdapter(mAdapter);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int numberOfColumns = (int) (width / getResources().getDisplayMetrics().density) / PHOTO_WIDTH;
+        photoRecycler.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+        mPhotoAdapter = new PhotoDetailsAdapter(this);
+        photoRecycler.setAdapter(mPhotoAdapter);
     }
 
     @Override
@@ -186,6 +221,11 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     public void showAdapter(@NotNull List<? extends Comment> list) {
         mAdapter.addList(list);
         commentsLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showPhotos(@NotNull List<? extends Uri> list) {
+        mPhotoAdapter.showPhotosFromUri(list);
     }
 
     @Override
@@ -258,10 +298,8 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     @OnClick(R.id.button_route)
     public void clickRouteBtn() {
         if (mIsEnableAdvertising && mInterstitialAd.isLoaded()) {
-            EventFactory.INSTANCE.message("SiteDetails: InterstitialAd is Loaded");
             mInterstitialAd.show();
         } else {
-            EventFactory.INSTANCE.message("SiteDetails: InterstitialAd not Loaded");
             openRoute();
         }
     }
@@ -272,7 +310,6 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("geo:%s,%s?q=%s,%s", lat, lng, lat, lng))));
         } catch (Exception e) {
-//            EventFactory.INSTANCE.exception(e);
             Toast.makeText(this, "Не удалось запустить навигатор", Toast.LENGTH_SHORT).show();
         }
     }
@@ -303,9 +340,20 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         mProgress.setVisibility(View.GONE);
     }
 
+    public void cancelShowPhoto() {
+        hideProgress();
+        isShowPhoto = false;
+    }
+
     @Override
     public void showMessage(@NotNull String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(SHOW_PHOTO, isShowPhoto);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -315,9 +363,63 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     }
 
     @Override
+    public void onBackPressed() {
+        List<Fragment> list = getSupportFragmentManager().getFragments();
+        if (!list.isEmpty() && list.get(list.size() - 1) instanceof ImageFragment) {
+            cancelShowPhoto();
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onDestroy() {
         if (mIsEnableAdvertising) mAdMobView.destroy();
         super.onDestroy();
         mPresenter.unbindView();
+    }
+
+    @Override
+    public void onPhotoSelected(Uri uri) {
+        showProgress();
+        isShowPhoto = true;
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, ImageFragment.newInstance(uri))
+                .addToBackStack("TAG")
+                .commit();
+    }
+
+    public static class ImageFragment extends Fragment {
+
+        private Uri mUri;
+
+        public static ImageFragment newInstance(Uri uri) {
+            ImageFragment fragment = new ImageFragment();
+            Bundle args = new Bundle();
+            args.putParcelable("uri", uri);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_image, container, false);
+
+            mUri = getArguments().getParcelable("uri");
+            ImageView image = rootView.findViewById(R.id.image);
+            if (mUri != null) {
+                Glide.with(this)
+                        .load(mUri)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(image);
+            }
+
+            image.setOnClickListener(v -> {
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+                        ((SiteDetailsActivity) getActivity()).cancelShowPhoto();
+                    }
+            );
+            return rootView;
+        }
     }
 }

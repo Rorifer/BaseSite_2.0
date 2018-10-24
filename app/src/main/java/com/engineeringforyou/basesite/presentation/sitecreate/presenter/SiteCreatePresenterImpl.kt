@@ -1,6 +1,7 @@
 package com.engineeringforyou.basesite.presentation.sitecreate.presenter
 
 import android.content.Context
+import android.net.Uri
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractor
 import com.engineeringforyou.basesite.domain.sitecreate.SiteCreateInteractorImpl
@@ -10,11 +11,14 @@ import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.models.Status
 import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateView
 import com.engineeringforyou.basesite.utils.EventFactory
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.io.File
 
-class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
+
+class SiteCreatePresenterImpl(val context: Context) : SiteCreatePresenter {
 
     private var mView: SiteCreateView? = null
     private val mDisposable = CompositeDisposable()
@@ -25,24 +29,54 @@ class SiteCreatePresenterImpl(context: Context) : SiteCreatePresenter {
         mView = view
     }
 
-    override fun saveSite(site: Site, userName: String) {
+    override fun saveSite(site: Site, photoUriList: List<Uri>, userName: String) {
+        if (checkImageSizeAndType(photoUriList).not()) return
         mView?.showProgress()
         mDisposable.clear()
-        mDisposable.add(mInteractor.saveSite(site, userName)
+        mDisposable.add(mInteractor.saveSite(site, photoUriList, userName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::saveSuccess, this::saveError))
     }
 
-    override fun editSite(oldSite: Site, site: Site, userName: String) {
+    override fun editSite(oldSite: Site, site: Site, photoUriList: List<Uri>, userName: String) {
         val comment = commentForEdit(oldSite, site, userName)
-        if (comment.isEmpty()) {
+
+        if (comment.isEmpty() && photoUriList.isEmpty()) {
             mView?.showMessage(R.string.edit_site_no_changes)
             return
         }
+        if (checkImageSizeAndType(photoUriList).not()) return
+
+        editSiteExecute(if (comment.isNotEmpty() && photoUriList.isNotEmpty()) {
+            mInteractor.savePhotos(photoUriList, site, userName)
+                    .andThen(mInteractor.editSite(site, oldSite, comment, userName))
+        } else if (comment.isNotEmpty()) {
+            mInteractor.editSite(site, oldSite, comment, userName)
+        } else {
+            mInteractor.savePhotos(photoUriList, site, userName)
+        })
+    }
+
+    private fun checkImageSizeAndType(photoUriList: List<Uri>): Boolean {
+        if (photoUriList.any { File(it.path).length() > 8 * 1024 * 1024 }) {
+            mView?.showMessage(R.string.image_size_too_match)
+            EventFactory.message("Load canceled for Size photo , size = ${photoUriList.forEach { File(it.path).length() }}")
+            return false
+        }
+        val cR = context.contentResolver
+        if (photoUriList.any { cR.getType(it) != "image/jpeg" }) {
+            mView?.showMessage(R.string.image_type_nod_valid)
+            EventFactory.message("Load canceled for Type photo , type = ${photoUriList.forEach { cR.getType(it) }}")
+            return false
+        }
+        return true
+    }
+
+    private fun editSiteExecute(completable: Completable) {
         mView?.showProgress()
         mDisposable.clear()
-        mDisposable.add(mInteractor.editSite(site, oldSite, comment, userName)
+        mDisposable.add(completable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::editSuccess, this::editError))

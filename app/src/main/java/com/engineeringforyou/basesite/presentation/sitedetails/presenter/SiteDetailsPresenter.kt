@@ -10,12 +10,10 @@ interface SiteDetailsPresenter {
 
     fun unbindView()
 
-    fun loadAddressFromCoordinates(lat: Double?, lng: Double?)
-
-    fun loadComments(site: Site)
-
     fun saveComment(site: Site, comment: String, user: User)
 
     fun setupName()
+
+    fun loadFields(site: Site) {}
 
 }

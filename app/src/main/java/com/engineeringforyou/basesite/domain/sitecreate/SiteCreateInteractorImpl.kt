@@ -1,6 +1,7 @@
 package com.engineeringforyou.basesite.domain.sitecreate
 
 import android.content.Context
+import android.net.Uri
 import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.models.User
@@ -19,11 +20,11 @@ class SiteCreateInteractorImpl(private val context: Context) : SiteCreateInterac
     private var firebase: FirebaseRepository = FirebaseRepositoryImpl()
     private var settings: SettingsRepository = SettingsRepositoryImpl(context)
 
-    override fun saveSite(site: Site, userName: String): Completable {
+    override fun saveSite(site: Site, photoUriList: List<Uri>, userName: String): Completable {
         saveName(userName)
         val comment = Comment(site, "БС добавлена пользователем $userName", User(context, "автоматический"))
         comment.timestamp = site.timestamp
-        return firebase.saveSiteAndComment(site, comment)
+        return firebase.saveSite(site, comment, photoUriList)
     }
 
     override fun editSite(site: Site, oldSite: Site, comment: String, userName: String): Completable {
@@ -31,6 +32,12 @@ class SiteCreateInteractorImpl(private val context: Context) : SiteCreateInterac
         val com = Comment(site, comment, User(context, "автоматический"))
         com.timestamp = site.timestamp
         return firebase.editSiteAndComment(site, oldSite, com)
+    }
+
+    override fun savePhotos(photoUriList: List<Uri>, site: Site, userName: String): Completable {
+        val text = "Пользователь $userName добавил ${if (photoUriList.size > 1) "фотографии" else "фотографию"}"
+        return firebase.savePhotos(photoUriList, site)
+                .andThen(firebase.saveComment(Comment(site, text, User(context, "автоматический"))))
     }
 
     override fun refreshDataBase(): Completable {

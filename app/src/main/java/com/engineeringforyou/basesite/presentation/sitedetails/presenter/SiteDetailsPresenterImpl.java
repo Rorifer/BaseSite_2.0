@@ -1,6 +1,7 @@
 package com.engineeringforyou.basesite.presentation.sitedetails.presenter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractor;
@@ -25,6 +26,7 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     private SiteDetailsView mView;
     private SiteDetailsInteractor mInteractor;
     private Comment mComment;
+    private Site mSite;
 
     public SiteDetailsPresenterImpl(Context context) {
         mDisposable = new CompositeDisposable();
@@ -41,8 +43,9 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
         mView.setName(mInteractor.getName());
     }
 
-    @Override
-    public void loadAddressFromCoordinates(Double lat, Double lng) {
+    private void loadAddressFromCoordinates() {
+        Double lat = mSite.getLatitude();
+        Double lng = mSite.getLongitude();
         if (lat == null || lng == null) return;
         mDisposable.add(mInteractor.loadAddress(lat, lng)
                 .subscribeOn(Schedulers.io())
@@ -59,8 +62,32 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     }
 
     @Override
-    public void loadComments(@NotNull Site site) {
-        mDisposable.add(mInteractor.loadComments(site)
+    public void loadFields(@NotNull Site site) {
+        mSite = site;
+        loadAddressFromCoordinates();
+        loadCommentsAndThenLoadPhotos();
+    }
+
+    private void loadPhotos() {
+        mDisposable.clear();
+        mDisposable.add(mInteractor.loadPhotos(mSite)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::loadPhotosSuccess, this::loadPhotosError));
+    }
+
+    private void loadPhotosSuccess(List<Uri> uriList) {
+        if (mView != null) {
+            mView.showPhotos(uriList);
+        }
+    }
+
+    private void loadPhotosError(Throwable throwable) {
+        EventFactory.INSTANCE.exception(throwable);
+    }
+
+    private void loadCommentsAndThenLoadPhotos() {
+        mDisposable.add(mInteractor.loadComments(mSite)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::loadSavedCommentsSuccess, this::loadCommentsError));
@@ -98,6 +125,7 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     private void loadSavedCommentsSuccess(List<Comment> list) {
         if (mView != null && !list.isEmpty()) {
             mView.showAdapter(list);
+            loadPhotos();
         }
     }
 

@@ -2,15 +2,18 @@ package com.engineeringforyou.basesite.presentation.sitecreate;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -25,14 +28,13 @@ import com.engineeringforyou.basesite.models.Status;
 import com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity;
 import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCreatePresenter;
 import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCreatePresenterImpl;
+import com.engineeringforyou.basesite.presentation.sitecreate.views.PhotoAdapter;
 import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateView;
-import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 
@@ -54,7 +56,11 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     public static final String SITE = "site";
     public static final int CODE_SITE_CREATE = 365;
     public static final int CODE_SITE_EDIT = 366;
-    public static final int CODE_PHOTO = 477;
+    private static final int CODE_PHOTO = 477;
+    private static final int CAMERA_REQUEST = 1888;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    private static final int MAX_COUNT_PHOTO = 3;
+    public static final int PHOTO_WIDTH = 166;
 
     @BindView(R.id.site_operator_spinner)
     AppCompatSpinner mOperatorSpinner;
@@ -76,12 +82,17 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     EditText mUserName;
     @BindView(R.id.progress_bar)
     View mProgress;
-    @BindView(R.id.site_draft_button)
+    @BindView(R.id.save_site_draft_button)
     Button mButton;
+    @BindView(R.id.photo_button)
+    AppCompatImageButton mPhotoButton;
+    @BindView(R.id.photo_recycler_view)
+    RecyclerView mPhotoRecyclerView;
 
     private SiteCreatePresenter mPresenter;
     private Site mSite;
     private String mAddressLoaded = null;
+    private PhotoAdapter mPhotoAdapter;
 
     public static void startForCreateSite(Activity activity, @Nullable CameraPosition position) {
         Intent intent = new Intent(activity, SiteCreateActivity.class);
@@ -109,6 +120,24 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         initSpinners();
         mSite = getIntent().getParcelableExtra(SITE);
         if (mSite != null) setupViewForEdit();
+        setupRecyclerPhoto();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupEnablePhotoButton();
+    }
+
+    private void setupRecyclerPhoto() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int numberOfColumns = (int) (width / getResources().getDisplayMetrics().density) / PHOTO_WIDTH;
+        mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+        mPhotoAdapter = new PhotoAdapter();
+        mPhotoRecyclerView.setAdapter(mPhotoAdapter);
     }
 
     private void setupViewForEdit() {
@@ -152,7 +181,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 //        mStatusSpinner.setSelection(0);
     }
 
-    @OnClick(R.id.site_draft_button)
+    @OnClick(R.id.save_site_draft_button)
     public void saveDraft() {
         if (mOperatorSpinner.getSelectedItemPosition() < 1) {
             showMessage(R.string.select_operator);
@@ -174,8 +203,8 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         }
 
         Site site = getCreatedSite();
-        if (mSite != null) mPresenter.editSite(mSite, site, mUserName.getText().toString());
-        else mPresenter.saveSite(site, mUserName.getText().toString());
+        if (mSite != null) mPresenter.editSite(mSite, site, mPhotoAdapter.getUriList() , mUserName.getText().toString() );
+        else mPresenter.saveSite(site, mPhotoAdapter.getUriList(), mUserName.getText().toString());
     }
 
     private Site getCreatedSite() {
@@ -229,7 +258,27 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 
     @OnClick(R.id.photo_button)
     public void clickPhoto() {
-        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+//        } else {
+        startPhoto(true);
+//        }
+    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                startPhoto(true);
+//            } else {
+//                startPhoto(false);
+//            }
+//        }
+//    }
+
+    private void startPhoto(boolean isCameraGranted) {
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
@@ -238,11 +287,10 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.chose_photo_source));
 
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+        if (isCameraGranted && cameraIntent.resolveActivity(getPackageManager()) != null) {
             Intent[] intentArray = {cameraIntent};
             chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
         }
-
         startActivityForResult(chooser, CODE_PHOTO);
     }
 
@@ -261,24 +309,48 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         } else if (requestCode == CODE_PHOTO && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             if (extras != null) {
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                showImage(imageBitmap);
+//                Bitmap imageBitmap = (Bitmap) extras.get("data"); // Загрузка из Камеры превью фотографии
+//                showImage(imageBitmap);
             } else {
                 Uri extrasUri = data.getData();
-                if (extrasUri != null) {
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), extrasUri);
-                        showImage(bitmap);
-                    } catch (IOException e) {
-                        EventFactory.INSTANCE.exception(e);
-                    }
+                if (extrasUri != null) { // Загрузка из Галереи
+                    showImage(extrasUri);
+//                    showImageUri(data.getData());
+//                    try {
+////                        mImage.setImageURI(mUri);
+//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), extrasUri);
+//                        showImage(bitmap);
+//                    } catch (IOException e) {
+//                        EventFactory.INSTANCE.exception(e);
+//                    }
+
                 }
             }
         }
     }
 
-    private void showImage(Bitmap image) {
+//    private void showImageUri(Uri uriImage) {
+//        try {
+////                        mImage.setImageURI(mUri);
+//            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), extrasUri);
+//            showImage(bitmap);
+//        } catch (IOException e) {
+//            EventFactory.INSTANCE.exception(e);
+//        }
+//    }
 
+//    private void showImage(Bitmap image) {
+//        mPhotoAdapter.addImage(image);
+//        setupEnablePhotoButton();
+//    }
+
+    private void showImage(Uri uri) {
+        mPhotoAdapter.addImage(uri);
+        setupEnablePhotoButton();
+    }
+
+    private void setupEnablePhotoButton() {
+        mPhotoButton.setEnabled(mPhotoAdapter.getItemCount() <= MAX_COUNT_PHOTO);
     }
 
     @Override

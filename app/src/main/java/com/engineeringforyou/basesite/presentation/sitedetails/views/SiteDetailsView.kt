@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.presentation.sitedetails.views
 
+import android.net.Uri
 import com.engineeringforyou.basesite.models.Comment
 
 interface SiteDetailsView {
@@ -14,8 +15,10 @@ interface SiteDetailsView {
 
     fun setName(name: String)
 
-    fun showMessage(message :String)
+    fun showMessage(message: String)
 
     fun addUserComment(comment: Comment)
+
+    fun showPhotos(list: List<Uri>)
 
 }

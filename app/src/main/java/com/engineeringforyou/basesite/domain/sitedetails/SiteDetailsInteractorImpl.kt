@@ -3,6 +3,7 @@ package com.engineeringforyou.basesite.domain.sitedetails
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
+import android.net.Uri
 import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.repositories.database.DataBaseRepository
@@ -63,6 +64,10 @@ class SiteDetailsInteractorImpl(private val context: Context) : SiteDetailsInter
 
     override fun loadComments(site: Site): Single<List<Comment>> {
         return firebase.loadComments(site)
+    }
+
+    override fun loadPhotos (site: Site): Single<List<Uri>> {
+        return firebase.loadPhotos(site)
     }
 
     override fun saveComment(comment: Comment): Completable {

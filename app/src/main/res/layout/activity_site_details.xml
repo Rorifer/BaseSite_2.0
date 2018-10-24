@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginRight="16dp"
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatButton
@@ -76,9 +76,9 @@
                 <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/button_edit"
                     style="@style/SiteDetailsEditBtn"
-                    android:contentDescription="@string/edit"
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/edit"
                     ads:srcCompat="@drawable/ic_edit_white" />
             </LinearLayout>
 
@@ -204,12 +204,22 @@
                     tools:text=",kagbfn.ln.slgм п а а па п а араmn прюло ырдплбитод жл ориоп  прлабрп а ссдл прлдбютпюодбрюжобрьт.ю" />
             </LinearLayout>
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/photo_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                tools:itemCount="6"
+                tools:layoutManager="GridLayoutManager"
+                tools:listitem="@layout/item_photo"
+                tools:spanCount="3" />
+
             <LinearLayout
                 android:id="@+id/comments_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:background="@color/color_background"
                 android:orientation="vertical"
@@ -219,8 +229,8 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
                     android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
                     android:text="@string/comment_user"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
