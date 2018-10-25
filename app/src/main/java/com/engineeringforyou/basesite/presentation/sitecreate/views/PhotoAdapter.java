@@ -13,7 +13,7 @@ import com.engineeringforyou.basesite.R;
 import java.util.ArrayList;
 import java.util.List;
 
- public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
+public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
 
     private List<Uri> mList;
 
@@ -23,11 +23,26 @@ import java.util.List;
 
     public void addImage(Uri image) {
         mList.add(image);
-        notifyDataSetChanged();
+        notifyItemInserted(mList.size() - 1);
     }
 
     public List<Uri> getUriList() {
         return mList;
+    }
+
+    public ArrayList<String> getUriStringList() {
+        ArrayList<String> list = new ArrayList<>(mList.size());
+        for (Uri uri : mList) {
+            if (uri != null) list.add(uri.toString());
+        }
+        return list;
+    }
+
+    public void setListFromString(List<String> list) {
+        if (list == null) return;
+        mList.clear();
+        for (String uriString : list) mList.add(Uri.parse(uriString));
+        notifyDataSetChanged();
     }
 
     @NonNull

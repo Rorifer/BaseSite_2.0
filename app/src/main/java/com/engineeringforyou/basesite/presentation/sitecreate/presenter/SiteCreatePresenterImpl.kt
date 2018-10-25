@@ -30,7 +30,7 @@ class SiteCreatePresenterImpl(val context: Context) : SiteCreatePresenter {
     }
 
     override fun saveSite(site: Site, photoUriList: List<Uri>, userName: String) {
-        if (checkImageSizeAndType(photoUriList).not()) return
+        if (checkPhotos(photoUriList).not()) return
         mView?.showProgress()
         mDisposable.clear()
         mDisposable.add(mInteractor.saveSite(site, photoUriList, userName)
@@ -46,7 +46,7 @@ class SiteCreatePresenterImpl(val context: Context) : SiteCreatePresenter {
             mView?.showMessage(R.string.edit_site_no_changes)
             return
         }
-        if (checkImageSizeAndType(photoUriList).not()) return
+        if (checkPhotos(photoUriList).not()) return
 
         editSiteExecute(if (comment.isNotEmpty() && photoUriList.isNotEmpty()) {
             mInteractor.savePhotos(photoUriList, site, userName)
@@ -58,19 +58,32 @@ class SiteCreatePresenterImpl(val context: Context) : SiteCreatePresenter {
         })
     }
 
-    private fun checkImageSizeAndType(photoUriList: List<Uri>): Boolean {
-        if (photoUriList.any { File(it.path).length() > 8 * 1024 * 1024 }) {
-            mView?.showMessage(R.string.image_size_too_match)
-            EventFactory.message("Load canceled for Size photo , size = ${photoUriList.forEach { File(it.path).length() }}")
+    private fun checkPhotos(photoUriList: List<Uri>): Boolean {
+        if (photoUriList.size > 3) {
+            mView?.showMessage(R.string.image_count_to_match)
+            EventFactory.message("Load canceled for Size count , count = ${photoUriList.count()}")
             return false
         }
+
+        if (photoUriList.any { it.size() > 7 * 1024 * 1024 }) {
+            mView?.showMessage(R.string.image_size_too_match)
+            EventFactory.message("Load canceled for Size photo , size = ${photoUriList.map { it.size() }} Мб")
+            return false
+        }
+
         val cR = context.contentResolver
-        if (photoUriList.any { cR.getType(it) != "image/jpeg" }) {
+        if (photoUriList.any { cR.getType(it) != "image/jpeg" && cR.getType(it) != "image/png" && cR.getType(it) != null}) {
             mView?.showMessage(R.string.image_type_nod_valid)
-            EventFactory.message("Load canceled for Type photo , type = ${photoUriList.forEach { cR.getType(it) }}")
+            EventFactory.message("Load canceled for Type photo , type = ${photoUriList.map { cR.getType(it) }}")
             return false
         }
         return true
+    }
+
+    private fun Uri.size(): Long {
+//        val imageStream: InputStream = context.contentResolver.openInputStream(this)
+        val file = File(this.path)
+        return file.length() //TODO не работает, возвращает "0"
     }
 
     private fun editSiteExecute(completable: Completable) {

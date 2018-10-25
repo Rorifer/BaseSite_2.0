@@ -111,8 +111,9 @@
     <string name="name_nick">имя или ник</string>
     <string name="select_operator">Выберите оператора</string>
     <string name="edit_site_no_changes">Нет изменений для сохранения</string>
-    <string name="image_size_too_match">Размер фотографий не может быть больше 8 Мб</string>
+    <string name="image_size_too_match">Размер одной фотографий не может быть больше 7 Мб</string>
     <string name="image_type_nod_valid">Файл не является фотографией</string>
+    <string name="image_count_to_match">Нельзя сохранить более 3 фотографий</string>
     <string name="logout">Выйти</string>
     <string name="menu">Меню</string>
     <string name="info">Информация</string>

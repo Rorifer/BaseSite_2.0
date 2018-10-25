@@ -1,12 +1,18 @@
 package com.engineeringforyou.basesite.presentation.sitecreate;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
@@ -30,12 +36,18 @@ import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCrea
 import com.engineeringforyou.basesite.presentation.sitecreate.presenter.SiteCreatePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitecreate.views.PhotoAdapter;
 import com.engineeringforyou.basesite.presentation.sitecreate.views.SiteCreateView;
+import com.engineeringforyou.basesite.utils.EventFactory;
+import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -52,15 +64,17 @@ import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BO
 
 public class SiteCreateActivity extends AppCompatActivity implements SiteCreateView {
 
-    private static final String POSITION = "position";
+    public static final int PHOTO_WIDTH = 166;
     public static final String SITE = "site";
     public static final int CODE_SITE_CREATE = 365;
     public static final int CODE_SITE_EDIT = 366;
+
+    private static final String POSITION = "position";
     private static final int CODE_PHOTO = 477;
-    private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private static final int MAX_COUNT_PHOTO = 3;
-    public static final int PHOTO_WIDTH = 166;
+    private static final String PHOTO = "photo";
+    private static final String ADAPTER = "adapter_list";
 
     @BindView(R.id.site_operator_spinner)
     AppCompatSpinner mOperatorSpinner;
@@ -93,6 +107,8 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     private Site mSite;
     private String mAddressLoaded = null;
     private PhotoAdapter mPhotoAdapter;
+    private String mCurrentPhotoPath;
+
 
     public static void startForCreateSite(Activity activity, @Nullable CameraPosition position) {
         Intent intent = new Intent(activity, SiteCreateActivity.class);
@@ -203,8 +219,12 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         }
 
         Site site = getCreatedSite();
-        if (mSite != null) mPresenter.editSite(mSite, site, mPhotoAdapter.getUriList() , mUserName.getText().toString() );
-        else mPresenter.saveSite(site, mPhotoAdapter.getUriList(), mUserName.getText().toString());
+        KeyBoardUtils.hideKeyboard(this, getCurrentFocus());
+        if (mSite != null) {
+            mPresenter.editSite(mSite, site, mPhotoAdapter.getUriList(), mUserName.getText().toString());
+        } else {
+            mPresenter.saveSite(site, mPhotoAdapter.getUriList(), mUserName.getText().toString());
+        }
     }
 
     private Site getCreatedSite() {
@@ -258,48 +278,57 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
 
     @OnClick(R.id.photo_button)
     public void clickPhoto() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-//        } else {
-        startPhoto(true);
-//        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_CAMERA_PERMISSION_CODE);
+        } else {
+            startPhoto(true);
+        }
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                startPhoto(true);
-//            } else {
-//                startPhoto(false);
-//            }
-//        }
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+            if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                startPhoto(true);
+            } else {
+                startPhoto(false);
+            }
+        }
+    }
 
     private void startPhoto(boolean isCameraGranted) {
-        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
-        galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
         Intent chooser = new Intent(Intent.ACTION_CHOOSER);
         chooser.putExtra(Intent.EXTRA_INTENT, galleryIntent);
         chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.chose_photo_source));
 
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (isCameraGranted && cameraIntent.resolveActivity(getPackageManager()) != null) {
-            Intent[] intentArray = {cameraIntent};
-            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                EventFactory.INSTANCE.exception(ex);
+            }
+            if (photoFile != null) {
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                Intent[] intentArray = {cameraIntent};
+                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+            }
         }
         startActivityForResult(chooser, CODE_PHOTO);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == CODE_MAP) {
             if (resultCode == RESULT_OK) {
-                Double lat = data.getDoubleExtra(LATITUDE, 0);
-                Double lng = data.getDoubleExtra(LONGITUDE, 0);
+                Double lat = intent.getDoubleExtra(LATITUDE, 0);
+                Double lng = intent.getDoubleExtra(LONGITUDE, 0);
                 if (lat != 0 && lng != 0) {
                     mLat.setText(String.valueOf(lat));
                     mLong.setText(String.valueOf(lng));
@@ -307,42 +336,33 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
                 }
             }
         } else if (requestCode == CODE_PHOTO && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            if (extras != null) {
-//                Bitmap imageBitmap = (Bitmap) extras.get("data"); // Загрузка из Камеры превью фотографии
-//                showImage(imageBitmap);
+            if (intent == null || intent.getData() == null) {
+                Uri uri = Uri.fromFile(new File(mCurrentPhotoPath)); // Получение фото с камеры
+                if (uri != null) showImage(uri);
+                else
+                    EventFactory.INSTANCE.message("Fail request Photo, mCurrentPhotoPath = " + mCurrentPhotoPath);
             } else {
-                Uri extrasUri = data.getData();
-                if (extrasUri != null) { // Загрузка из Галереи
-                    showImage(extrasUri);
-//                    showImageUri(data.getData());
-//                    try {
-////                        mImage.setImageURI(mUri);
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), extrasUri);
-//                        showImage(bitmap);
-//                    } catch (IOException e) {
-//                        EventFactory.INSTANCE.exception(e);
-//                    }
-
-                }
+                Uri imageUri = intent.getData();// Получение фото с галереи
+                if (imageUri != null) showImage(imageUri);
+                else
+                    EventFactory.INSTANCE.message("Fail request Photo, intent.getData() = " + intent.getData());
             }
         }
     }
 
-//    private void showImageUri(Uri uriImage) {
-//        try {
-////                        mImage.setImageURI(mUri);
-//            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), extrasUri);
-//            showImage(bitmap);
-//        } catch (IOException e) {
-//            EventFactory.INSTANCE.exception(e);
-//        }
-//    }
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "BS_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
-//    private void showImage(Bitmap image) {
-//        mPhotoAdapter.addImage(image);
-//        setupEnablePhotoButton();
-//    }
+        File image = File.createTempFile(
+                imageFileName,  /* префикс */
+                ".jpg",         /* расширение */
+                storageDir      /* директория */
+        );
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
 
     private void showImage(Uri uri) {
         mPhotoAdapter.addImage(uri);
@@ -350,7 +370,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
     }
 
     private void setupEnablePhotoButton() {
-        mPhotoButton.setEnabled(mPhotoAdapter.getItemCount() <= MAX_COUNT_PHOTO);
+        mPhotoButton.setEnabled(mPhotoAdapter.getItemCount() < MAX_COUNT_PHOTO);
     }
 
     @Override
@@ -400,5 +420,21 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         setResult(RESULT_OK, intent);
         finish();
         overridePendingTransition(R.anim.alpha_in, R.anim.slide_right_out);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(PHOTO, mCurrentPhotoPath);
+        outState.putStringArrayList(ADAPTER, mPhotoAdapter.getUriStringList());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            mCurrentPhotoPath = savedInstanceState.getString(PHOTO, null);
+            mPhotoAdapter.setListFromString(savedInstanceState.getStringArrayList(ADAPTER));
+            super.onRestoreInstanceState(savedInstanceState);
+        }
     }
 }
