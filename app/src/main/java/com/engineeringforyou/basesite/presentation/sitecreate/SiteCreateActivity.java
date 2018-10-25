@@ -62,7 +62,7 @@ import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BO
 import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LNG_END;
 import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LNG_START;
 
-public class SiteCreateActivity extends AppCompatActivity implements SiteCreateView {
+public class SiteCreateActivity extends AppCompatActivity implements SiteCreateView, PhotoAdapter.RemoveListener {
 
     public static final int PHOTO_WIDTH = 166;
     public static final String SITE = "site";
@@ -152,7 +152,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         int width = size.x;
         int numberOfColumns = (int) (width / getResources().getDisplayMetrics().density) / PHOTO_WIDTH;
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        mPhotoAdapter = new PhotoAdapter();
+        mPhotoAdapter = new PhotoAdapter(this);
         mPhotoRecyclerView.setAdapter(mPhotoAdapter);
     }
 
@@ -436,5 +436,10 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
             mPhotoAdapter.setListFromString(savedInstanceState.getStringArrayList(ADAPTER));
             super.onRestoreInstanceState(savedInstanceState);
         }
+    }
+
+    @Override
+    public void isRemoveItem() {
+        setupEnablePhotoButton();
     }
 }

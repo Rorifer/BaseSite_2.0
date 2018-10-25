@@ -15,9 +15,16 @@ import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
 
-    private List<Uri> mList;
+    public interface RemoveListener {
+        void isRemoveItem();
+    }
 
-    public PhotoAdapter() {
+    private List<Uri> mList;
+    private RemoveListener mListener;
+    private boolean isDeleteMode;
+
+    public PhotoAdapter(RemoveListener listener) {
+        mListener = listener;
         mList = new ArrayList<>();
     }
 
@@ -55,6 +62,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull PhotoAdapter.ViewHolder holder, int position) {
         holder.icon.setImageURI(mList.get(position));
+        holder.deleteIcon.setVisibility(isDeleteMode ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -64,10 +72,25 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView icon;
+        private ImageView deleteIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.imageView);
+            deleteIcon = itemView.findViewById(R.id.imageDelete);
+
+            icon.setOnLongClickListener(v -> {
+                isDeleteMode = !isDeleteMode;
+                notifyDataSetChanged();
+                return true;
+            });
+
+            deleteIcon.setOnClickListener(view -> {
+                int pos = this.getAdapterPosition();
+                mList.remove(pos);
+                notifyItemRemoved(pos);
+                mListener.isRemoveItem();
+            });
         }
     }
 }

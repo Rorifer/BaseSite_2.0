@@ -31,7 +31,12 @@ android {
     buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "com.engineeringforyou.basesite"
-        minSdkVersion 14
+        if (gradle.startParameter.taskNames.contains(":app:assembleDebug")) {
+            minSdkVersion 14
+//            minSdkVersion 21
+        } else {
+            minSdkVersion 14
+        }
         targetSdkVersion 27
         versionCode 36
         versionName '2.09'
