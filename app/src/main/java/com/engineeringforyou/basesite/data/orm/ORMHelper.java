@@ -15,6 +15,7 @@ import com.engineeringforyou.basesite.models.SiteTELE;
 import com.engineeringforyou.basesite.models.SiteVMK;
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
 import com.engineeringforyou.basesite.utils.EventFactory;
+import com.j256.ormlite.android.AndroidConnectionSource;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.stmt.PreparedQuery;
@@ -31,9 +32,11 @@ import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
+import static com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl.TIMESTAMP_DEFAULT;
+
 public class ORMHelper extends OrmLiteSqliteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DB_NAME = "ORM_SITES_02.db";
 
     private final String FIELD_SITE = "SITE";
@@ -74,9 +77,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
                 outputStream.flush();
                 outputStream.close();
                 inputStream.close();
-
-                deleteOldFiles();
-
+//                deleteOldFiles();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -99,8 +100,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVer,
-                          int newVer) {
+    public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVer, int newVer) {
 //        try {
 ////            TableUtils.dropTable(connectionSource, Site.class, true);
 //            onCreate(db, connectionSource);
@@ -144,10 +144,19 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
 //            }
 //        }
 
-        if (oldVer < 4) {
-            new SettingsRepositoryImpl(mContext).saveSitesTimestamp(1531501662154L);
-        }
+//        if (oldVer < 4) {
+//            new SettingsRepositoryImpl(mContext).saveSitesTimestamp(1531501662154L);
+//        }
 
+        if (oldVer < 5) {
+            this.connectionSource.close();
+            mContext.deleteDatabase(DB_NAME);
+            createDB();
+            SQLiteDatabase dbb = mContext.openOrCreateDatabase(DB_NAME, 0, null);
+            this.connectionSource = new AndroidConnectionSource(dbb);
+
+            new SettingsRepositoryImpl(mContext).saveSitesTimestamp(TIMESTAMP_DEFAULT);
+        }
     }
 
     public void saveSites(List<Site> sites) throws SQLException {
