@@ -32,14 +32,14 @@ android {
     defaultConfig {
         applicationId "com.engineeringforyou.basesite"
         if (gradle.startParameter.taskNames.contains(":app:assembleDebug")) {
-            minSdkVersion 14
-//            minSdkVersion 21
+//            minSdkVersion 14
+            minSdkVersion 21
         } else {
             minSdkVersion 14
         }
         targetSdkVersion 27
-        versionCode 36
-        versionName '2.09'
+        versionCode 37
+        versionName '2.10'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
         vectorDrawables.useSupportLibrary = true
