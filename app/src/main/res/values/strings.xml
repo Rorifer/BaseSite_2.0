@@ -117,6 +117,7 @@
     <string name="logout">Выйти</string>
     <string name="menu">Меню</string>
     <string name="info">Информация</string>
+    <string name="job">Работа на БС</string>
     <string name="drawer_open">открыт</string>
     <string name="drawer_close">закрыт</string>
     <string name="message_for_developer">Написать разработчику</string>
@@ -132,5 +133,11 @@
     <string name="search_bs">Искать БС</string>
     <string name="chose_photo_source">Выберите источник:</string>
     <string name="photo">Фото:</string>
+    <string name="find_job">Найти работу на БС</string>
+    <string name="post_job">Разместить работу на БС</string>
+    <string name="notification_job">Уведомлять о появлении новой работы</string>
+    <string name="error_switch_notification">Не удалось переключить\nПроверьте интенет-соединение</string>
+    <string name="error_load_job_notification">Не удалось загрузить список\nПроверьте интенет-соединение</string>
+    <string name="empty_job_notification">На данный момент\nнет предложений\nо работе на БС</string>
 
 </resources>

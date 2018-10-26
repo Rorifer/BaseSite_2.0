@@ -53,6 +53,12 @@
         <activity
             android:name=".presentation.message.MessageActivity"
             android:label="@string/message_for_developer" />
+        <activity android:name=".presentation.job.JobMainActivity"
+            android:label="@string/job" />
+        <activity android:name=".presentation.job.find.JobFindActivity"
+            android:label="@string/find_job" />
+        <activity android:name=".presentation.job.post.JobPostActivity"
+            android:label="@string/post_job"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

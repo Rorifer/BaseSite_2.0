@@ -39,6 +39,7 @@ public class PhotoDetailsAdapter extends RecyclerView.Adapter<PhotoDetailsAdapte
     @Override
     public void onBindViewHolder(@NonNull PhotoDetailsAdapter.ViewHolder holder, int position) {
         Uri uri = mList.get(position);
+        holder.icon.setImageURI(null);
         if (uri != null) {
             Glide.with(holder.icon.getContext())
                     .load(uri)

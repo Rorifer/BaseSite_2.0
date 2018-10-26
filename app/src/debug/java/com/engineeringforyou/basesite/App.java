@@ -8,7 +8,6 @@ import com.crashlytics.android.Crashlytics;
 import com.engineeringforyou.basesite.data.orm.ORMHelperFactory;
 import com.facebook.stetho.Stetho;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -22,7 +21,7 @@ public class App extends MultiDexApplication {
 
         if (BuildConfig.DEBUG) {
 
-            LeakCanary.install(this);
+//            LeakCanary.install(this);
 
             // Create an InitializerBuilder
             Stetho.InitializerBuilder initializerBuilder =

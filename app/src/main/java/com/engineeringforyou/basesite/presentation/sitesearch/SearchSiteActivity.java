@@ -28,6 +28,7 @@ import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitesearch.views.SearchSiteView;
+import com.engineeringforyou.basesite.presentation.job.JobMainActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.engineeringforyou.basesite.utils.MessageDialog;
@@ -86,6 +87,9 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
             switch (item.getItemId()) {
                 case R.id.item_info:
                     mPresenter.showInfo();
+                    break;
+                case R.id.item_job:
+                    openWork();
                     break;
                 case R.id.item_mail:
                     mPresenter.messageForDeveloper();
@@ -207,6 +211,10 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         } catch (ActivityNotFoundException anfe) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
         }
+    }
+
+    private void openWork() {
+        JobMainActivity.start(this);
     }
 
     @Override

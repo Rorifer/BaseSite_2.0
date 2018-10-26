@@ -4,8 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="150dp"
         android:layout_height="120dp"
@@ -22,6 +21,6 @@
         android:contentDescription="@null"
         android:padding="8dp"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:srcCompat="@drawable/ic_delete" />
+        app:srcCompat="@drawable/ic_delete"
+        tools:visibility="visible" />
 </FrameLayout>
