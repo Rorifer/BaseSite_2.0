@@ -7,8 +7,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import com.engineeringforyou.basesite.R
+import com.engineeringforyou.basesite.presentation.job.create.JobCreateActivity
 import com.engineeringforyou.basesite.presentation.job.find.JobFindActivity
-import com.engineeringforyou.basesite.presentation.job.post.JobPostActivity
 import com.engineeringforyou.basesite.presentation.job.setting.JobSettingsPresenter
 import com.engineeringforyou.basesite.presentation.job.setting.JobSettingsPresenterImpl
 import com.engineeringforyou.basesite.presentation.job.setting.JobSettingsView
@@ -34,7 +34,7 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
         presenter = JobSettingsPresenterImpl(this)
 
         find_job.setOnClickListener { JobFindActivity.start(this) }
-        post_job.setOnClickListener { JobPostActivity.start(this) }
+        post_job.setOnClickListener { JobCreateActivity.start(this) }
         notification_switch.setOnCheckedChangeListener { _, isChecked ->
             presenter.switchNotification(isChecked)
         }

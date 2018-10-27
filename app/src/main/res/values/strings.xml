@@ -95,6 +95,7 @@
     <string name="object_default">башня, ОДН, здание</string>
     <string name="address_default">город, улица, дом</string>
     <string name="site_operator">Оператор*:</string>
+    <string name="operator">Оператор:</string>
     <string name="_37_123456">37.123456</string>
     <string name="_55_123456">55.123456</string>
     <string name="error_site_number">Введите номер БС</string>
@@ -139,5 +140,13 @@
     <string name="error_switch_notification">Не удалось переключить\nПроверьте интенет-соединение</string>
     <string name="error_load_job_notification">Не удалось загрузить список\nПроверьте интенет-соединение</string>
     <string name="empty_job_notification">На данный момент\nнет предложений\nо работе на БС</string>
+    <string name="contacts">Контакты:*</string>
+    <string name="create_job">Разместить</string>
+    <string name="job_description">Описание работ:*</string>
+    <string name="job_price">Стоимость:</string>
+    <string name="not_contact">Не заполнено поле с контактами</string>
+    <string name="not_description">Не заполнено поле описания работы</string>
+    <string name="job_created">Работа на БС размещена</string>
+    <string name="error_job_created">Не удалось отправить заявку. Проверьте интернет-соединение</string>
 
 </resources>

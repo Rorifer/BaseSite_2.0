@@ -193,7 +193,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, statuses);
         statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mStatusSpinner.setAdapter(statusAdapter);
-        mOperatorSpinner.setPrompt("Статусы");
+        mStatusSpinner.setPrompt("Статусы");
 //        mStatusSpinner.setSelection(0);
     }
 

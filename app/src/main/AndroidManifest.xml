@@ -57,7 +57,7 @@
             android:label="@string/job" />
         <activity android:name=".presentation.job.find.JobFindActivity"
             android:label="@string/find_job" />
-        <activity android:name=".presentation.job.post.JobPostActivity"
+        <activity android:name=".presentation.job.create.JobCreateActivity"
             android:label="@string/post_job"/>
 
         <meta-data
