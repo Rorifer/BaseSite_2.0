@@ -23,13 +23,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 import com.engineeringforyou.basesite.BuildConfig;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Comment;
@@ -59,6 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import uk.co.senab.photoview.PhotoView;
 
 import static com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity.CODE_SITE_EDIT;
 import static com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity.PHOTO_WIDTH;
@@ -208,7 +209,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         int width = size.x;
         int numberOfColumns = (int) (width / getResources().getDisplayMetrics().density) / PHOTO_WIDTH;
         photoRecycler.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        mPhotoAdapter = new PhotoDetailsAdapter(this);
+        mPhotoAdapter = new PhotoDetailsAdapter(this, this);
         photoRecycler.setAdapter(mPhotoAdapter);
     }
 
@@ -406,11 +407,13 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
             View rootView = inflater.inflate(R.layout.fragment_image, container, false);
 
             mUri = getArguments().getParcelable("uri");
-            ImageView image = rootView.findViewById(R.id.image);
+            PhotoView image = rootView.findViewById(R.id.image);
+
             if (mUri != null) {
                 Glide.with(this)
                         .load(mUri)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .into(image);
             }
 

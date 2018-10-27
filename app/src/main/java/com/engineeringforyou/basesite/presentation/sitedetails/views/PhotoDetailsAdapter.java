@@ -1,7 +1,10 @@
 package com.engineeringforyou.basesite.presentation.sitedetails.views;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,7 @@ import java.util.List;
 
 public class PhotoDetailsAdapter extends RecyclerView.Adapter<PhotoDetailsAdapter.ViewHolder> {
 
+    private final Context mContext;
     private List<Uri> mList;
     private OnPhotoClickListener mListener;
 
@@ -24,7 +28,8 @@ public class PhotoDetailsAdapter extends RecyclerView.Adapter<PhotoDetailsAdapte
         void onPhotoSelected(Uri uri);
     }
 
-    public PhotoDetailsAdapter(OnPhotoClickListener listener) {
+    public PhotoDetailsAdapter(OnPhotoClickListener listener, Context context) {
+        mContext  = context;
         mList = new ArrayList<>();
         mListener = listener;
     }
@@ -40,9 +45,17 @@ public class PhotoDetailsAdapter extends RecyclerView.Adapter<PhotoDetailsAdapte
     public void onBindViewHolder(@NonNull PhotoDetailsAdapter.ViewHolder holder, int position) {
         Uri uri = mList.get(position);
         holder.icon.setImageURI(null);
+
+        CircularProgressDrawable progress = new CircularProgressDrawable(mContext);
+        progress.setStrokeWidth(5f);
+        progress.setCenterRadius(30f);
+        progress.setColorFilter(mContext.getResources().getColor(R.color.colorPrimary),PorterDuff.Mode.SRC_IN );
+        progress.start();
+
         if (uri != null) {
             Glide.with(holder.icon.getContext())
                     .load(uri)
+                    .placeholder(progress)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.icon);
             holder.icon.setOnClickListener(view -> {
