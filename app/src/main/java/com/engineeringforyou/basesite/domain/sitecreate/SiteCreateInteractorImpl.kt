@@ -35,6 +35,7 @@ class SiteCreateInteractorImpl(private val context: Context) : SiteCreateInterac
     }
 
     override fun savePhotos(photoUriList: List<Uri>, site: Site, userName: String): Completable {
+        saveName(userName)
         val text = "Пользователь $userName добавил ${if (photoUriList.size > 1) "фотографии" else "фотографию"}"
         return firebase.savePhotos(photoUriList, site)
                 .andThen(firebase.saveComment(Comment(site, text, User(context, "автоматический"))))

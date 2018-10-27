@@ -408,6 +408,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
             mUri = getArguments().getParcelable("uri");
             PhotoView image = rootView.findViewById(R.id.image);
+            image.setMaximumScale(10f);
 
             if (mUri != null) {
                 Glide.with(this)
