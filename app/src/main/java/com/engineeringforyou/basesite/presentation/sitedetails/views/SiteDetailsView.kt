@@ -21,4 +21,6 @@ interface SiteDetailsView {
 
     fun showPhotos(list: List<Uri>)
 
+    fun loadInterstitialAd()
+
 }

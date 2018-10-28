@@ -79,6 +79,7 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     private void loadPhotosSuccess(List<Uri> uriList) {
         if (mView != null) {
             mView.showPhotos(uriList);
+            mView.loadInterstitialAd();
         }
     }
 

@@ -245,24 +245,37 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     private void initAdMob() {
         mIsEnableAdvertising = Utils.INSTANCE.isEnableAdvertising(this);
         if (mIsEnableAdvertising) {
-            mInterstitialAd = new InterstitialAd(this);
-            mInterstitialAd.setAdListener(new AdListener() {
-                @Override
-                public void onAdClosed() {
-                    openRoute();
-                }
-            });
-            String adUnitId = getString(BuildConfig.DEBUG ? R.string.interstitial_test_ad_unit_id : R.string.interstitial_ad_unit_id_1);
-            mInterstitialAd.setAdUnitId(adUnitId);
-            mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            AdRequest adRequest = new AdRequest.Builder()
-                    .addTestDevice(getString(R.string.admob_test_device))
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .build();
-            mAdMobView.loadAd(adRequest);
+            initInterstitialAd();
+            initAdMobV();
         } else {
             mAdMobView.setVisibility(View.GONE);
         }
+    }
+
+    private void initAdMobV() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(getString(R.string.admob_test_device))
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdMobView.loadAd(adRequest);
+    }
+
+    private void initInterstitialAd() {
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                openRoute();
+            }
+        });
+        String adUnitId = getString(BuildConfig.DEBUG ? R.string.interstitial_test_ad_unit_id : R.string.interstitial_ad_unit_id_1);
+        mInterstitialAd.setAdUnitId(adUnitId);
+//        loadInterstitialAd();
+    }
+
+    @Override
+    public void loadInterstitialAd() {
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
     @OnClick(R.id.button_map)
