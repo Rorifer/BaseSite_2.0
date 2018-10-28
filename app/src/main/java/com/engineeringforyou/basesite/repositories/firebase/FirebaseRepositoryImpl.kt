@@ -69,7 +69,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     override fun saveMessage(message: Message): Completable {
         return Completable.create { emitter ->
 
-            if (message.message == "text"){ // Тесты Google
+            if (message.message == "text") { // Тесты Google
                 emitter.onComplete()
                 return@create
             }
@@ -136,6 +136,12 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     private fun savePhotosInStorage(photoUriList: List<Uri>, site: Site): Single<List<String>> {
         return Single.create { emitter ->
             val uriMap: ArrayList<String> = ArrayList()
+
+            if (photoUriList.isEmpty()) {
+                emitter.onSuccess(uriMap)
+                return@create
+            }
+
             indexCounter = 0
             for (index in photoUriList.indices) {
                 val imageRef = storage.reference

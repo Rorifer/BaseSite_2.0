@@ -256,3 +256,4 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/java,macos,linux,gradle,windows,android,androidstudio
 /app/src/main/assets/
+/app/src/main/assets/ORM_SITES_02.db
