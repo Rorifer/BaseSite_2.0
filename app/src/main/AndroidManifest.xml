@@ -62,6 +62,14 @@
         <activity android:name=".presentation.job.details.JobDetailsActivity"
             android:label="@string/job_details"/>
 
+        <service android:name=".notification.PushService"
+            android:permission=""
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
