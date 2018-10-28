@@ -21,32 +21,31 @@ class JobCreatePresenterImpl(val view: JobCreateView) : JobCreatePresenter {
 
     private val interactor: JobInteractor = JobInteractorImpl()
     private val disposable = CompositeDisposable()
-    private var site: Site? = null
+    private var linkSite: Site? = null
 
     init {
         view.setContact(interactor.getContact())
     }
 
     override fun clickSiteLink() {
-        view.openLinkSearch(site)
+        view.openLinkSearch(linkSite)
     }
 
     override fun setLinkSite(site: Site) {
-        this.site = site
+        this.linkSite = site
     }
 
     override fun createJob(job: Job) {
-        if (job.contact.isEmpty()) {
-            view.showMessage(R.string.not_contact)
-            return
-        }
-        if (job.description.isEmpty()) {
-            view.showMessage(R.string.not_description)
+        var massageRes: Int? = null
+        if (job.contact.isEmpty()) massageRes = R.string.not_contact
+        if (job.description.isEmpty()) massageRes = R.string.not_description
+        if (job.name.isEmpty()) massageRes = R.string.not_name
+        if (massageRes != null) {
+            view.showMessage(massageRes)
             return
         }
 
-        job.linkSiteUid = site?.uid
-        job.linkSiteOperator = site?.operator
+        job.setLinkSite(linkSite)
 
         disposable.add(interactor.createJob(job)
                 .doOnSubscribe { view.showProgress() }

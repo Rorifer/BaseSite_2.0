@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="@string/post_job" />
+                android:text="@string/create_job_label" />
 
             <View
                 android:layout_width="wrap_content"
@@ -80,4 +80,3 @@
     </FrameLayout>
 
 </ScrollView>
-

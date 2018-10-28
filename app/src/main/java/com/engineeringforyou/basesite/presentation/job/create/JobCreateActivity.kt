@@ -51,17 +51,24 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
         site_operator_spinner.setSelection(-1)
 
         site_link_button.setOnClickListener { presenter.clickSiteLink() }
-        job_create_button.setOnClickListener { presenter.createJob(compileJob()) }
+        job_create_button.setOnClickListener { presenter.createJob(obtainJob()) }
     }
 
-    private fun compileJob() = Job(
-            operatorPosition = site_operator_spinner.selectedItemPosition,
-            number = site_number.text.toString(),
+    private fun obtainJob() = Job(
+            this,
+            siteOperator = obtainOperator(),
+            siteNumber = site_number.text.toString(),
             address = site_address.text.toString(),
+            name = job_name.text.toString(),
             description = job_description.text.toString(),
             price = job_price.text.toString(),
             contact = job_contact.text.toString()
     )
+
+    private fun obtainOperator(): Operator? {
+        val selectedPosition = site_operator_spinner.selectedItemPosition
+        return if (selectedPosition < 0) null else Operator.values()[selectedPosition]
+    }
 
     override fun setField(site: Site) {
         site_operator_spinner.setSelection(site.operator!!.ordinal)

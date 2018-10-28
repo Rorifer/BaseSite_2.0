@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.presentation.job.find
+package com.engineeringforyou.basesite.presentation.job.list
 
 import android.app.Activity
 import android.content.Intent
@@ -11,16 +11,17 @@ import android.view.View.VISIBLE
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.presentation.job.JobMainActivity
-import kotlinx.android.synthetic.main.activity_job_find.*
+import com.engineeringforyou.basesite.presentation.job.details.JobDetailsActivity
+import kotlinx.android.synthetic.main.activity_job_list.*
 
-interface JobFindView {
+interface JobListView {
     fun showRefresh()
     fun hideRefresh()
     fun showJobList(list: List<Job>)
     fun showMessage(@StringRes message: Int)
 }
 
-class JobFindActivity : AppCompatActivity(), JobFindView {
+class JobListActivity : AppCompatActivity(), JobListView {
 
     companion object {
         fun start(activity: Activity) {
@@ -30,22 +31,26 @@ class JobFindActivity : AppCompatActivity(), JobFindView {
         }
     }
 
-    private lateinit var presenter: JobFindPresenter
-    private lateinit var adapter: JobAdapter
+    private lateinit var presenter: JobListPresenter
+    private lateinit var adapter: JobListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_job_find)
-        presenter = JobFindPresenterImpl(this)
+        setContentView(R.layout.activity_job_list)
+        presenter = JobListPresenterImpl(this)
         initAdapter()
 
         swipe_layout.setOnRefreshListener { presenter.loadJobList() }
     }
 
     private fun initAdapter() {
-        adapter = JobAdapter()
+        adapter = JobListAdapter(::clickJob)
         job_list.layoutManager = LinearLayoutManager(this)
         job_list.adapter = adapter
+    }
+
+    private fun clickJob(job: Job) {
+        JobDetailsActivity.start(this, job)
     }
 
     override fun showJobList(list: List<Job>) {

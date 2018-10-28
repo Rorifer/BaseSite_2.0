@@ -4,28 +4,48 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/job_title"
+        android:id="@+id/job_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        tools:text="26.03.1985" />
+
+    <TextView
+        android:id="@+id/job_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:padding="8dp"
+        android:layout_below="@id/job_date"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         tools:text="Заголовок работы" />
 
     <TextView
-        android:id="@+id/job_price"
-        android:layout_width="match_parent"
+        android:id="@+id/operator"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/job_title"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:padding="8dp"
-        tools:text="Цена работы" />
+        android:layout_below="@id/job_name"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        tools:text="МТС" />
+
+    <TextView
+        android:id="@+id/site_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/job_name"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_toEndOf="@id/operator"
+        android:layout_toRightOf="@id/operator"
+        tools:text="БС № 77-2245" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/job_price"
+        android:layout_below="@id/site_number"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:background="@color/colorPrimary" />

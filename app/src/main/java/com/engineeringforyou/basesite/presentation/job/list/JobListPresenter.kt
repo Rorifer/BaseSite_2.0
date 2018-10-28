@@ -1,4 +1,4 @@
-package com.engineeringforyou.basesite.presentation.job.find
+package com.engineeringforyou.basesite.presentation.job.list
 
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.job.JobInteractor
@@ -8,12 +8,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-interface JobFindPresenter {
+interface JobListPresenter {
     fun clear()
     fun loadJobList()
 }
 
-class JobFindPresenterImpl(val view: JobFindView) : JobFindPresenter {
+class JobListPresenterImpl(val view: JobListView) : JobListPresenter {
 
     private val interactor: JobInteractor = JobInteractorImpl()
     private val disposable = CompositeDisposable()
