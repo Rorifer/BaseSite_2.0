@@ -21,6 +21,7 @@ import com.engineeringforyou.basesite.BuildConfig;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.job.JobMainActivity;
 import com.engineeringforyou.basesite.presentation.message.MessageActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
@@ -28,8 +29,8 @@ import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitesearch.views.SearchSiteView;
-import com.engineeringforyou.basesite.presentation.job.JobMainActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
+import com.engineeringforyou.basesite.utils.FirebaseUtils;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.engineeringforyou.basesite.utils.MessageDialog;
 import com.google.android.gms.ads.AdRequest;
@@ -37,6 +38,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -101,7 +103,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
                     openAdvertising();
                     break;
                 case R.id.item_logout:
-                    finish();
+                    logout();
                     break;
             }
             return true;
@@ -129,6 +131,13 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
             }
         });
+    }
+
+    private void logout() {
+        FirebaseUtils.deleteToken();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
+        finish();
     }
 
     private void initAdMob() {
