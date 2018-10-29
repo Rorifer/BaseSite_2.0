@@ -2,6 +2,8 @@ package com.engineeringforyou.basesite.utils
 
 import android.os.Build
 import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.LoginEvent
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,4 +40,21 @@ object EventFactory {
         Crashlytics.log(7, MESSAGE, message)
         Crashlytics.logException(Throwable(message))
     }
+
+    fun logIn() {
+//        if (STATUS.equals(ADMIN)) return
+        Answers.getInstance().logLogin(LoginEvent()
+                //                .putCustomAttribute("UserId", Utils.getCurrentUser().getUid())
+                .putCustomAttribute("UserPhone", FirebaseUtils.getCurrentUser().phoneNumber)
+                .putSuccess(true))
+    }
+
+    fun logInWrong(phone: String?) {
+//        if (STATUS.equals(ADMIN)) return
+        Answers.getInstance().logLogin(LoginEvent()
+                .putCustomAttribute("UserPhone", phone)
+                //                .putMethod("Digits")
+                .putSuccess(false))
+    }
+
 }

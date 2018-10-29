@@ -150,22 +150,25 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                         .child(site.uid!!)
                         .child("${Utils.getCurrentTime()}")
                 val uploadTask = imageRef.putFile(photoUriList[index])
-                uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                    if (!task.isSuccessful) {
-                        task.exception?.let {
-                            emitter.onError(it)
+                uploadTask
+                        .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                            if (!task.isSuccessful) {
+                                task.exception?.let {
+                                    emitter.onError(it)
+                                }
+                            }
+                            return@Continuation imageRef.downloadUrl
+                        })
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                uriMap.add(task.result.toString())
+                                indexCounter++
+                                if (indexCounter == photoUriList.size) emitter.onSuccess(uriMap)
+                            } else {
+                                emitter.onError(Throwable("Task not Successful"))
+                            }
                         }
-                    }
-                    return@Continuation imageRef.downloadUrl
-                }).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        uriMap.add(task.result.toString())
-                        indexCounter++
-                        if (indexCounter == photoUriList.size) emitter.onSuccess(uriMap)
-                    } else {
-                        emitter.onError(Throwable("Task not Successful"))
-                    }
-                }
+                        .addOnFailureListener { emitter.onError(it) } // TODO: Не приходит UnknownHostExeption при отсутствии интернета
             }
         }
     }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hint_user_id">ID пользователя</string>
+    <string name="get_custom_token">Получите токен</string>
+    <string name="sign_in">Логин</string>
+    <string name="create_account">Создайте аккаунт</string>
+    <string name="sign_out">Выход</string>
+    <string name="verify_email">Проверка email</string>
+    <string name="disconnect">Дисконнект</string>
+    <string name="loading">Загрузка…</string>
+    <string name="custom_token">Кастомный токен</string>
+    <string name="signed_in">Залогинен</string>
+    <string name="signed_out">Разлогинен</string>
+    <string name="token_null">Токен: null</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Пароль</string>
+    <string name="desc_firebase_lockup">Логотип</string>
+    <string name="auth_failed">Аутентификация не удалась</string>
+    <string name="start_phone_auth">Начало</string>
+    <string name="verify_phone_auth">Проверить</string>
+    <string name="resend_phone_auth">Отправить снова</string>
+    <string name="hint_phone_number">Тел. номер</string>
+    <string name="hint_verification_code">Проверочный код</string>
+    <string name="status_code_sent">Код отправлен, ожидайте</string>
+    <string name="status_verification_failed">Проверка не удалась</string>
+    <string name="status_verification_succeeded">Проверка удалась</string>
+    <string name="enter_phone_number">Введите номер телефона</string>
+    <string name="status_sign_in_failed">Авторизация не удалась</string>
+    <string name="instant_validation">…выполняется проверка</string>
+    <string name="done">Готово</string>
+    <string name="back">Назад</string>
+
+</resources>

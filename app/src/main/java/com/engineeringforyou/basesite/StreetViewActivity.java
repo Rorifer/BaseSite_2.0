@@ -44,3 +44,4 @@ public class StreetViewActivity extends AppCompatActivity {
 
 }
 //https://developers.google.com/maps/documentation/android-sdk/streetview?hl=ru
+//https://developers.google.com/maps/documentation/android-sdk/streetview

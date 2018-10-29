@@ -61,6 +61,7 @@
             android:label="@string/create_job_label"/>
         <activity android:name=".presentation.job.details.JobDetailsActivity"
             android:label="@string/job_details"/>
+        <activity android:name=".authorization.PhoneAuthActivity" />
 
         <service android:name=".notification.PushService"
             android:permission=""

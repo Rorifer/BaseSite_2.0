@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import com.engineeringforyou.basesite.R
-import com.engineeringforyou.basesite.presentation.job.create.JobCreateActivity
+import com.engineeringforyou.basesite.authorization.PhoneAuthActivity
 import com.engineeringforyou.basesite.presentation.job.list.JobListActivity
 import com.engineeringforyou.basesite.presentation.job.setting.JobSettingsPresenter
 import com.engineeringforyou.basesite.presentation.job.setting.JobSettingsPresenterImpl
@@ -34,7 +34,7 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
         presenter = JobSettingsPresenterImpl(this)
 
         find_job.setOnClickListener { JobListActivity.start(this) }
-        post_job.setOnClickListener { JobCreateActivity.start(this) }
+        post_job.setOnClickListener { PhoneAuthActivity.start(this) }
         notification_switch.setOnCheckedChangeListener { _, isChecked ->
             presenter.switchNotification(isChecked)
         }
