@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import com.engineeringforyou.basesite.utils.Utils
-import java.util.*
 
 data class Job(
         var linkSiteUid: String?,
@@ -19,7 +18,8 @@ data class Job(
         val id: String,
         val timestamp: Long,
         val dateCreate: String,
-        val userAndroidId: String
+        val userAndroidId: String,
+        val isPublic: Boolean
 ) : Parcelable {
     constructor(context: Context,
                 linkSiteUid: String? = null,
@@ -41,10 +41,11 @@ data class Job(
             description,
             price,
             contact,
-            id = UUID.randomUUID().toString(),
+            id = Utils.getRandomId(),
             timestamp = Utils.getCurrentTime(),
             dateCreate = Utils.getCurrentDate(),
-            userAndroidId = Utils.getAndroidId(context)
+            userAndroidId = Utils.getAndroidId(context),
+            isPublic = true
     )
 
     fun setLinkSite(site: Site?) {
@@ -65,7 +66,8 @@ data class Job(
             source.readString(),
             source.readLong(),
             source.readString(),
-            source.readString()
+            source.readString(),
+            1 == source.readInt()
     )
 
     override fun describeContents() = 0
@@ -84,6 +86,7 @@ data class Job(
         writeLong(timestamp)
         writeString(dateCreate)
         writeString(userAndroidId)
+        writeInt((if (isPublic) 1 else 0))
     }
 
     companion object {

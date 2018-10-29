@@ -30,7 +30,6 @@ import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSi
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitesearch.views.SearchSiteView;
 import com.engineeringforyou.basesite.utils.EventFactory;
-import com.engineeringforyou.basesite.utils.FirebaseUtils;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.engineeringforyou.basesite.utils.MessageDialog;
 import com.google.android.gms.ads.AdRequest;
@@ -38,7 +37,6 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -103,7 +101,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
                     openAdvertising();
                     break;
                 case R.id.item_logout:
-                    logout();
+                    finish();
                     break;
             }
             return true;
@@ -131,13 +129,6 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
             }
         });
-    }
-
-    private void logout() {
-        FirebaseUtils.deleteToken();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        mAuth.signOut();
-        finish();
     }
 
     private void initAdMob() {

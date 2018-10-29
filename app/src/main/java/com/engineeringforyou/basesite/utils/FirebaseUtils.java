@@ -20,8 +20,6 @@ public class FirebaseUtils {
     private static final String DOCUMENT_NOTIFICATION = "notification";
 
 
-
-
     public static FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
@@ -67,4 +65,9 @@ public class FirebaseUtils {
         }
     }
 
+    public static void logout() {
+        FirebaseUtils.deleteToken();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
+    }
 }

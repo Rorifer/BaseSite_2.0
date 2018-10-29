@@ -13,7 +13,7 @@ interface JobListPresenter {
     fun loadJobList()
 }
 
-class JobListPresenterImpl(val view: JobListView) : JobListPresenter {
+class JobListPresenterImpl(val view: JobListView, private val onlyUserList: Boolean) : JobListPresenter {
 
     private val interactor: JobInteractor = JobInteractorImpl()
     private val disposable = CompositeDisposable()
@@ -24,7 +24,7 @@ class JobListPresenterImpl(val view: JobListView) : JobListPresenter {
     }
 
     override fun loadJobList() {
-        disposable.add(interactor.loadJobList()
+        disposable.add(interactor.loadJobList(onlyUserList)
                 .doOnSubscribe { view.showRefresh() }
                 .doOnEvent { _, _ -> view.hideRefresh() }
                 .subscribeOn(Schedulers.io())

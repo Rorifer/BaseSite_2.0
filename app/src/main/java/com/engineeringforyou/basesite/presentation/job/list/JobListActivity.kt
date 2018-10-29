@@ -24,8 +24,11 @@ interface JobListView {
 class JobListActivity : AppCompatActivity(), JobListView {
 
     companion object {
-        fun start(activity: Activity) {
+        const val SHOW_USER_LIST = "only_user_list"
+
+        fun start(activity: Activity, onlyUserList: Boolean = false) {
             val intent = Intent(activity, JobMainActivity::class.java)
+            intent.putExtra(SHOW_USER_LIST, onlyUserList)
             activity.startActivity(intent)
             activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out)
         }
@@ -37,7 +40,8 @@ class JobListActivity : AppCompatActivity(), JobListView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_list)
-        presenter = JobListPresenterImpl(this)
+        val onlyUserList = intent.getBooleanExtra(SHOW_USER_LIST, false)
+        presenter = JobListPresenterImpl(this, onlyUserList)
         initAdapter()
 
         swipe_layout.setOnRefreshListener { presenter.loadJobList() }

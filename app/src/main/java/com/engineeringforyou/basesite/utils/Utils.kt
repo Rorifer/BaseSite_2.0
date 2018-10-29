@@ -47,4 +47,6 @@ object Utils {
         if (phoneBuilder[0] == '8') phoneBuilder = "+7" + phoneBuilder.substring(1)
         return if (phoneBuilder.matches("^\\+7[0-9]{10}".toRegex())) phoneBuilder else null
     }
+
+    fun getRandomId() = UUID.randomUUID().toString()
 }

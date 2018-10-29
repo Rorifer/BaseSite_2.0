@@ -9,7 +9,7 @@ import io.reactivex.Single
 interface JobInteractor {
     fun getStatusNotification(): Single<Boolean>
     fun setStatusNotification(checked: Boolean): Completable
-    fun loadJobList(): Single<List<Job>>
+    fun loadJobList(onlyUserList: Boolean): Single<List<Job>>
     fun getContact(): String
     fun createJob(job: Job): Completable
     fun getLinkSite(operator: Operator?, siteUid: String?): Site?
@@ -31,7 +31,7 @@ class JobInteractorImpl() : JobInteractor {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun loadJobList(): Single<List<Job>> {
+    override fun loadJobList(onlyUserList: Boolean): Single<List<Job>> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

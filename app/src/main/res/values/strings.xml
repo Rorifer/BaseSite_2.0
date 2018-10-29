@@ -115,7 +115,8 @@
     <string name="image_size_too_match">Размер одной фотографий не может быть больше 7 Мб</string>
     <string name="image_type_nod_valid">Файл не является фотографией</string>
     <string name="image_count_to_match">Нельзя сохранить более 3 фотографий</string>
-    <string name="logout">Выйти</string>
+    <string name="exit">Выйти</string>
+    <string name="logout">Разлогиниться</string>
     <string name="menu">Меню</string>
     <string name="info">Информация</string>
     <string name="job">Работа на БС</string>
@@ -155,5 +156,6 @@
     <string name="job_name">Название работы:</string>
     <string name="hint_short_name">максимум 40 символов</string>
     <string name="job_details">Детали работы</string>
+    <string name="my_job_list">Мой список работ</string>
 
 </resources>
