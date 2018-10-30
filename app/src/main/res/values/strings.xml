@@ -157,5 +157,6 @@
     <string name="hint_short_name">максимум 40 символов</string>
     <string name="job_details">Детали работы</string>
     <string name="my_job_list">Мой список работ</string>
+    <string name="dialog_site_link_title">Поиск БС</string>
 
 </resources>

@@ -405,8 +405,6 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     public static class ImageFragment extends Fragment {
 
-        private Uri mUri;
-
         public static ImageFragment newInstance(Uri uri) {
             ImageFragment fragment = new ImageFragment();
             Bundle args = new Bundle();
@@ -419,7 +417,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_image, container, false);
 
-            mUri = getArguments().getParcelable("uri");
+            Uri mUri = getArguments().getParcelable("uri");
             PhotoView image = rootView.findViewById(R.id.image);
             image.setMaximumScale(10f);
 

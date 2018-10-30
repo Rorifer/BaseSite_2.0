@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/site_search_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_toStartOf="@id/button_search"
+                android:layout_toLeftOf="@id/button_search"
+                android:gravity="center_vertical"
+                android:hint="@string/site_search"
+                app:errorTextAppearance="@style/ErrorText">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/site_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLength="50"
+                    android:textSize="16sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_search"
+                style="@style/CustomButtonPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/site_search_layout"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:padding="16dp"
+                android:text="@string/search" />
+
+        </RelativeLayout>
+
+        <RadioGroup
+            android:id="@+id/operators_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                style="@style/RadioButtonPrimary"
+                android:drawableEnd="@drawable/ic_mts"
+                android:drawableRight="@drawable/ic_mts"
+                android:text="@string/MTS" />
+
+            <RadioButton
+                style="@style/RadioButtonPrimary"
+                android:drawableEnd="@drawable/ic_megafon"
+                android:drawableRight="@drawable/ic_megafon"
+                android:drawablePadding="16dp"
+                android:text="@string/MGF" />
+
+            <RadioButton
+                style="@style/RadioButtonPrimary"
+                android:drawableEnd="@drawable/ic_beeline"
+                android:drawableRight="@drawable/ic_beeline"
+                android:text="@string/VMK" />
+
+            <RadioButton
+                style="@style/RadioButtonPrimary"
+                android:drawableEnd="@drawable/ic_tele2"
+                android:drawableRight="@drawable/ic_tele2"
+                android:text="@string/TELE" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <include layout="@layout/view_progress" />
+
+</FrameLayout>

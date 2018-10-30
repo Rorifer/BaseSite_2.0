@@ -26,6 +26,7 @@ interface JobCreateView {
     fun setField(site: Site)
     fun setContact(contact: String)
     fun openLinkSearch(site: Site?)
+    fun showListLinkSearch(list: List<Site>)
 }
 
 class JobCreateActivity : AppCompatActivity(), JobCreateView {
@@ -109,7 +110,11 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
     }
 
     override fun openLinkSearch(site: Site?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        SiteLinkDialog.getInstance(site).show(fragmentManager, "dialog_link")
+    }
+
+    override fun showListLinkSearch(list: List<Site>){
+       TODO()
     }
 
     override fun showProgress() {

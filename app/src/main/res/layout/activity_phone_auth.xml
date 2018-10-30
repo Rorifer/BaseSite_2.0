@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/desc_firebase_lockup"
-            android:src="@drawable/theater" />
+            android:src="@drawable/bs_photo" />
     </LinearLayout>
 
     <RelativeLayout

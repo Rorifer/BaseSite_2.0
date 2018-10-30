@@ -76,6 +76,12 @@
         <item name="elevation">2dp</item>
     </style>
 
+    <style name="RadioButtonPrimary" parent="RadioButton">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="backgroundTint">@android:color/white</item>
+    </style>
+
+
     <!-- Activity with no Title -->
     <style name="ThemeOverlay.MyNoTitleActivity" parent="AppTheme">
         <item name="windowActionBar">false</item>

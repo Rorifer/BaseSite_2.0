@@ -531,7 +531,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             getDialog().setTitle(R.string.dialog_radius_title);
-            View v = inflater.inflate(R.layout.activity_dialog_radius, container);
+            View v = inflater.inflate(R.layout.dialog_radius, container);
             v.findViewById(R.id.button_radius).setOnClickListener(this);
             mSeekBar = v.findViewById(R.id.seek_radius);
             mTextView = v.findViewById(R.id.text_radius);
