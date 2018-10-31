@@ -28,11 +28,11 @@ class SearchSiteInteractorImpl(context: Context) : SearchSiteInteractor {
 
     override fun getOperator() = settingsRepository.getOperator()
 
-    override fun searchSitesByNumber(search: String): Single<List<Site>> =
-            sitesRepository.searchSitesByNumber(getOperator(), search)
+    override fun searchSitesByNumber(search: String, operator: Operator?): Single<List<Site>> =
+            sitesRepository.searchSitesByNumber(operator ?: getOperator(), search)
 
-    override fun searchSitesByAddress(search: String): Single<List<Site>> =
-            sitesRepository.searchSitesByAddress(getOperator(), search)
+    override fun searchSitesByAddress(search: String, operator: Operator?): Single<List<Site>> =
+            sitesRepository.searchSitesByAddress(operator ?: getOperator(), search)
 
     override fun refreshSiteBase() = sitesDataBase.refreshDataBaseIfNeed()
 

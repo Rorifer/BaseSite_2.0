@@ -11,9 +11,9 @@ interface SearchSiteInteractor {
 
     fun getOperator(): Operator
 
-    fun searchSitesByNumber(search: String): Single<List<Site>>
+    fun searchSitesByNumber(search: String, operator: Operator? = null): Single<List<Site>>
 
-    fun searchSitesByAddress(search: String): Single<List<Site>>
+    fun searchSitesByAddress(search: String, operator: Operator? = null): Single<List<Site>>
 
     fun refreshSiteBase(): Completable
 

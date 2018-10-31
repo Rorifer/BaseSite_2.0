@@ -26,10 +26,12 @@ interface JobCreateView {
     fun setField(site: Site)
     fun setContact(contact: String)
     fun openLinkSearch(site: Site?)
+    fun setLinkBS(site: Site)
     fun showListLinkSearch(list: List<Site>)
 }
 
 class JobCreateActivity : AppCompatActivity(), JobCreateView {
+
     companion object {
         fun start(activity: Activity) {
             val intent = Intent(activity, JobCreateActivity::class.java)
@@ -86,7 +88,7 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
                 JobListActivity.start(this, true)
                 true
             }
-            R.id.menu_logout ->{
+            R.id.menu_logout -> {
                 logout()
                 true
             }
@@ -113,9 +115,11 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
         SiteLinkDialog.getInstance(site).show(fragmentManager, "dialog_link")
     }
 
-    override fun showListLinkSearch(list: List<Site>){
-       TODO()
+    override fun showListLinkSearch(list: List<Site>) {
+        SiteLinkListDialog.getInstance(list).show(fragmentManager, "dialog_list_link")
     }
+
+    override fun setLinkBS(site: Site) = presenter.setLinkSite(site)
 
     override fun showProgress() {
         progress_bar.visibility = View.VISIBLE

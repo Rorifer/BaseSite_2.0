@@ -158,5 +158,6 @@
     <string name="job_details">Детали работы</string>
     <string name="my_job_list">Мой список работ</string>
     <string name="dialog_site_link_title">Поиск БС</string>
+    <string name="dialog_site_list_link_title">Выбирете БС:</string>
 
 </resources>

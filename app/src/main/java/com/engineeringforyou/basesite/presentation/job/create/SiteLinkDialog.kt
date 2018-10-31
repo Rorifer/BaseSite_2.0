@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.sitesearch.SearchSiteInteractor
 import com.engineeringforyou.basesite.domain.sitesearch.SearchSiteInteractorImpl
+import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -49,10 +50,11 @@ class SiteLinkDialog : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        button_search.setOnClickListener { serachSite() }
+        retainInstance = true
+        button_search.setOnClickListener { searchSite() }
     }
 
-    private fun serachSite() {
+    private fun searchSite() {
         val searchText = site_search.text.toString().trim()
 
         if (searchText.isEmpty()) {
@@ -60,23 +62,21 @@ class SiteLinkDialog : DialogFragment() {
             return
         }
 
+        hideError()
         showProgress()
-
         disposable.clear()
-        if (Pattern.matches("[0-9-]*", searchText)) {
 
-            disposable.add(mInteractor.searchSitesByNumber(searchText)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::searchSuccess, ::searchError))
-        } else {
-            disposable.add(mInteractor.searchSitesByAddress(searchText)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::searchSuccess, ::searchError))
-        }
+        val operator = Operator.values()[getOperatorIndex()]
+
+        val search =
+                if (Pattern.matches("[0-9-]*", searchText))
+                    mInteractor.searchSitesByNumber(searchText, operator)
+                else mInteractor.searchSitesByAddress(searchText, operator)
+        disposable.add(search
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::searchSuccess, ::searchError))
     }
-
 
     private fun searchSuccess(siteList: List<Site>) {
         hideProgress()
@@ -90,6 +90,7 @@ class SiteLinkDialog : DialogFragment() {
 
     private fun toSiteChoice(siteList: List<Site>) {
         (activity as JobCreateView).showListLinkSearch(siteList)
+        dismiss()
     }
 
     private fun searchError(throwable: Throwable) {
@@ -97,7 +98,6 @@ class SiteLinkDialog : DialogFragment() {
         hideProgress()
         showError(R.string.error)
     }
-
 
     private fun showProgress() {
         progress_bar.visibility = View.VISIBLE
