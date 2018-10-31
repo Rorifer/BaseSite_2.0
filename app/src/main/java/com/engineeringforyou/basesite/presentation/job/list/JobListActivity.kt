@@ -41,7 +41,7 @@ class JobListActivity : AppCompatActivity(), JobListView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_list)
         val onlyUserList = intent.getBooleanExtra(SHOW_USER_LIST, false)
-        presenter = JobListPresenterImpl(this, onlyUserList)
+        presenter = JobListPresenterImpl(this, this, onlyUserList)
         initAdapter()
 
         swipe_layout.setOnRefreshListener { presenter.loadJobList() }

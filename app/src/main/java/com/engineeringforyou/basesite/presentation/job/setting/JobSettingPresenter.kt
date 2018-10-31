@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.presentation.job.setting
 
+import android.content.Context
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.job.JobInteractor
 import com.engineeringforyou.basesite.domain.job.JobInteractorImpl
@@ -14,17 +15,13 @@ interface JobSettingsPresenter {
     fun clear()
 }
 
-class JobSettingsPresenterImpl(val view: JobSettingsView) : JobSettingsPresenter {
+class JobSettingsPresenterImpl(val view: JobSettingsView, val context: Context) : JobSettingsPresenter {
 
-    private val interactor: JobInteractor = JobInteractorImpl()
+    private val interactor: JobInteractor = JobInteractorImpl(context)
     private val disposable = CompositeDisposable()
 
     override fun checkState() {
-        disposable.add(interactor.getStatusNotification()
-                .subscribe(
-                        { checked -> view.setCheckedNotificationSwitch(checked) },
-                        { t -> EventFactory.exception(t) })
-        )
+        view.setCheckedNotificationSwitch(interactor.getStatusNotification())
     }
 
     override fun switchNotification(checked: Boolean) {

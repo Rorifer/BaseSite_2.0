@@ -34,4 +34,12 @@ interface SettingsRepository {
 
     fun isEnableAdvertising(): Boolean
 
+    fun saveContact(contact: String)
+
+    fun getContact(): String
+
+    fun saveStatusNotification(isEnabled: Boolean)
+
+    fun getStatusNotification(): Boolean
+
 }

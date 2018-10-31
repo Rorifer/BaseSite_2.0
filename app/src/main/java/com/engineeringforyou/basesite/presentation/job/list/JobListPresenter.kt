@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.presentation.job.list
 
+import android.content.Context
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.job.JobInteractor
 import com.engineeringforyou.basesite.domain.job.JobInteractorImpl
@@ -13,9 +14,9 @@ interface JobListPresenter {
     fun loadJobList()
 }
 
-class JobListPresenterImpl(val view: JobListView, private val onlyUserList: Boolean) : JobListPresenter {
+class JobListPresenterImpl(val view: JobListView, val context: Context, private val onlyUserList: Boolean) : JobListPresenter {
 
-    private val interactor: JobInteractor = JobInteractorImpl()
+    private val interactor: JobInteractor = JobInteractorImpl(context)
     private val disposable = CompositeDisposable()
 
     init {

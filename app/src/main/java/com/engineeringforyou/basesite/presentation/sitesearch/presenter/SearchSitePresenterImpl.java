@@ -86,12 +86,12 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         mDisposable.clear();
         if (Pattern.matches("[0-9-]*", search)) {
 
-            mDisposable.add(mInteractor.searchSitesByNumber(search)
+            mDisposable.add(mInteractor.searchSitesByNumber(search, null)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::searchSuccess, this::searchError));
         } else {
-            mDisposable.add(mInteractor.searchSitesByAddress(search)
+            mDisposable.add(mInteractor.searchSitesByAddress(search, null)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::searchSuccess, this::searchError));

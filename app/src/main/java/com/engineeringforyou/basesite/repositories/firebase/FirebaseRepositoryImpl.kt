@@ -3,6 +3,7 @@ package com.engineeringforyou.basesite.repositories.firebase
 import android.net.Uri
 import com.engineeringforyou.basesite.BuildConfig
 import com.engineeringforyou.basesite.models.Comment
+import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.models.Message
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.utils.Utils
@@ -214,5 +215,25 @@ class FirebaseRepositoryImpl : FirebaseRepository {
                     }
                     .addOnFailureListener { emitter.onError(it) }
         }
+    }
+
+    override fun saveJob(job: Job): Completable {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun loadListPublicJob(): Single<List<Job>> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun loadListUserJob(): Single<List<Job>> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun enableStatusNotification(): Completable {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun disableStatusNotification(): Completable {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

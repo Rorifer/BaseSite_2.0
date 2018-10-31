@@ -12,6 +12,8 @@ interface DataBaseRepository {
 
     fun searchSitesByAddress(operator: Operator, search: String): Single<List<Site>>
 
+    fun searchSitesByUid(operator: Operator, siteUid: String): Single<Site>
+
     fun searchSitesByLocation(operator: Operator, lat: Double, lng: Double, radius: Int): Single<List<Site>>
 
     fun getAllSites(operator: Operator): Single<List<Site>>

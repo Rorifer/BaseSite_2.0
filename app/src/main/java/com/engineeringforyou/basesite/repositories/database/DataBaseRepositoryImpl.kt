@@ -4,6 +4,7 @@ import com.engineeringforyou.basesite.data.orm.ORMHelperFactory
 import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
+import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -14,6 +15,15 @@ class DataBaseRepositoryImpl : DataBaseRepository {
 
     override fun searchSitesByAddress(operator: Operator, search: String): Single<List<Site>> =
             Single.fromCallable { ORMHelperFactory.getHelper().searchSitesByAddress(operator, search) }
+
+    override fun searchSitesByUid(operator: Operator, siteUid: String): Single<Site> =
+            Single.fromCallable {
+                val siteList = ORMHelperFactory.getHelper().searchSitesByUid(operator, siteUid)
+                if (siteList.size > 1) {
+                    EventFactory.exception(Throwable("DataBaseRepositoryImpl, siteList.size > 1,  $operator, uid = $siteUid"))
+                }
+                siteList.first()
+            }
 
     override fun searchSitesByLocation(operator: Operator, lat: Double, lng: Double, radius: Int): Single<List<Site>> =
             Single.fromCallable { ORMHelperFactory.getHelper().searchSitesByLocation(operator, lat, lng, radius) }

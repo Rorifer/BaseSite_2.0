@@ -161,7 +161,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
 
     public void saveSites(List<Site> sites) throws SQLException {
         for (Site site : sites) {
-            List<? extends Site> sitesByUId = searchSitesByUId(site);
+            List<? extends Site> sitesByUId = searchSitesBySite(site);
             if (!sitesByUId.isEmpty()) {
                 deleteSite(sitesByUId);
             } else {
@@ -267,9 +267,13 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         return null;
     }
 
-    public List<? extends Site> searchSitesByUId(Site site) throws SQLException {
+    private List<? extends Site> searchSitesBySite(Site site) throws SQLException {
+        return searchSitesByUid(site.getOperator(), site.getUid());
+    }
+
+    public List<? extends Site> searchSitesByUid(Operator operator, String uid) throws SQLException {
         BaseDaoImpl<? extends Site, Integer> dao = null;
-        switch (site.getOperator()) {
+        switch (operator) {
             case MTS:
                 dao = getSiteMTSDAO();
                 break;
@@ -284,7 +288,7 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
                 break;
         }
         QueryBuilder<? extends Site, Integer> queryBuilder = dao.queryBuilder();
-        queryBuilder.where().like(FIELD_UID, site.getUid());
+        queryBuilder.where().like(FIELD_UID, uid);
         return executeQuery(dao, queryBuilder);
     }
 

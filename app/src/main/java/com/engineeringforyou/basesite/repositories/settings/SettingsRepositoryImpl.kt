@@ -10,10 +10,11 @@ import com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL
 class SettingsRepositoryImpl(context: Context) : SettingsRepository {
 
     companion object {
+        const val EMPTY_TEXT = ""
         const val INDEX_DEFAULT = 0
         const val RADIUS_DEFAULT = 3
-//        const val TIMESTAMP_DEFAULT =  0L
-        const val TIMESTAMP_DEFAULT =  1540472974548L
+        //        const val TIMESTAMP_DEFAULT =  0L
+        const val TIMESTAMP_DEFAULT = 1540472974548L
         const val MAP_TYPE_DEFAULT = MAP_TYPE_NORMAL
         const val MAP_TYPE_MAX = MAP_TYPE_HYBRID
         private const val KEY_RADIUS = "key_radius"
@@ -23,6 +24,8 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         private const val KEY_SITES_TIMESTAMP = "key_sites_timestamp"
         private const val KEY_TIME_ADVERTISING = "key_time_advertising"
         private const val KEY_NAME = "key_name"
+        private const val KEY_CONTACT = "key_contact"
+        private const val KEY_STATUS_NOTIFICATION = "key_status_notification"
     }
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -87,9 +90,9 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
 
     override fun getName(): String {
         return try {
-            prefs.getString(KEY_NAME, "")
+            prefs.getString(KEY_NAME, EMPTY_TEXT)
         } catch (e: ClassCastException) {
-            ""
+            EMPTY_TEXT
         }
     }
 
@@ -105,5 +108,25 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
 
     override fun isEnableAdvertising(): Boolean {
         return getTimeEnableAdvertising() < Utils.getCurrentTime()
+    }
+
+    override fun saveContact(contact: String) = prefs.edit().putString(KEY_CONTACT, contact).apply()
+
+    override fun getContact(): String {
+        return try {
+            prefs.getString(KEY_CONTACT, EMPTY_TEXT)
+        } catch (e: ClassCastException) {
+            EMPTY_TEXT
+        }
+    }
+
+    override fun saveStatusNotification(isEnabled: Boolean) = prefs.edit().putBoolean(KEY_STATUS_NOTIFICATION, isEnabled).apply()
+
+    override fun getStatusNotification(): Boolean {
+        return try {
+            prefs.getBoolean(KEY_STATUS_NOTIFICATION, false)
+        } catch (e: ClassCastException) {
+            false
+        }
     }
 }

@@ -31,7 +31,7 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_main)
-        presenter = JobSettingsPresenterImpl(this)
+        presenter = JobSettingsPresenterImpl(this, this)
 
         find_job.setOnClickListener { JobListActivity.start(this) }
         post_job.setOnClickListener { PhoneAuthActivity.start(this) }

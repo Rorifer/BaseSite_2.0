@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.presentation.job.create
 
+import android.content.Context
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.job.JobInteractor
 import com.engineeringforyou.basesite.domain.job.JobInteractorImpl
@@ -17,9 +18,9 @@ interface JobCreatePresenter {
     fun setLinkSite(site: Site)
 }
 
-class JobCreatePresenterImpl(val view: JobCreateView) : JobCreatePresenter {
+class JobCreatePresenterImpl(val view: JobCreateView, val context: Context) : JobCreatePresenter {
 
-    private val interactor: JobInteractor = JobInteractorImpl()
+    private val interactor: JobInteractor = JobInteractorImpl(context)
     private val disposable = CompositeDisposable()
     private var linkSite: Site? = null
 

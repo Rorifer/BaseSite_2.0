@@ -45,7 +45,7 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_create)
-        presenter = JobCreatePresenterImpl(this)
+        presenter = JobCreatePresenterImpl(this, this)
         initView()
     }
 

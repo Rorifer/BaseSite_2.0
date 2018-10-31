@@ -2,6 +2,7 @@ package com.engineeringforyou.basesite.repositories.firebase
 
 import android.net.Uri
 import com.engineeringforyou.basesite.models.Comment
+import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.models.Message
 import com.engineeringforyou.basesite.models.Site
 import io.reactivex.Completable
@@ -24,4 +25,14 @@ interface FirebaseRepository {
     fun savePhotos(photoUriList: List<Uri>, site: Site): Completable
 
     fun loadPhotos(site: Site): Single<List<Uri>>
+
+    fun saveJob(job: Job): Completable
+
+    fun loadListPublicJob(): Single<List<Job>>
+
+    fun loadListUserJob(): Single<List<Job>>
+
+    fun enableStatusNotification(): Completable
+
+    fun disableStatusNotification(): Completable
 }
