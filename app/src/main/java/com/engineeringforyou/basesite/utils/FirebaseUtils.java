@@ -24,6 +24,14 @@ public class FirebaseUtils {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    public static String getCurrentUserPhone() {
+        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+    }
+
+    public static String getCurrentUserId() {
+        return FirebaseAuth.getInstance().getUid();
+    }
+
     public static void updateToken(String token) {
         FirebaseUser currentUser = getCurrentUser();
         if (currentUser != null && currentUser.getPhoneNumber() != null) {

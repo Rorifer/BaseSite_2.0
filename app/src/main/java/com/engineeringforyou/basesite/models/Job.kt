@@ -3,6 +3,7 @@ package com.engineeringforyou.basesite.models
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import com.engineeringforyou.basesite.utils.FirebaseUtils
 import com.engineeringforyou.basesite.utils.Utils
 
 data class Job(
@@ -18,6 +19,7 @@ data class Job(
         val id: String,
         val timestamp: Long,
         val dateCreate: String,
+        val userId: String,
         val userAndroidId: String,
         val isPublic: Boolean
 ) : Parcelable {
@@ -44,6 +46,7 @@ data class Job(
             id = Utils.getRandomId(),
             timestamp = Utils.getCurrentTime(),
             dateCreate = Utils.getCurrentDate(),
+            userId = FirebaseUtils.getCurrentUserId(),
             userAndroidId = Utils.getAndroidId(context),
             isPublic = true
     )
@@ -67,6 +70,7 @@ data class Job(
             source.readLong(),
             source.readString(),
             source.readString(),
+            source.readString(),
             1 == source.readInt()
     )
 
@@ -85,6 +89,7 @@ data class Job(
         writeString(id)
         writeLong(timestamp)
         writeString(dateCreate)
+        writeString(userId)
         writeString(userAndroidId)
         writeInt((if (isPublic) 1 else 0))
     }

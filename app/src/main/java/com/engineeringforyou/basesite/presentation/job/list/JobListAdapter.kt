@@ -42,4 +42,6 @@ class JobListAdapter(val jobClick: (job: Job) -> Unit) : RecyclerView.Adapter<Jo
             itemView.setOnClickListener { jobClick(job) }
         }
     }
+
+    //TODO Сделать снятие с публикации
 }

@@ -6,6 +6,7 @@ import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.models.Message
 import com.engineeringforyou.basesite.models.Site
+import com.engineeringforyou.basesite.utils.FirebaseUtils
 import com.engineeringforyou.basesite.utils.Utils
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -23,11 +24,15 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     var DIRECTORY_SITES = "sites"
     var DIRECTORY_SITES_EDITED = "edited"
     var DIRECTORY_SITES_PHOTO = "photos_url"
+    var DIRECTORY_JOB = "job"
+    var DIRECTORY_NOTIFICATION = "notification"
     var STORAGE_IMAGE = "image"
     val DIRECTORY_MESSAGE = "message"
     val FIELD_SITE_ID = "siteId"
     val FIELD_OPERATOR_ID = "operatorId"
     val FIELD_TIMESTAMP = "timestamp"
+    val FIELD_PUBLIC = "isPublic"
+    val FIELD_UID = "userId"
     val FIELD_REFERENCE = "reference"
 
     init {
@@ -37,6 +42,8 @@ class FirebaseRepositoryImpl : FirebaseRepository {
             DIRECTORY_SITES_EDITED = "debug_$DIRECTORY_SITES_EDITED"
             DIRECTORY_SITES_PHOTO = "debug_$DIRECTORY_SITES_PHOTO"
             STORAGE_IMAGE = "debug_$STORAGE_IMAGE"
+            DIRECTORY_JOB = "debug_$DIRECTORY_JOB"
+            DIRECTORY_NOTIFICATION = "debug_$DIRECTORY_NOTIFICATION"
         }
     }
 
@@ -218,22 +225,71 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     }
 
     override fun saveJob(job: Job): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Completable.create { emitter ->
+            firestore.collection(DIRECTORY_JOB)
+                    .document(job.id)
+                    .set(job)
+                    .addOnSuccessListener { emitter.onComplete() }
+                    .addOnFailureListener { emitter.onError(it) }
+        }
+    }
+
+    override fun closeJob(id: String): Completable {
+        return Completable.create { emitter ->
+            firestore.collection(DIRECTORY_JOB)
+                    .document(id)
+                    .update(FIELD_PUBLIC, false)
+                    .addOnSuccessListener { emitter.onComplete() }
+                    .addOnFailureListener { emitter.onError(it) }
+        }
     }
 
     override fun loadListPublicJob(): Single<List<Job>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Single.create<List<Job>> { emitter ->
+            firestore.collection(DIRECTORY_JOB)
+                    .whereEqualTo(FIELD_PUBLIC, true)
+                    .orderBy(FIELD_TIMESTAMP)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        val list = ArrayList<Job>()
+                        if (task.isSuccessful) for (document in task.result!!) list.add(document.toObject(Job::class.java))
+                        emitter.onSuccess(list)
+                    }
+                    .addOnFailureListener { emitter.onError(it) }
+        }
     }
 
     override fun loadListUserJob(): Single<List<Job>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Single.create<List<Job>> { emitter ->
+            firestore.collection(DIRECTORY_JOB)
+                    .whereEqualTo(FIELD_UID, FirebaseUtils.getCurrentUserId())
+                    .orderBy(FIELD_TIMESTAMP)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        val list = ArrayList<Job>()
+                        if (task.isSuccessful) for (document in task.result!!) list.add(document.toObject(Job::class.java))
+                        emitter.onSuccess(list)
+                    }
+                    .addOnFailureListener { emitter.onError(it) }
+        }
     }
 
     override fun enableStatusNotification(): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return setStatusNotification(true)
     }
 
     override fun disableStatusNotification(): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return setStatusNotification(false)
     }
+
+    private fun setStatusNotification(isEnable: Boolean): Completable {
+        return Completable.create { emitter ->
+            firestore.collection(DIRECTORY_NOTIFICATION)
+                    .document(FirebaseUtils.getCurrentUserId())
+                    .set(isEnable)
+                    .addOnSuccessListener { emitter.onComplete() }
+                    .addOnFailureListener { emitter.onError(it) }
+        }
+    }
+
 }

@@ -28,6 +28,8 @@ interface FirebaseRepository {
 
     fun saveJob(job: Job): Completable
 
+    fun closeJob(id: String): Completable
+
     fun loadListPublicJob(): Single<List<Job>>
 
     fun loadListUserJob(): Single<List<Job>>
