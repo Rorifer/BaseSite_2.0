@@ -34,6 +34,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     val FIELD_PUBLIC = "isPublic"
     val FIELD_UID = "userId"
     val FIELD_REFERENCE = "reference"
+    val FIELD_TOKEN = "token"
 
     init {
         if (BuildConfig.DEBUG) {
@@ -262,7 +263,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     override fun loadListUserJob(): Single<List<Job>> {
         return Single.create<List<Job>> { emitter ->
             firestore.collection(DIRECTORY_JOB)
-                    .whereEqualTo(FIELD_UID, FirebaseUtils.getCurrentUserId())
+                    .whereEqualTo(FIELD_UID, FirebaseUtils.getIdCurrentUser())
                     .orderBy(FIELD_TIMESTAMP)
                     .get()
                     .addOnCompleteListener { task ->
@@ -275,21 +276,21 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     }
 
     override fun enableStatusNotification(): Completable {
-        return setStatusNotification(true)
+        return FirebaseUtils.getToken()
+                .flatMapCompletable(::setTokenNotification)
     }
 
     override fun disableStatusNotification(): Completable {
-        return setStatusNotification(false)
+        return setTokenNotification(null)
     }
 
-    private fun setStatusNotification(isEnable: Boolean): Completable {
+    private fun setTokenNotification(token: String?): Completable {
         return Completable.create { emitter ->
             firestore.collection(DIRECTORY_NOTIFICATION)
-                    .document(FirebaseUtils.getCurrentUserId())
-                    .set(isEnable)
+                    .document(FirebaseUtils.getIdCurrentUser()!!)
+                    .update(FIELD_TOKEN, token)
                     .addOnSuccessListener { emitter.onComplete() }
                     .addOnFailureListener { emitter.onError(it) }
         }
     }
-
 }

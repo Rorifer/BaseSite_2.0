@@ -42,18 +42,16 @@ object EventFactory {
     }
 
     fun logIn() {
-//        if (STATUS.equals(ADMIN)) return
         Answers.getInstance().logLogin(LoginEvent()
-                //                .putCustomAttribute("UserId", Utils.getCurrentUser().getUid())
-                .putCustomAttribute("UserPhone", FirebaseUtils.getCurrentUser().phoneNumber)
+                .putCustomAttribute("UserId", FirebaseUtils.getIdCurrentUser())
+                .putCustomAttribute("UserPhone", FirebaseUtils.getPhoneCurrentUser())
                 .putSuccess(true))
     }
 
     fun logInWrong(phone: String?) {
-//        if (STATUS.equals(ADMIN)) return
         Answers.getInstance().logLogin(LoginEvent()
+                .putCustomAttribute("UserId", FirebaseUtils.getIdCurrentUser())
                 .putCustomAttribute("UserPhone", phone)
-                //                .putMethod("Digits")
                 .putSuccess(false))
     }
 

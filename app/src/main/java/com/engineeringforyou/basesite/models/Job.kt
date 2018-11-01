@@ -46,7 +46,7 @@ data class Job(
             id = Utils.getRandomId(),
             timestamp = Utils.getCurrentTime(),
             dateCreate = Utils.getCurrentDate(),
-            userId = FirebaseUtils.getCurrentUserId(),
+            userId = FirebaseUtils.getIdCurrentUser()!!,
             userAndroidId = Utils.getAndroidId(context),
             isPublic = true
     )

@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.presentation.job.create.JobCreateActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
-import com.engineeringforyou.basesite.utils.FirebaseUtils;
 import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -72,7 +71,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
     private Button mToPhoneButton;
 //    private Button mSignOutButton;
 
-    public static void start(Activity activity){
+    public static void start(Activity activity) {
         Intent intent = new Intent(activity, PhoneAuthActivity.class);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
@@ -373,7 +372,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
     }
 
     private void userIsLoginned() {
-        FirebaseUtils.updateToken(null);
+//        FirebaseUtils.updateToken(this);
         EventFactory.INSTANCE.logIn();
         Intent intent = new Intent(this, JobCreateActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

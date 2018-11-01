@@ -1,80 +1,49 @@
 package com.engineeringforyou.basesite.utils;
 
+import android.content.Context;
+import android.support.annotation.Nullable;
+
+import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl;
+import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import io.reactivex.Single;
 
 public class FirebaseUtils {
 
-    //TODO Перенести в репозиторий
-    private static final String FIELD_TOKEN = "token";
-    private static final String FIELD_DATE_CREATED = "dateCreate";
-    private static final String DIRECTORY_USER = "users";
-    private static final String DIRECTORY_SETTINGS = "settings";
-    private static final String DOCUMENT_NOTIFICATION = "notification";
-
-
+    @Nullable
     public static FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public static String getCurrentUserPhone() {
-        return FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+    public static String getPhoneCurrentUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        return user == null ? null : user.getPhoneNumber();
     }
 
-    public static String getCurrentUserId() {
+    @Nullable
+    public static String getIdCurrentUser() {
         return FirebaseAuth.getInstance().getUid();
     }
 
-    public static void updateToken(String token) {
-        FirebaseUser currentUser = getCurrentUser();
-        if (currentUser != null && currentUser.getPhoneNumber() != null) {
-
-            if (token == null) token = FirebaseInstanceId.getInstance().getToken();
-
-            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-            Map<String, Object> newToken = new HashMap<>();
-            newToken.put(FIELD_TOKEN, token);
-            newToken.put(FIELD_DATE_CREATED, new Date());
-
-            DocumentReference userDocumentNotif = firestore
-                    .collection(DIRECTORY_USER)
-                    .document(currentUser.getPhoneNumber())
-                    .collection(DIRECTORY_SETTINGS)
-                    .document(DOCUMENT_NOTIFICATION);
-
-            userDocumentNotif.set(newToken);
-        }
+    public static Single<String> getToken() {
+        return Single.create(emitter ->
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnSuccessListener(instanceIdResult -> {
+                            emitter.onSuccess(instanceIdResult.getToken());
+                        })
+                        .addOnFailureListener(emitter::onError)
+        );
     }
 
-
-    public static void deleteToken() {
-        FirebaseUser currentUser = getCurrentUser();
-        if (currentUser != null && currentUser.getPhoneNumber() != null) {
-
-            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-            Map<String, Object> newToken = new HashMap<>();
-            newToken.put(FIELD_TOKEN, null);
-            newToken.put(FIELD_DATE_CREATED, new Date());
-
-            DocumentReference userDocumentNotif = firestore
-                    .collection(DIRECTORY_USER)
-                    .document(currentUser.getPhoneNumber())
-                    .collection(DIRECTORY_SETTINGS)
-                    .document(DOCUMENT_NOTIFICATION);
-
-            userDocumentNotif.set(newToken);
-        }
+    public static void updateToken(Context context) {
+        Boolean isNotificationEnabled = new SettingsRepositoryImpl(context).getStatusNotification();
+        if (isNotificationEnabled) new FirebaseRepositoryImpl().enableStatusNotification();
     }
 
     public static void logout() {
-        FirebaseUtils.deleteToken();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
     }

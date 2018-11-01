@@ -14,7 +14,6 @@ import android.support.v4.app.NotificationCompat;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.presentation.job.list.JobListActivity;
 import com.engineeringforyou.basesite.utils.FirebaseUtils;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -22,17 +21,14 @@ public class PushService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(String var1) {
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
-            FirebaseUtils.updateToken(instanceIdResult.getToken());
-        });
+        FirebaseUtils.updateToken(this);
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
         sendNotification(remoteMessage.getNotification().getBody());
-
     }
+
     private void sendNotification(String messageBody) {
 
         Intent intent = new Intent(this, JobListActivity.class);
@@ -42,7 +38,7 @@ public class PushService extends FirebaseMessagingService {
                 0, intent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
         String channelId = "Уведомления о новой работе";
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
