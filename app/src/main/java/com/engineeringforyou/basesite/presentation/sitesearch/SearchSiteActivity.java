@@ -23,6 +23,7 @@ import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.job.JobMainActivity;
 import com.engineeringforyou.basesite.presentation.message.MessageActivity;
+import com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.presentation.sitelist.SiteListActivity;
 import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
@@ -88,6 +89,9 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
                 case R.id.item_info:
                     mPresenter.showInfo();
                     break;
+                case R.id.item_add_bs:
+                    openAddBs();
+                    break;
                 case R.id.item_job:
                     openWork();
                     break;
@@ -129,6 +133,10 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
             }
         });
+    }
+
+    private void openAddBs() {
+        SiteCreateActivity.startForCreateSite(this, null);
     }
 
     private void initAdMob() {

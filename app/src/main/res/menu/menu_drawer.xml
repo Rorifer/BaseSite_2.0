@@ -11,11 +11,15 @@
             android:title="@string/info" />
 
         <item
+            android:id="@+id/item_add_bs"
+            android:icon="@drawable/ic_add_circle"
+            android:title="@string/activity_draft_title" />
+        <item
             android:id="@+id/item_job"
             android:icon="@drawable/ic_hand_shake"
+            android:title="@string/job"
             android:visible="false"
-            tools:visible="true"
-            android:title="@string/job" />
+            tools:visible="true" />
 
         <item
             android:id="@+id/item_mail"
