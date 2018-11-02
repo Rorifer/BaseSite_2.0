@@ -235,11 +235,23 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
+    override fun editJob(job: Job): Completable {
+        return saveJob(job)
+    }
+
     override fun closeJob(id: String): Completable {
+        return setPublicStatus(id, false)
+    }
+
+    override fun publicJob(id: String): Completable {
+        return setPublicStatus(id, true)
+    }
+
+    private fun setPublicStatus(id: String, isPublic: Boolean): Completable {
         return Completable.create { emitter ->
             firestore.collection(DIRECTORY_JOB)
                     .document(id)
-                    .update(FIELD_PUBLIC, false)
+                    .update(FIELD_PUBLIC, isPublic)
                     .addOnSuccessListener { emitter.onComplete() }
                     .addOnFailureListener { emitter.onError(it) }
         }

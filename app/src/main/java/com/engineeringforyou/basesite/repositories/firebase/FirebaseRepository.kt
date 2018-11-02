@@ -30,6 +30,8 @@ interface FirebaseRepository {
 
     fun closeJob(id: String): Completable
 
+    fun publicJob(id: String): Completable
+
     fun loadListPublicJob(): Single<List<Job>>
 
     fun loadListUserJob(): Single<List<Job>>
@@ -37,4 +39,5 @@ interface FirebaseRepository {
     fun enableStatusNotification(): Completable
 
     fun disableStatusNotification(): Completable
+    fun editJob(job: Job): Completable
 }

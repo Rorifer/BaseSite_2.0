@@ -16,10 +16,13 @@ import io.reactivex.Single
 interface JobInteractor {
     fun getStatusNotification(): Boolean
     fun setStatusNotification(isEnabled: Boolean): Completable
-    fun loadJobList(onlyUserList: Boolean): Single<List<Job>>
+    fun loadJobList(isAdminStatus: Boolean): Single<List<Job>>
     fun getContact(): String
     fun createJob(job: Job): Completable
     fun getLinkSite(operator: Operator, siteUid: String): Single<Site>
+    fun closeJob(id: String): Completable
+    fun publicJob(id: String): Completable
+    fun editJob(job: Job): Completable
 }
 
 class JobInteractorImpl(val context: Context) : JobInteractor {
@@ -37,12 +40,24 @@ class JobInteractorImpl(val context: Context) : JobInteractor {
         return firebase.saveJob(job)
     }
 
+    override fun closeJob(id: String): Completable {
+        return firebase.closeJob(id)
+    }
+
+    override fun publicJob(id: String): Completable {
+        return firebase.publicJob(id)
+    }
+
+    override fun editJob(job: Job): Completable {
+        return firebase.editJob(job)
+    }
+
     override fun getContact(): String {
         return settings.getContact()
     }
 
-    override fun loadJobList(onlyUserList: Boolean): Single<List<Job>> {
-        return if (onlyUserList)
+    override fun loadJobList(isAdminStatus: Boolean): Single<List<Job>> {
+        return if (isAdminStatus)
             firebase.loadListPublicJob()
         else
             firebase.loadListUserJob()

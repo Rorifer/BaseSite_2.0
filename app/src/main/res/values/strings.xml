@@ -159,5 +159,13 @@
     <string name="my_job_list">Мой список работ</string>
     <string name="dialog_site_link_title">Поиск БС</string>
     <string name="dialog_site_list_link_title">Выбирете БС:</string>
+    <string name="close_job">Снять с публикации</string>
+    <string name="job_closed">Работа снята с публикации</string>
+    <string name="error_job_closed">Не удалось снять работу с публикации. Проверьте интернет-соединение</string>
+    <string name="job_public">Опубликовать</string>
+    <string name="job_publiced">Работа опубликована</string>
+    <string name="error_public">Не удалось опубликовать работу. Проверьте интернет-соединение</string>
+    <string name="job_edited">Работа отредактирована</string>
+    <string name="error_job_edited">Не удалось отредактировать работу. Проверьте интернет-соединение</string>
 
 </resources>

@@ -203,6 +203,18 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:text="@string/create_job" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/job_close_button"
+                style="@style/CustomButtonPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/close_job"
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
     </ScrollView>
 

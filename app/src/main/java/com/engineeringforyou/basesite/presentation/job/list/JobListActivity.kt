@@ -11,6 +11,7 @@ import android.view.View.VISIBLE
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.presentation.job.JobMainActivity
+import com.engineeringforyou.basesite.presentation.job.create.JobCreateActivity
 import com.engineeringforyou.basesite.presentation.job.details.JobDetailsActivity
 import kotlinx.android.synthetic.main.activity_job_list.*
 
@@ -26,9 +27,9 @@ class JobListActivity : AppCompatActivity(), JobListView {
     companion object {
         const val SHOW_USER_LIST = "only_user_list"
 
-        fun start(activity: Activity, onlyUserList: Boolean = false) {
+        fun start(activity: Activity, isAdminStatus: Boolean = false) {
             val intent = Intent(activity, JobMainActivity::class.java)
-            intent.putExtra(SHOW_USER_LIST, onlyUserList)
+            intent.putExtra(SHOW_USER_LIST, isAdminStatus)
             activity.startActivity(intent)
             activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out)
         }
@@ -36,25 +37,32 @@ class JobListActivity : AppCompatActivity(), JobListView {
 
     private lateinit var presenter: JobListPresenter
     private lateinit var adapter: JobListAdapter
+    private var isAdminStatus: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_list)
-        val onlyUserList = intent.getBooleanExtra(SHOW_USER_LIST, false)
-        presenter = JobListPresenterImpl(this, this, onlyUserList)
+        isAdminStatus = intent.getBooleanExtra(SHOW_USER_LIST, false)
+        presenter = JobListPresenterImpl(this, this, isAdminStatus)
         initAdapter()
 
         swipe_layout.setOnRefreshListener { presenter.loadJobList() }
     }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.loadJobList()
+    }
+
     private fun initAdapter() {
-        adapter = JobListAdapter(::clickJob)
+        adapter = JobListAdapter(::clickJob, isAdminStatus)
         job_list.layoutManager = LinearLayoutManager(this)
         job_list.adapter = adapter
     }
 
     private fun clickJob(job: Job) {
-        JobDetailsActivity.start(this, job)
+        if (isAdminStatus) JobCreateActivity.start(this, job)
+        else JobDetailsActivity.start(this, job)
     }
 
     override fun showJobList(list: List<Job>) {

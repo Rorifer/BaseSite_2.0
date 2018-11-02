@@ -28,23 +28,29 @@ interface JobCreateView {
     fun openLinkSearch(site: Site?)
     fun setLinkBS(site: Site)
     fun showListLinkSearch(list: List<Site>)
+    fun close()
 }
 
 class JobCreateActivity : AppCompatActivity(), JobCreateView {
 
     companion object {
-        fun start(activity: Activity) {
+        private const val JOB_FOR_EDIT = "job_for_edit"
+
+        fun start(activity: Activity, job: Job? = null) {
             val intent = Intent(activity, JobCreateActivity::class.java)
+            intent.putExtra(JOB_FOR_EDIT, job)
             activity.startActivity(intent)
             activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out)
         }
     }
 
     private lateinit var presenter: JobCreatePresenter
+    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_create)
+        job = intent.getParcelableExtra(JOB_FOR_EDIT)
         presenter = JobCreatePresenterImpl(this, this)
         initView()
     }
@@ -57,8 +63,36 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
         site_operator_spinner.prompt = "Операторы"
         site_operator_spinner.setSelection(-1)
 
+        if (job != null) {
+            presenter.setLinkSite(job!!.linkSiteOperator, job!!.linkSiteUid)
+
+            site_operator_spinner.setSelection(job!!.siteOperator?.ordinal ?: -1)
+            site_number.setText(job!!.siteNumber)
+            site_address.setText(job!!.address)
+            job_name.setText(job!!.name)
+            job_description.setText(job!!.description)
+            job_price.setText(job!!.price)
+            job_contact.setText(job!!.contact)
+            job_create_button.setText(R.string.edit)
+
+            if (job!!.isPublic) {
+                job_close_button.setOnClickListener { presenter.closeJob(job!!.id) }
+            } else {
+                job_close_button.setOnClickListener { presenter.publicJob(job!!.id) }
+                job_close_button.setText(R.string.job_public)
+            }
+            job_close_button.visibility = View.VISIBLE
+        }
+
+        job_create_button.setOnClickListener {
+            if (job == null) {
+                presenter.createJob(obtainJob())
+            } else {
+                presenter.editJob(obtainJob())
+            }
+        }
+
         site_link_button.setOnClickListener { presenter.clickSiteLink() }
-        job_create_button.setOnClickListener { presenter.createJob(obtainJob()) }
     }
 
     private fun obtainJob() = Job(
@@ -132,5 +166,7 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
     override fun showMessage(error: Int) {
         Toast.makeText(this, getString(error), Toast.LENGTH_SHORT).show()
     }
+
+    override fun close() = finish()
 
 }

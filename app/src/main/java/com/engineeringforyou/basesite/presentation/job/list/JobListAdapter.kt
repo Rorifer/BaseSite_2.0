@@ -9,7 +9,7 @@ import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.utils.DateUtils
 import kotlinx.android.synthetic.main.item_job.view.*
 
-class JobListAdapter(val jobClick: (job: Job) -> Unit) : RecyclerView.Adapter<JobListAdapter.ViewHolder>() {
+class JobListAdapter(val jobClick: (job: Job) -> Unit, val isAdminMode: Boolean) : RecyclerView.Adapter<JobListAdapter.ViewHolder>() {
 
     private var mItems = ArrayList<Job>()
 
@@ -35,6 +35,11 @@ class JobListAdapter(val jobClick: (job: Job) -> Unit) : RecyclerView.Adapter<Jo
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(position: Int) {
             val job = mItems[position]
+            if (isAdminMode) {
+                itemView.status_image.visibility = View.VISIBLE
+                itemView.status_image.setImageResource(if (job.isPublic) R.drawable.ic_status_ok else R.drawable.ic_status_stop)
+            } else itemView.status_image.visibility = View.GONE
+
             itemView.job_date.text = DateUtils.parseDate(job.timestamp)
             itemView.job_name.text = job.name
             itemView.operator.text = job.siteOperator?.label
@@ -43,5 +48,4 @@ class JobListAdapter(val jobClick: (job: Job) -> Unit) : RecyclerView.Adapter<Jo
         }
     }
 
-    //TODO Сделать снятие с публикации
 }
