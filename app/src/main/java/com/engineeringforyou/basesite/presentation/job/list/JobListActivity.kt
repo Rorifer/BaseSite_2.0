@@ -13,6 +13,7 @@ import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.presentation.job.JobMainActivity
 import com.engineeringforyou.basesite.presentation.job.create.JobCreateActivity
 import com.engineeringforyou.basesite.presentation.job.details.JobDetailsActivity
+import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_job_list.*
 
 interface JobListView {
@@ -45,6 +46,7 @@ class JobListActivity : AppCompatActivity(), JobListView {
         isAdminStatus = intent.getBooleanExtra(SHOW_USER_LIST, false)
         presenter = JobListPresenterImpl(this, this, isAdminStatus)
         initAdapter()
+        initAdMob()
 
         swipe_layout.setOnRefreshListener { presenter.loadJobList() }
     }
@@ -52,6 +54,15 @@ class JobListActivity : AppCompatActivity(), JobListView {
     override fun onResume() {
         super.onResume()
         presenter.loadJobList()
+        ad_mob_job.resume()
+    }
+
+    private fun initAdMob() {
+        val adRequest = AdRequest.Builder()
+                .addTestDevice(getString(R.string.admob_test_device))
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build()
+        ad_mob_job.loadAd(adRequest)
     }
 
     private fun initAdapter() {
@@ -85,9 +96,18 @@ class JobListActivity : AppCompatActivity(), JobListView {
         swipe_layout.isRefreshing = false
     }
 
+    override fun onPause() {
+        ad_mob_job.pause()
+        super.onPause()
+    }
     override fun onStop() {
         super.onStop()
         presenter.clear()
+    }
+
+    override fun onDestroy() {
+        ad_mob_job.destroy()
+        super.onDestroy()
     }
 
 }

@@ -56,6 +56,7 @@
     <string name="admob_test_device">C226C5E27568110562C00F33D0424CBE</string>
     <string name="banner_ad_unit_id">ca-app-pub-3809842406726636/2718362688</string>
     <string name="banner_ad_unit_id_2">ca-app-pub-3809842406726636/6757680042</string>
+    <string name="banner_ad_unit_id_3">ca-app-pub-3809842406726636/2241687286</string>
     <string name="interstitial_ad_unit_id_1">ca-app-pub-3809842406726636/9147896086</string>
     <string name="interstitial_test_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
     <string name="rewarded_test_ad_unit_id">ca-app-pub-3940256099942544/5224354917</string>
