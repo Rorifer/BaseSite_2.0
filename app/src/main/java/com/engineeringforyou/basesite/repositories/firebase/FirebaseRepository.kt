@@ -36,8 +36,9 @@ interface FirebaseRepository {
 
     fun loadListUserJob(): Single<List<Job>>
 
-    fun enableStatusNotification(): Completable
+    fun enableStatusNotification(userAndroidId: String): Completable
 
-    fun disableStatusNotification(): Completable
+    fun disableStatusNotification(userAndroidId: String): Completable
+
     fun editJob(job: Job): Completable
 }

@@ -31,7 +31,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     val FIELD_SITE_ID = "siteId"
     val FIELD_OPERATOR_ID = "operatorId"
     val FIELD_TIMESTAMP = "timestamp"
-    val FIELD_PUBLIC = "isPublic"
+    val FIELD_PUBLIC = "public"
     val FIELD_UID = "userId"
     val FIELD_REFERENCE = "reference"
     val FIELD_TOKEN = "token"
@@ -275,7 +275,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
     override fun loadListUserJob(): Single<List<Job>> {
         return Single.create<List<Job>> { emitter ->
             firestore.collection(DIRECTORY_JOB)
-                    .whereEqualTo(FIELD_UID, FirebaseUtils.getIdCurrentUser())
+                    .whereEqualTo(FIELD_UID, FirebaseUtils.getIdCurrentUser()!!)
                     .orderBy(FIELD_TIMESTAMP)
                     .get()
                     .addOnCompleteListener { task ->
@@ -287,20 +287,20 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override fun enableStatusNotification(): Completable {
+    override fun enableStatusNotification(userAndroidId: String): Completable {
         return FirebaseUtils.getToken()
-                .flatMapCompletable(::setTokenNotification)
+                .flatMapCompletable { setTokenNotification(userAndroidId, it) }
     }
 
-    override fun disableStatusNotification(): Completable {
-        return setTokenNotification(null)
+    override fun disableStatusNotification(userAndroidId: String): Completable {
+        return setTokenNotification(userAndroidId, null)
     }
 
-    private fun setTokenNotification(token: String?): Completable {
+    private fun setTokenNotification(userAndroidId: String, token: String?): Completable {
         return Completable.create { emitter ->
             firestore.collection(DIRECTORY_NOTIFICATION)
-                    .document(FirebaseUtils.getIdCurrentUser()!!)
-                    .update(FIELD_TOKEN, token)
+                    .document(userAndroidId)
+                    .set(HashMap<String, Any>(1).apply { put(FIELD_TOKEN, token ?: "") })
                     .addOnSuccessListener { emitter.onComplete() }
                     .addOnFailureListener { emitter.onError(it) }
         }

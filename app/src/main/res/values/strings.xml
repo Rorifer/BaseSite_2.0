@@ -65,6 +65,7 @@
     <!--<string name="banner_ad_unit_id">ca-app-pub-3809842406726636~9510522814</string>-->
 
     <string name="error_search_empty">Поле поиска не заполнено</string>
+    <string name="error_operator_index">Оператор не выбран</string>
     <string name="error">Внутренняя ошибка</string>
     <string name="error_no_succes">Совпадений не найдено</string>
     <string name="error_many_success">Слишком много совпадений</string>
@@ -136,7 +137,7 @@
     <string name="search_bs">Искать БС</string>
     <string name="chose_photo_source">Выберите источник:</string>
     <string name="photo">Фото:</string>
-    <string name="find_job">Найти работу на БС</string>
+    <string name="job_list">Список работ на БС</string>
     <string name="create_job_label">Разместить работу на БС</string>
     <string name="notification_job">Уведомлять о появлении новой работы</string>
     <string name="error_switch_notification">Не удалось переключить\nПроверьте интенет-соединение</string>

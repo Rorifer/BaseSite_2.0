@@ -7,22 +7,23 @@ import com.engineeringforyou.basesite.utils.FirebaseUtils
 import com.engineeringforyou.basesite.utils.Utils
 
 data class Job(
-        var linkSiteUid: String?,
-        var linkSiteOperator: Operator?,
-        val siteOperator: Operator?,
-        val siteNumber: String,
-        val address: String,
-        val name: String,
-        val description: String,
-        val price: String,
-        val contact: String,
-        val id: String,
-        val timestamp: Long,
-        val dateCreate: String,
-        val userId: String,
-        val userAndroidId: String,
-        val isPublic: Boolean
+        var linkSiteUid: String? = null,
+        var linkSiteOperator: Operator? = null,
+        val siteOperator: Operator? = null,
+        val siteNumber: String = "",
+        val address: String = "",
+        val name: String = "",
+        val description: String = "",
+        val price: String = "",
+        val contact: String = "",
+        var id: String = "",
+        var timestamp: Long = 0L,
+        var dateCreate: String = "",
+        val userId: String = "",
+        val userAndroidId: String = "",
+        val public: Boolean = false
 ) : Parcelable {
+
     constructor(context: Context,
                 linkSiteUid: String? = null,
                 linkSiteOperator: Operator? = null,
@@ -48,8 +49,15 @@ data class Job(
             dateCreate = Utils.getCurrentDate(),
             userId = FirebaseUtils.getIdCurrentUser()!!,
             userAndroidId = Utils.getAndroidId(context),
-            isPublic = true
+            public = true
     )
+
+    fun setupForEdit(id: String): Job{
+        this.id = id
+        this.timestamp = Utils.getCurrentTime()
+        this.dateCreate = Utils.getCurrentDate()
+        return this
+    }
 
     fun setLinkSite(site: Site?) {
         linkSiteUid = site?.uid
@@ -91,7 +99,7 @@ data class Job(
         writeString(dateCreate)
         writeString(userId)
         writeString(userAndroidId)
-        writeInt((if (isPublic) 1 else 0))
+        writeInt((if (public) 1 else 0))
     }
 
     companion object {

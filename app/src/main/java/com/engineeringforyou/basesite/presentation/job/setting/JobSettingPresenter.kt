@@ -26,10 +26,10 @@ class JobSettingsPresenterImpl(val view: JobSettingsView, val context: Context) 
 
     override fun switchNotification(checked: Boolean) {
         disposable.add(interactor.setStatusNotification(checked)
-                .doOnSubscribe { view.showProgress() }
-                .doOnEvent { view.hideProgress() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { view.showProgress() }
+                .doOnEvent { view.hideProgress() }
                 .subscribe(
                         { view.setCheckedNotificationSwitch(checked) },
                         { t ->

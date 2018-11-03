@@ -11,6 +11,7 @@ import com.engineeringforyou.basesite.domain.sitesearch.SearchSiteInteractor
 import com.engineeringforyou.basesite.domain.sitesearch.SearchSiteInteractorImpl
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
+import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenterImpl.PATTERN_NUMBER_SITE
 import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -34,9 +35,9 @@ class SiteLinkDialog : DialogFragment() {
     }
 
     private val disposable = CompositeDisposable()
-    private val mInteractor: SearchSiteInteractor = SearchSiteInteractorImpl(activity)
+    private lateinit var mInteractor: SearchSiteInteractor
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.dialog_site_link, container)
         dialog.setTitle(R.string.dialog_site_link_title)
 
@@ -45,20 +46,33 @@ class SiteLinkDialog : DialogFragment() {
             v.site_search.setText(site.number)
             v.operators_group.check(v.operators_group.getChildAt(site.operator!!.ordinal).id)
         }
+
+        v.button_search.setOnClickListener { searchSite() }
+
         return v
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mInteractor = SearchSiteInteractorImpl(activity)
         retainInstance = true
-        button_search.setOnClickListener { searchSite() }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private fun searchSite() {
         val searchText = site_search.text.toString().trim()
+        val operatorIndexed = getOperatorIndex()
 
         if (searchText.isEmpty()) {
             showError(R.string.error_search_empty)
+            return
+        }
+        if (operatorIndexed == -1) {
+            showError(R.string.error_operator_index)
             return
         }
 
@@ -66,10 +80,10 @@ class SiteLinkDialog : DialogFragment() {
         showProgress()
         disposable.clear()
 
-        val operator = Operator.values()[getOperatorIndex()]
+        val operator = Operator.values()[operatorIndexed]
 
         val search =
-                if (Pattern.matches("[0-9-]*", searchText))
+                if (Pattern.matches(PATTERN_NUMBER_SITE, searchText))
                     mInteractor.searchSitesByNumber(searchText, operator)
                 else mInteractor.searchSitesByAddress(searchText, operator)
         disposable.add(search
@@ -104,7 +118,7 @@ class SiteLinkDialog : DialogFragment() {
     }
 
     private fun getOperatorIndex(): Int {
-        return operators_group.indexOfChild(activity.findViewById<View>(operators_group.checkedRadioButtonId))
+        return operators_group.indexOfChild(operators_group.findViewById<View>(operators_group.checkedRadioButtonId))
     }
 
     private fun showError(@StringRes textRes: Int) {

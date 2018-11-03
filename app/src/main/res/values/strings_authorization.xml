@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="authorization_title">Авторизация</string>
     <string name="hint_user_id">ID пользователя</string>
     <string name="get_custom_token">Получите токен</string>
     <string name="sign_in">Логин</string>

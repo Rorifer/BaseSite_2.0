@@ -16,6 +16,7 @@ import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.presentation.job.list.JobListActivity
 import com.engineeringforyou.basesite.utils.FirebaseUtils
+import com.engineeringforyou.basesite.utils.KeyBoardUtils
 import kotlinx.android.synthetic.main.activity_job_create.*
 import kotlinx.android.synthetic.main.view_progress.*
 
@@ -23,7 +24,7 @@ interface JobCreateView {
     fun showProgress()
     fun hideProgress()
     fun showMessage(@StringRes error: Int)
-    fun setField(site: Site)
+    fun setFieldLinkSite(site: Site)
     fun setContact(contact: String)
     fun openLinkSearch(site: Site?)
     fun setLinkBS(site: Site)
@@ -50,9 +51,16 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_create)
-        job = intent.getParcelableExtra(JOB_FOR_EDIT)
         presenter = JobCreatePresenterImpl(this, this)
+        job = intent.getParcelableExtra(JOB_FOR_EDIT)
         initView()
+        initToolbar()
+    }
+
+    private fun initToolbar() {
+        val actionBar = supportActionBar
+        actionBar?.setDisplayShowHomeEnabled(false)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initView() {
@@ -66,7 +74,8 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
         if (job != null) {
             presenter.setLinkSite(job!!.linkSiteOperator, job!!.linkSiteUid)
 
-            site_operator_spinner.setSelection(job!!.siteOperator?.ordinal ?: -1)
+            val operatorIndex = if (job!!.siteOperator == null) -1 else job!!.siteOperator!!.ordinal + 1
+            site_operator_spinner.setSelection(operatorIndex)
             site_number.setText(job!!.siteNumber)
             site_address.setText(job!!.address)
             job_name.setText(job!!.name)
@@ -75,21 +84,19 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
             job_contact.setText(job!!.contact)
             job_create_button.setText(R.string.edit)
 
-            if (job!!.isPublic) {
-                job_close_button.setOnClickListener { presenter.closeJob(job!!.id) }
-            } else {
-                job_close_button.setOnClickListener { presenter.publicJob(job!!.id) }
-                job_close_button.setText(R.string.job_public)
-            }
             job_close_button.visibility = View.VISIBLE
+            if (job!!.public.not()) job_close_button.setText(R.string.job_public)
+            job_close_button.setOnClickListener {
+                KeyBoardUtils.hideKeyboard(this, currentFocus)
+                if (job!!.public) presenter.closeJob(job!!.id)
+                else presenter.publicJob(job!!.id)
+            }
         }
 
         job_create_button.setOnClickListener {
-            if (job == null) {
-                presenter.createJob(obtainJob())
-            } else {
-                presenter.editJob(obtainJob())
-            }
+            KeyBoardUtils.hideKeyboard(this, currentFocus)
+            if (job == null) presenter.createJob(obtainJob())
+            else presenter.editJob(obtainJob().setupForEdit(job!!.id))
         }
 
         site_link_button.setOnClickListener { presenter.clickSiteLink() }
@@ -108,7 +115,7 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
 
     private fun obtainOperator(): Operator? {
         val selectedPosition = site_operator_spinner.selectedItemPosition
-        return if (selectedPosition < 0) null else Operator.values()[selectedPosition]
+        return if (selectedPosition < 1) null else Operator.values()[selectedPosition - 1]
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -126,6 +133,10 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
                 logout()
                 true
             }
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -135,8 +146,8 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
         finish()
     }
 
-    override fun setField(site: Site) {
-        site_operator_spinner.setSelection(site.operator!!.ordinal)
+    override fun setFieldLinkSite(site: Site) {
+        site_operator_spinner.setSelection(site.operator!!.ordinal + 1)
         site_number.setText(site.number)
         site_address.setText(site.address)
     }

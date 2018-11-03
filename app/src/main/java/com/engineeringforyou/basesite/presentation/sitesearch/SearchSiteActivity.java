@@ -83,7 +83,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     private void initDrawer() {
         mNavigationView.setNavigationItemSelectedListener(item -> {
-            item.setChecked(true);
+//            item.setChecked(false);
             mDrawerLayout.closeDrawers();
             switch (item.getItemId()) {
                 case R.id.item_info:

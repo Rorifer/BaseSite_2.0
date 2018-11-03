@@ -91,8 +91,7 @@
                     android:id="@+id/site_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
                     android:maxLength="150"
                     android:textSize="16sp"
                     android:theme="@style/LinePrimary" />
@@ -119,6 +118,7 @@
                     android:hint="@string/hint_short_name"
                     android:inputType="text"
                     android:maxLength="40"
+                    android:lines="3"
                     android:textSize="16sp"
                     android:theme="@style/LinePrimary" />
             </LinearLayout>
@@ -141,7 +141,6 @@
                     android:id="@+id/job_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
                     android:inputType="textMultiLine"
                     android:maxLength="500"
                     android:textSize="16sp"
@@ -165,7 +164,6 @@
                     android:id="@+id/job_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
                     android:inputType="textMultiLine"
                     android:maxLength="250"
                     android:textSize="16sp"
@@ -189,7 +187,6 @@
                     android:id="@+id/job_contact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
                     android:inputType="textMultiLine"
                     android:maxLength="250"
                     android:textSize="16sp"

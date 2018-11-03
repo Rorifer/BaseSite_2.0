@@ -20,15 +20,18 @@ class JobListPresenterImpl(val view: JobListView, val context: Context, private 
     private val disposable = CompositeDisposable()
 
     override fun loadJobList() {
+        disposable.clear()
         disposable.add(interactor.loadJobList(isAdminStatus)
-                .doOnSubscribe { view.showRefresh() }
-                .doOnEvent { _, _ -> view.hideRefresh() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { view.showRefresh() }
+                .doOnEvent { _, _ -> view.hideRefresh() }
                 .subscribe(
                         { list ->
-                            if (list.isEmpty()) view.showMessage(R.string.empty_job_notification)
-                            else view.showJobList(list)
+                            if (list.isEmpty())
+                                view.showMessage(R.string.empty_job_notification)
+                            else
+                                view.showJobList(list)
                         },
                         { t ->
                             view.showMessage(R.string.error_load_job_notification)

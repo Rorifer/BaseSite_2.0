@@ -126,8 +126,8 @@ public class SiteDetailsPresenterImpl implements SiteDetailsPresenter {
     private void loadSavedCommentsSuccess(List<Comment> list) {
         if (mView != null && !list.isEmpty()) {
             mView.showAdapter(list);
-            loadPhotos();
         }
+        loadPhotos();
     }
 
     private void loadCommentsError(Throwable throwable) {

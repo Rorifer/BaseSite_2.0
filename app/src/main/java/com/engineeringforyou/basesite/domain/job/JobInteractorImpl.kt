@@ -10,6 +10,7 @@ import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
+import com.engineeringforyou.basesite.utils.Utils
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -58,16 +59,16 @@ class JobInteractorImpl(val context: Context) : JobInteractor {
 
     override fun loadJobList(isAdminStatus: Boolean): Single<List<Job>> {
         return if (isAdminStatus)
-            firebase.loadListPublicJob()
-        else
             firebase.loadListUserJob()
+        else
+            firebase.loadListPublicJob()
     }
 
     override fun setStatusNotification(isEnabled: Boolean): Completable {
         val switch = if (isEnabled)
-            firebase.enableStatusNotification()
+            firebase.enableStatusNotification(Utils.getAndroidId(context))
         else
-            firebase.disableStatusNotification()
+            firebase.disableStatusNotification(Utils.getAndroidId(context))
         return switch
                 .doOnComplete { settings.saveStatusNotification(isEnabled) }
     }

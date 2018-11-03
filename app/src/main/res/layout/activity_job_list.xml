@@ -9,7 +9,7 @@
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/ad_mob_details"
+        android:layout_above="@id/ad_mob_job"
         android:isScrollContainer="true">
 
         <FrameLayout
@@ -19,7 +19,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/job_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:scrollbars="vertical"
                 tools:itemCount="3"
                 tools:layoutManager="LinearLayoutManager"
@@ -31,7 +31,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="16dp"
                 android:gravity="center"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:visibility="gone"
                 tools:text="На данный момент\nнет предложений\nо работе на БС"
                 tools:visibility="visible" />

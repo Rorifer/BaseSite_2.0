@@ -22,6 +22,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class SearchSitePresenterImpl implements SearchSitePresenter {
 
+    public static String PATTERN_NUMBER_SITE = "[0-9MmSsOo-]*";
+
     private SearchSiteView mView;
     private CompositeDisposable mDisposable = new CompositeDisposable();
     private CompositeDisposable mDisposableView = new CompositeDisposable();
@@ -84,7 +86,7 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
 
         mView.showProgress();
         mDisposable.clear();
-        if (Pattern.matches("[0-9-]*", search)) {
+        if (Pattern.matches(PATTERN_NUMBER_SITE, search)) {
 
             mDisposable.add(mInteractor.searchSitesByNumber(search, null)
                     .subscribeOn(Schedulers.io())
@@ -143,14 +145,14 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         mView.openMessageForDeveloper();
     }
 
-    private void infoSuccess(String informationText){
+    private void infoSuccess(String informationText) {
         if (mView != null) {
             mView.showInformation(informationText);
             mView.hideProgress();
         }
     }
 
-    private void infoError(Throwable throwable){
+    private void infoError(Throwable throwable) {
         EventFactory.INSTANCE.exception(throwable);
         if (mView != null) {
             mView.hideProgress();

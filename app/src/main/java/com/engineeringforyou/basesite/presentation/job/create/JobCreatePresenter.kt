@@ -40,6 +40,7 @@ class JobCreatePresenterImpl(val view: JobCreateView?, val context: Context) : J
 
     override fun setLinkSite(site: Site) {
         this.linkSite = site
+        view?.setFieldLinkSite(site)
     }
 
     override fun setLinkSite(linkSiteOperator: Operator?, linkSiteUid: String?) {
@@ -119,10 +120,12 @@ class JobCreatePresenterImpl(val view: JobCreateView?, val context: Context) : J
     }
 
     private fun Completable.loadInBackground(): Completable {
-        return this.doOnSubscribe { view?.showProgress() }
+        return this
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnEvent { view?.close() }
+                .doOnSubscribe { view?.showProgress() }
+                .doOnEvent { view?.hideProgress() }
+                .doOnComplete { view?.close() }
     }
 
     override fun clear() {

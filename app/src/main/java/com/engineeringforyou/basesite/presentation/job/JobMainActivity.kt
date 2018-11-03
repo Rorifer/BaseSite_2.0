@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.engineeringforyou.basesite.R
@@ -32,6 +33,7 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_main)
         presenter = JobSettingsPresenterImpl(this, this)
+        initToolbar()
 
         find_job.setOnClickListener { JobListActivity.start(this) }
         post_job.setOnClickListener { PhoneAuthActivity.start(this) }
@@ -40,14 +42,25 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
         }
     }
 
+    private fun initToolbar() {
+        val actionBar = supportActionBar
+        actionBar?.setDisplayShowHomeEnabled(false)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
     override fun onStart() {
         super.onStart()
         presenter.checkState()
     }
 
-    override fun onStop() {
-        super.onStop()
-        presenter.clear()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> false
+        }
     }
 
     override fun showProgress() {
@@ -64,6 +77,11 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
 
     override fun showError(error: Int) {
         Toast.makeText(this, getString(error), Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.clear()
     }
 
 }

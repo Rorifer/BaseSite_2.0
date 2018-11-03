@@ -37,13 +37,13 @@ class JobListAdapter(val jobClick: (job: Job) -> Unit, val isAdminMode: Boolean)
             val job = mItems[position]
             if (isAdminMode) {
                 itemView.status_image.visibility = View.VISIBLE
-                itemView.status_image.setImageResource(if (job.isPublic) R.drawable.ic_status_ok else R.drawable.ic_status_stop)
+                itemView.status_image.setImageResource(if (job.public) R.drawable.ic_status_ok else R.drawable.ic_status_stop)
             } else itemView.status_image.visibility = View.GONE
 
             itemView.job_date.text = DateUtils.parseDate(job.timestamp)
             itemView.job_name.text = job.name
             itemView.operator.text = job.siteOperator?.label
-            itemView.site_number.text = job.siteNumber
+            itemView.site_number.text = (if (job.siteNumber.isEmpty()) "" else "БС ${job.siteNumber}")
             itemView.setOnClickListener { jobClick(job) }
         }
     }

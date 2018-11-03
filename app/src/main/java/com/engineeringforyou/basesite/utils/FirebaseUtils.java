@@ -40,7 +40,7 @@ public class FirebaseUtils {
 
     public static void updateToken(Context context) {
         Boolean isNotificationEnabled = new SettingsRepositoryImpl(context).getStatusNotification();
-        if (isNotificationEnabled) new FirebaseRepositoryImpl().enableStatusNotification();
+        if (isNotificationEnabled) new FirebaseRepositoryImpl().enableStatusNotification(Utils.INSTANCE.getAndroidId(context));
     }
 
     public static void logout() {

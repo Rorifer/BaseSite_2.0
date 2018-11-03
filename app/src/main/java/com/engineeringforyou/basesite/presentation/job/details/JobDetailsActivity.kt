@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.job.JobInteractorImpl
 import com.engineeringforyou.basesite.models.Job
@@ -30,6 +31,23 @@ class JobDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_job_details)
         val job: Job? = intent.getParcelableExtra(JOB)
         setupFields(job)
+        initToolbar()
+    }
+
+    private fun initToolbar() {
+        val actionBar = supportActionBar
+        actionBar?.setDisplayShowHomeEnabled(false)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> false
+        }
     }
 
     @SuppressLint("CheckResult")
@@ -37,12 +55,12 @@ class JobDetailsActivity : AppCompatActivity() {
         if (job == null) return
 
         site_operator.text = job.siteOperator?.label
-        site_number.text = job.siteNumber
-        site_address.text = job.address
-        job_name.text = job.name
-        job_description.text = job.description
-        job_price.text = job.price
-        job_contact.text = job.contact
+        site_number.text = setValueOrEmpty(job.siteNumber)
+        site_address.text = setValueOrEmpty(job.address)
+        job_name.text = setValueOrEmpty(job.name)
+        job_description.text = setValueOrEmpty(job.description)
+        job_price.text = setValueOrEmpty(job.price)
+        job_contact.text = setValueOrEmpty(job.contact)
 
         site_link_button.isEnabled = false
         if (job.linkSiteOperator != null && job.linkSiteUid != null) {
@@ -52,5 +70,9 @@ class JobDetailsActivity : AppCompatActivity() {
                         site_link_button.setOnClickListener { SiteDetailsActivity.start(this, site) }
                     }, { EventFactory.exception(it) })
         }
+    }
+
+    private fun setValueOrEmpty(value : String): String{
+        return if (value.isEmpty()) "---" else value
     }
 }
