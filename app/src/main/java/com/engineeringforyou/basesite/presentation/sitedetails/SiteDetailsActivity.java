@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
 import com.engineeringforyou.basesite.BuildConfig;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Comment;
@@ -424,14 +423,15 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
             if (mUri != null) {
                 Glide.with(this)
                         .load(mUri)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .dontTransform()
                         .into(image);
             }
 
-            image.setOnClickListener(v -> {
+            image.setOnLongClickListener(v -> {
                         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
                         ((SiteDetailsActivity) getActivity()).cancelShowPhoto();
+                        return true;
                     }
             );
             return rootView;
