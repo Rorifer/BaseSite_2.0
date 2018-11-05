@@ -44,6 +44,7 @@ class JobListActivity : AppCompatActivity(), JobListView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_job_list)
         isAdminStatus = intent.getBooleanExtra(SHOW_USER_LIST, false)
+        if (isAdminStatus) setTitle(R.string.my_job_list)
         presenter = JobListPresenterImpl(this, this, isAdminStatus)
         initAdapter()
         initAdMob()
