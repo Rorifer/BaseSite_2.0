@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
@@ -14,8 +13,6 @@ import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
-import com.engineeringforyou.basesite.presentation.job.list.JobListActivity
-import com.engineeringforyou.basesite.utils.FirebaseUtils
 import com.engineeringforyou.basesite.utils.KeyBoardUtils
 import kotlinx.android.synthetic.main.activity_job_create.*
 import kotlinx.android.synthetic.main.view_progress.*
@@ -118,32 +115,14 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
         return if (selectedPosition < 1) null else Operator.values()[selectedPosition - 1]
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_job_create, menu)
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
-            R.id.menu_job_list -> {
-                JobListActivity.start(this, true)
-                true
-            }
-            R.id.menu_logout -> {
-                logout()
-                true
-            }
             android.R.id.home -> {
                 onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun logout() {
-        FirebaseUtils.logout()
-        finish()
     }
 
     override fun setFieldLinkSite(site: Site) {

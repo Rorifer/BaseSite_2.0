@@ -17,6 +17,8 @@ import com.engineeringforyou.basesite.utils.FirebaseUtils;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Map;
+
 public class PushService extends FirebaseMessagingService {
 
     @Override
@@ -26,10 +28,10 @@ public class PushService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        sendNotification(remoteMessage.getNotification().getBody());
+        sendNotification(remoteMessage.getData());
     }
 
-    private void sendNotification(String messageBody) {
+    private void sendNotification(Map<String, String> messageData) {
 
         Intent intent = new Intent(this, JobListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -44,7 +46,7 @@ public class PushService extends FirebaseMessagingService {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher))
                 .setContentTitle(this.getString(R.string.app_name))
-                .setContentText(messageBody)
+                .setContentText(messageData.get("body"))
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(contentIntent);
@@ -52,7 +54,6 @@ public class PushService extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Оповещение о новой работе",

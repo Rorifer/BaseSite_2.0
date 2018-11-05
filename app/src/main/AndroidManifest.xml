@@ -53,19 +53,23 @@
         <activity
             android:name=".presentation.message.MessageActivity"
             android:label="@string/message_for_developer" />
-        <activity android:name=".presentation.job.JobMainActivity"
+        <activity
+            android:name=".presentation.job.JobMainActivity"
             android:label="@string/job" />
-        <activity android:name=".presentation.job.list.JobListActivity"
+        <activity
+            android:name=".presentation.job.list.JobListActivity"
             android:label="@string/job_list" />
-        <activity android:name=".presentation.job.create.JobCreateActivity"
-            android:label="@string/create_job_label"/>
-        <activity android:name=".presentation.job.details.JobDetailsActivity"
-            android:label="@string/job_details"/>
-        <activity android:name=".authorization.PhoneAuthActivity"
-            android:label="@string/authorization_title"/>
+        <activity
+            android:name=".presentation.job.create.JobCreateActivity"
+            android:label="@string/create_job_label" />
+        <activity
+            android:name=".presentation.job.details.JobDetailsActivity"
+            android:label="@string/job_details" />
+        <activity
+            android:name=".authorization.PhoneAuthActivity"
+            android:label="@string/authorization_title" />
 
         <service android:name=".notification.PushService"
-            android:permission=""
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

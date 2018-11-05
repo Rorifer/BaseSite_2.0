@@ -13,6 +13,7 @@ import com.engineeringforyou.basesite.presentation.job.list.JobListActivity
 import com.engineeringforyou.basesite.presentation.job.setting.JobSettingsPresenter
 import com.engineeringforyou.basesite.presentation.job.setting.JobSettingsPresenterImpl
 import com.engineeringforyou.basesite.presentation.job.setting.JobSettingsView
+import com.engineeringforyou.basesite.utils.FirebaseUtils
 import kotlinx.android.synthetic.main.activity_job_main.*
 import kotlinx.android.synthetic.main.view_progress.*
 
@@ -37,9 +38,20 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
 
         find_job.setOnClickListener { JobListActivity.start(this) }
         post_job.setOnClickListener { PhoneAuthActivity.start(this) }
+        user_job_list.setOnClickListener { openAdminJobList() }
+        logout.setOnClickListener { logout() }
         notification_switch.setOnCheckedChangeListener { _, isChecked ->
             presenter.switchNotification(isChecked)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkAdminStatus()
+    }
+
+    private fun checkAdminStatus() {
+        admin_layout.visibility = if (FirebaseUtils.getIdCurrentUser() != null) View.VISIBLE else View.GONE
     }
 
     private fun initToolbar() {
@@ -61,6 +73,15 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
             }
             else -> false
         }
+    }
+
+    private fun logout() {
+        FirebaseUtils.logout()
+        checkAdminStatus()
+    }
+
+    private fun openAdminJobList() {
+        JobListActivity.start(this, true)
     }
 
     override fun showProgress() {

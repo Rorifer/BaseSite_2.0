@@ -11,6 +11,7 @@ import com.engineeringforyou.basesite.utils.Utils
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Transaction
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -261,7 +262,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         return Single.create<List<Job>> { emitter ->
             firestore.collection(DIRECTORY_JOB)
                     .whereEqualTo(FIELD_PUBLIC, true)
-                    .orderBy(FIELD_TIMESTAMP)
+                    .orderBy(FIELD_TIMESTAMP, Query.Direction.DESCENDING)
                     .get()
                     .addOnCompleteListener { task ->
                         val list = ArrayList<Job>()
@@ -276,7 +277,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         return Single.create<List<Job>> { emitter ->
             firestore.collection(DIRECTORY_JOB)
                     .whereEqualTo(FIELD_UID, FirebaseUtils.getIdCurrentUser()!!)
-                    .orderBy(FIELD_TIMESTAMP)
+                    .orderBy(FIELD_TIMESTAMP, Query.Direction.DESCENDING)
                     .get()
                     .addOnCompleteListener { task ->
                         val list = ArrayList<Job>()

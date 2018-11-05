@@ -60,8 +60,8 @@ class JobListActivity : AppCompatActivity(), JobListView {
 
     private fun initToolbar() {
         val actionBar = supportActionBar
-            actionBar?.setDisplayShowHomeEnabled(false)
-            actionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setDisplayShowHomeEnabled(false)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -117,6 +117,7 @@ class JobListActivity : AppCompatActivity(), JobListView {
         ad_mob_job.pause()
         super.onPause()
     }
+
     override fun onStop() {
         super.onStop()
         presenter.clear()

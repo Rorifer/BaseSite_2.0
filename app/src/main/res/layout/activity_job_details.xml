@@ -86,7 +86,6 @@
                 android:id="@+id/site_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -107,8 +106,6 @@
                 android:id="@+id/job_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:maxLength="40"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -130,7 +127,6 @@
                 android:id="@+id/job_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -151,7 +147,6 @@
                 android:id="@+id/job_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -172,7 +167,6 @@
                 android:id="@+id/job_contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:textSize="16sp" />
         </LinearLayout>
 
