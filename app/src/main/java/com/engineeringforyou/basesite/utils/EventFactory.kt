@@ -3,7 +3,9 @@ package com.engineeringforyou.basesite.utils
 import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
 import com.crashlytics.android.answers.LoginEvent
+import com.engineeringforyou.basesite.models.Job
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -53,6 +55,13 @@ object EventFactory {
                 .putCustomAttribute("UserId", FirebaseUtils.getIdCurrentUser())
                 .putCustomAttribute("UserPhone", phone)
                 .putSuccess(false))
+    }
+
+    fun openJob(job: Job) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentName(job.name)
+                .putContentType("JobDetails")
+                .putContentId(job.id))
     }
 
 }

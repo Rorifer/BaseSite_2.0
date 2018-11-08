@@ -19,6 +19,7 @@ class JobDetailsActivity : AppCompatActivity() {
         private const val JOB = "job"
 
         fun start(activity: Activity, job: Job) {
+            EventFactory.openJob(job)
             val intent = Intent(activity, JobDetailsActivity::class.java)
             intent.putExtra(JOB, job)
             activity.startActivity(intent)
