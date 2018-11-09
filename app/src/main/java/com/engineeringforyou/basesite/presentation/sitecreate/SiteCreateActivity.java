@@ -354,7 +354,7 @@ public class SiteCreateActivity extends AppCompatActivity implements SiteCreateV
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "BS_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-
+        new File(storageDir, "DemoPicture.jpg");//Защита от того, что ExternalStorage еще не существует  (Error open failed: ENOENT (No such file or directory))
         File image = File.createTempFile(
                 imageFileName,  /* префикс */
                 ".jpg",         /* расширение */

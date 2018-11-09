@@ -42,6 +42,7 @@ import com.engineeringforyou.basesite.presentation.sitedetails.views.CommentsAda
 import com.engineeringforyou.basesite.presentation.sitedetails.views.PhotoDetailsAdapter;
 import com.engineeringforyou.basesite.presentation.sitedetails.views.SiteDetailsView;
 import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
+import com.engineeringforyou.basesite.presentation.streetview.StreetViewActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.engineeringforyou.basesite.utils.Utils;
@@ -49,6 +50,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -325,6 +327,11 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
         } catch (Exception e) {
             Toast.makeText(this, "Не удалось запустить навигатор", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @OnClick(R.id.panorama_button)
+    public void clickPanorama() {
+        StreetViewActivity.Companion.start(this, new LatLng(mSite.getLatitude(), mSite.getLongitude()));
     }
 
     @OnClick(R.id.comment_user_button)

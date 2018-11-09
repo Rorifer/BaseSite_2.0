@@ -71,7 +71,7 @@ class JobListActivity : AppCompatActivity(), JobListView {
                 onBackPressed()
                 true
             }
-            else -> false
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

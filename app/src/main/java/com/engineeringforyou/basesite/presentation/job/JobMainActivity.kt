@@ -71,7 +71,7 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
                 onBackPressed()
                 true
             }
-            else -> false
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

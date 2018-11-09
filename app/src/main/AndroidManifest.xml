@@ -68,6 +68,10 @@
         <activity
             android:name=".authorization.PhoneAuthActivity"
             android:label="@string/authorization_title" />
+        <activity
+            android:name=".presentation.streetview.StreetViewActivity"
+            android:launchMode="singleInstance"
+            android:label="@string/panorama_title" />
 
         <service android:name=".notification.PushService"
             tools:ignore="ExportedService">

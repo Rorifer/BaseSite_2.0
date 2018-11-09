@@ -169,5 +169,7 @@
     <string name="error_public">Не удалось опубликовать работу. Проверьте интернет-соединение</string>
     <string name="job_edited">Работа отредактирована</string>
     <string name="error_job_edited">Не удалось отредактировать работу. Проверьте интернет-соединение</string>
+    <string name="panorama_title">Панорамы улиц</string>
+
 
 </resources>
