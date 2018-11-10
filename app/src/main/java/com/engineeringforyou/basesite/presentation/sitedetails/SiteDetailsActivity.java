@@ -50,7 +50,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.maps.model.LatLng;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -331,7 +330,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @OnClick(R.id.panorama_button)
     public void clickPanorama() {
-        StreetViewActivity.Companion.start(this, new LatLng(mSite.getLatitude(), mSite.getLongitude()));
+        StreetViewActivity.Companion.start(this, mSite);
     }
 
     @OnClick(R.id.comment_user_button)

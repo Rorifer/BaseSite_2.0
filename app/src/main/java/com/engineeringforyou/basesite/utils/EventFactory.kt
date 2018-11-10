@@ -6,6 +6,7 @@ import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.crashlytics.android.answers.LoginEvent
 import com.engineeringforyou.basesite.models.Job
+import com.engineeringforyou.basesite.models.Site
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -62,6 +63,13 @@ object EventFactory {
                 .putContentName(job.name)
                 .putContentType("JobDetails")
                 .putContentId(job.id))
+    }
+
+    fun openStreetView(site: Site) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentType("StreetView")
+                .putContentName("$site.operator $site.number")
+                .putContentId(site.uid))
     }
 
 }

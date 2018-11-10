@@ -8,6 +8,8 @@ import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.engineeringforyou.basesite.R
+import com.engineeringforyou.basesite.models.Site
+import com.engineeringforyou.basesite.utils.EventFactory
 import com.google.android.gms.maps.StreetViewPanorama
 import com.google.android.gms.maps.SupportStreetViewPanoramaFragment
 import com.google.android.gms.maps.model.LatLng
@@ -19,9 +21,10 @@ class StreetViewActivity : AppCompatActivity() {
     companion object {
         private const val POINT = "point"
 
-        fun start(activity: Activity, point: LatLng) {
+        fun start(activity: Activity, site: Site) {
+            EventFactory.openStreetView(site)
             val intent = Intent(activity, StreetViewActivity::class.java)
-            intent.putExtra(POINT, point)
+            intent.putExtra(POINT, LatLng(site.latitude!!, site.longitude!!))
             activity.startActivity(intent)
             activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out)
         }
