@@ -3,7 +3,6 @@ package com.engineeringforyou.basesite.repositories.settings
 import android.content.Context
 import android.preference.PreferenceManager
 import com.engineeringforyou.basesite.models.Operator
-import com.engineeringforyou.basesite.utils.Utils
 import com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID
 import com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL
 
@@ -94,20 +93,6 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         } catch (e: ClassCastException) {
             EMPTY_TEXT
         }
-    }
-
-    override fun setTimeEnableAdvertising(timestamp: Long) = prefs.edit().putLong(KEY_TIME_ADVERTISING, timestamp).apply()
-
-    override fun getTimeEnableAdvertising(): Long {
-        return try {
-            prefs.getLong(KEY_TIME_ADVERTISING, TIMESTAMP_DEFAULT)
-        } catch (e: ClassCastException) {
-            TIMESTAMP_DEFAULT
-        }
-    }
-
-    override fun isEnableAdvertising(): Boolean {
-        return getTimeEnableAdvertising() < Utils.getCurrentTime()
     }
 
     override fun saveContact(contact: String) = prefs.edit().putString(KEY_CONTACT, contact).apply()

@@ -18,11 +18,6 @@ object Utils {
         return SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date().time).capitalize()
     }
 
-    fun isEnableAdvertising(context: Context): Boolean {
-//        return SettingsRepositoryImpl(context).isEnableAdvertising()
-        return true
-    }
-
     fun hasConnection(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo

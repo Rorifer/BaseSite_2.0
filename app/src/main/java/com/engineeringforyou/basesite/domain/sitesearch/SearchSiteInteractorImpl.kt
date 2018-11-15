@@ -9,7 +9,6 @@ import com.engineeringforyou.basesite.repositories.database.DataBaseRepository
 import com.engineeringforyou.basesite.repositories.database.DataBaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
-import com.engineeringforyou.basesite.utils.Utils
 import io.reactivex.Single
 
 class SearchSiteInteractorImpl(context: Context) : SearchSiteInteractor {
@@ -37,8 +36,4 @@ class SearchSiteInteractorImpl(context: Context) : SearchSiteInteractor {
     override fun refreshSiteBase() = sitesDataBase.refreshDataBaseIfNeed()
 
     override fun getInfo() = sitesRepository.getStatistic()
-
-    override fun disableAdvertising() =
-            settingsRepository.setTimeEnableAdvertising(Utils.getCurrentTime() + 92 * 86_400_000L)
-
 }

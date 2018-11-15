@@ -28,12 +28,6 @@ interface SettingsRepository {
 
     fun setName(name: String)
 
-    fun setTimeEnableAdvertising(timestamp: Long)
-
-    fun getTimeEnableAdvertising(): Long
-
-    fun isEnableAdvertising(): Boolean
-
     fun saveContact(contact: String)
 
     fun getContact(): String

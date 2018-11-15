@@ -45,7 +45,6 @@ import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.presentation.streetview.StreetViewActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
-import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -113,7 +112,6 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     private CommentsAdapter mAdapter;
     private PhotoDetailsAdapter mPhotoAdapter;
     private InterstitialAd mInterstitialAd;
-    private Boolean mIsEnableAdvertising = false;
     private boolean isShowPhoto;
 
     public static void start(Activity activity, Site site) {
@@ -150,7 +148,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     protected void onResume() {
         super.onResume();
         if (!isShowPhoto) hideProgress();
-        if (mIsEnableAdvertising) mAdMobView.resume();
+        mAdMobView.resume();
     }
 
     private void init() {
@@ -243,13 +241,8 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     }
 
     private void initAdMob() {
-        mIsEnableAdvertising = Utils.INSTANCE.isEnableAdvertising(this);
-        if (mIsEnableAdvertising) {
             initInterstitialAd();
             initAdMobV();
-        } else {
-            mAdMobView.setVisibility(View.GONE);
-        }
     }
 
     private void initAdMobV() {
@@ -311,7 +304,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @OnClick(R.id.button_route)
     public void clickRouteBtn() {
-        if (mIsEnableAdvertising && mInterstitialAd.isLoaded()) {
+        if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         } else {
             openRoute();
@@ -377,7 +370,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @Override
     protected void onPause() {
-        if (mIsEnableAdvertising) mAdMobView.pause();
+        mAdMobView.pause();
         super.onPause();
     }
 
@@ -392,7 +385,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     @Override
     protected void onDestroy() {
-        if (mIsEnableAdvertising) mAdMobView.destroy();
+        mAdMobView.destroy();
         super.onDestroy();
         mPresenter.unbindView();
     }

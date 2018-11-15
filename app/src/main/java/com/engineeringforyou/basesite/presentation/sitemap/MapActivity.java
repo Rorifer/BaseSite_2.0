@@ -37,7 +37,6 @@ import com.engineeringforyou.basesite.presentation.sitemap.presenter.MapPresente
 import com.engineeringforyou.basesite.presentation.sitemap.presenter.MapPresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitemap.views.MapView;
 import com.engineeringforyou.basesite.presentation.sitesearch.SearchSiteActivity;
-import com.engineeringforyou.basesite.utils.Utils;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -95,7 +94,6 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     private float mScale = SCALE_DEFAULT;
     private BitmapDescriptor icon_mts, icon_mgf, icon_beeline, icon_tele;
     private boolean isInitIcon;
-    private Boolean mIsEnableAdvertising = false;
 
     public static void start(Activity activity, @Nullable Site site) {
         Intent intent = new Intent(activity, MapActivity.class);
@@ -124,7 +122,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     @Override
     protected void onResume() {
         super.onResume();
-        if (mIsEnableAdvertising) mAdMobView.resume();
+        mAdMobView.resume();
     }
 
     private void initPresenter() {
@@ -134,16 +132,12 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     }
 
     private void initAdMob() {
-        mIsEnableAdvertising = Utils.INSTANCE.isEnableAdvertising(this);
-        if (mIsEnableAdvertising) {
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice(getString(R.string.admob_test_device))
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                     .build();
             mAdMobView.loadAd(adRequest);
-        } else {
-            mAdMobView.setVisibility(View.GONE);
-        }
+
     }
 
     private void initToolbar() {
@@ -506,13 +500,13 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     @Override
     protected void onPause() {
-        if (mIsEnableAdvertising) mAdMobView.pause();
+        mAdMobView.pause();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        if (mIsEnableAdvertising) mAdMobView.destroy();
+        mAdMobView.destroy();
         super.onDestroy();
     }
 

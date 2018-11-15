@@ -15,9 +15,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
-import com.engineeringforyou.basesite.BuildConfig;
 import com.engineeringforyou.basesite.R;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
@@ -30,14 +28,8 @@ import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenter;
 import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSitePresenterImpl;
 import com.engineeringforyou.basesite.presentation.sitesearch.views.SearchSiteView;
-import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.engineeringforyou.basesite.utils.MessageDialog;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,9 +57,6 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     NavigationView mNavigationView;
 
     private SearchSitePresenter mPresenter;
-    private RewardedVideoAd mRewardedVideoAd;
-    private boolean isNeedStartRewardedVideo;
-    private boolean isFailedLoadRewardedVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +67,6 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         mPresenter.bind(this);
         mPresenter.watchChanges(mSearch);
         initDrawer();
-        initAdMob();
     }
 
     private void initDrawer() {
@@ -101,115 +89,16 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
                 case R.id.item_rating:
                     openRating();
                     break;
-                case R.id.item_advertising:
-                    openAdvertising();
-                    break;
                 case R.id.item_logout:
                     finish();
                     break;
             }
             return true;
         });
-        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
-            }
-
-            @Override
-            public void onDrawerOpened(@NonNull View drawerView) {
-                if (!mRewardedVideoAd.isLoaded()) {
-                    loadRewardedVideoAd();
-                }
-            }
-
-            @Override
-            public void onDrawerClosed(@NonNull View drawerView) {
-
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-
-            }
-        });
     }
 
     private void openAddBs() {
         SiteCreateActivity.startForCreateSite(this, null);
-    }
-
-    private void initAdMob() {
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        loadRewardedVideoAd();
-        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-            @Override
-            public void onRewardedVideoAdLoaded() {
-                if (isNeedStartRewardedVideo) {
-                    mRewardedVideoAd.show();
-                    isNeedStartRewardedVideo = false;
-                }
-            }
-
-            @Override
-            public void onRewardedVideoAdOpened() {
-
-            }
-
-            @Override
-            public void onRewardedVideoStarted() {
-                hideProgress();
-            }
-
-            @Override
-            public void onRewardedVideoAdClosed() {
-                loadRewardedVideoAd();
-            }
-
-            @Override
-            public void onRewarded(RewardItem rewardItem) {
-                EventFactory.INSTANCE.message("SearchSiteActivity: Call onRewarded");
-//                mPresenter.disableAdvertising();
-            }
-
-            @Override
-            public void onRewardedVideoAdLeftApplication() {
-                EventFactory.INSTANCE.message("SearchSiteActivity: Call onRewardedVideoAdLeftApplication");
-            }
-
-            @Override
-            public void onRewardedVideoAdFailedToLoad(int i) {
-                isFailedLoadRewardedVideo = true;
-                if (isNeedStartRewardedVideo) {
-                    hideProgress();
-                    isNeedStartRewardedVideo = false;
-                    Toast.makeText(SearchSiteActivity.this, "Не удалось загрузить ролик", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onRewardedVideoCompleted() {
-
-            }
-        });
-    }
-
-    private void loadRewardedVideoAd() {
-        isFailedLoadRewardedVideo = false;
-        String adUnitId = getString(BuildConfig.DEBUG ? R.string.rewarded_test_ad_unit_id : R.string.rewarded_ad_unit_id_1);
-        mRewardedVideoAd.loadAd(adUnitId, new AdRequest.Builder().build());
-    }
-
-    private void openAdvertising() {
-//        AdvertisingDialog.INSTANCE.show(this, mRewardedVideoAd);
-        showProgress();
-        if (mRewardedVideoAd.isLoaded()) {
-            mRewardedVideoAd.show();
-        } else {
-            isNeedStartRewardedVideo = true;
-            if (isFailedLoadRewardedVideo) loadRewardedVideoAd();
-        }
     }
 
     private void openRating() {
@@ -227,7 +116,6 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
 
     @Override
     protected void onResume() {
-        mRewardedVideoAd.resume(this);
         super.onResume();
         mPresenter.onResume();
         hideProgress();
@@ -331,21 +219,11 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if (isNeedStartRewardedVideo) {
-            isNeedStartRewardedVideo = false;
-            hideProgress();
         } else super.onBackPressed();
     }
 
     @Override
-    public void onPause() {
-        mRewardedVideoAd.pause(this);
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
-        mRewardedVideoAd.destroy(this);
         super.onDestroy();
         mPresenter.unbindView();
     }
