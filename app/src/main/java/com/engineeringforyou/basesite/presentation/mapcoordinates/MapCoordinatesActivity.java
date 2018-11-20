@@ -18,6 +18,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.engineeringforyou.basesite.R;
+import com.engineeringforyou.basesite.models.Job;
+import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.job.details.JobDetailsActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,6 +30,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.location.LocationManager.PASSIVE_PROVIDER;
 import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.BORDER_LAT_END;
@@ -38,6 +44,8 @@ import static com.engineeringforyou.basesite.presentation.sitemap.MapActivity.DE
 
 public class MapCoordinatesActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
 
+    private static final String LIST_JOB = "LIST_JOB";
+    private static final String LIST_JOB_SITE = "LIST_JOB_SITE";
     public static String LATITUDE = "latitude";
     public static String LONGITUDE = "longitude";
     private static final String POSITION = "position";
@@ -51,6 +59,8 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
     private boolean mLocationPermissionGranted;
     private LatLng mCoordinates;
     private CameraPosition mPosition;
+    private List<Job> mJobList;
+    private List<Site> mJobSiteList;
 
     public static void startForResult(Activity activity, Double latitude, Double longitude, @Nullable CameraPosition position) {
         Intent intent = new Intent(activity, MapCoordinatesActivity.class);
@@ -58,6 +68,14 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
         intent.putExtra(LONGITUDE, longitude);
         intent.putExtra(LATITUDE, latitude);
         activity.startActivityForResult(intent, CODE_MAP);
+        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
+    }
+
+    public static void startJobMap(Activity activity, ArrayList<Job> listJob, ArrayList<Site> listSite) {
+        Intent intent = new Intent(activity, MapCoordinatesActivity.class);
+        intent.putParcelableArrayListExtra(LIST_JOB, listJob);
+        intent.putParcelableArrayListExtra(LIST_JOB_SITE, listSite);
+        activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.alpha_out);
     }
 
@@ -69,11 +87,21 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         initToolbar();
-        mPosition = getIntent().getParcelableExtra(POSITION);
-        if (mPosition != null) mScale = mPosition.zoom;
-        Double lat = getIntent().getDoubleExtra(LATITUDE, 0);
-        Double lng = getIntent().getDoubleExtra(LONGITUDE, 0);
-        if (lat != 0 && lng != 0) mCoordinates = new LatLng(lat, lng);
+        processIntent();
+    }
+
+    private void processIntent() {
+        mJobSiteList = getIntent().getParcelableArrayListExtra(LIST_JOB_SITE);
+        if (mJobSiteList != null) {
+            mJobList = getIntent().getParcelableArrayListExtra(LIST_JOB);
+            setTitle(R.string.map_job_title);
+        } else {
+            mPosition = getIntent().getParcelableExtra(POSITION);
+            if (mPosition != null) mScale = mPosition.zoom;
+            Double lat = getIntent().getDoubleExtra(LATITUDE, 0);
+            Double lng = getIntent().getDoubleExtra(LONGITUDE, 0);
+            if (lat != 0 && lng != 0) mCoordinates = new LatLng(lat, lng);
+        }
     }
 
     private void initToolbar() {
@@ -98,7 +126,8 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
         if (mLocationPermissionGranted) {
             mMap.setMyLocationEnabled(true);
         }
-        fillMap();
+        if (mJobSiteList == null) fillMap();
+        else fillJobMap();
     }
 
     @SuppressLint("MissingPermission")
@@ -124,9 +153,26 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
         }
     }
 
+    private void fillJobMap() {
+        setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mScale = 7;
+        startingMap();
+        for (int i = 0; i < mJobSiteList.size(); i++) {
+            Site site = mJobSiteList.get(i);
+            Job job = mJobList.get(i);
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(site.getLatitude(), site.getLongitude()))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                    .title(job.getName()))
+                    .setTag(job);
+        }
+        mMap.setOnInfoWindowClickListener(marker ->
+                JobDetailsActivity.Companion.start(this, (Job) marker.getTag()));
+    }
+
     private void startingMap() {
-        LatLng Position = new LatLng(DEFAULT_LAT, DEFAULT_LNG);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Position, mScale));
+        LatLng position = new LatLng(DEFAULT_LAT, DEFAULT_LNG);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, mScale));
     }
 
     private void getLocationPermission() {
@@ -152,20 +198,22 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
     }
 
     private void mapClick(LatLng latLng) {
-        mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        if (mJobSiteList == null) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Установить точку в этом месте?");
-        builder.setNegativeButton("Нет",
-                (dialog, id) -> {
-                    mMap.clear();
-                    dialog.cancel();
-                });
-        builder.setPositiveButton("Да", (dialog, id) -> setPoint(latLng));
-        AlertDialog alert = builder.create();
-        alert.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Установить точку в этом месте?");
+            builder.setNegativeButton("Нет",
+                    (dialog, id) -> {
+                        mMap.clear();
+                        dialog.cancel();
+                    });
+            builder.setPositiveButton("Да", (dialog, id) -> setPoint(latLng));
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     private void setPoint(LatLng latLng) {
@@ -226,5 +274,3 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
         finish();
     }
 }
-
-//рулетка http://www.barattalo.it/coding/ruler-for-google-maps-v3-to-measure-distance-on-map/

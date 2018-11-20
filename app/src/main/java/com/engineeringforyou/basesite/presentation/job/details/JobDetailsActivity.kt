@@ -18,7 +18,8 @@ class JobDetailsActivity : AppCompatActivity() {
     companion object {
         private const val JOB = "job"
 
-        fun start(activity: Activity, job: Job) {
+        fun start(activity: Activity, job: Job?) {
+            if (job == null) return
             EventFactory.openJob(job)
             val intent = Intent(activity, JobDetailsActivity::class.java)
             intent.putExtra(JOB, job)

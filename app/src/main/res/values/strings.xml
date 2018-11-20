@@ -170,6 +170,10 @@
     <string name="job_edited">Работа отредактирована</string>
     <string name="error_job_edited">Не удалось отредактировать работу. Проверьте интернет-соединение</string>
     <string name="panorama_title">Панорамы улиц</string>
+    <string name="map_job_title">Карта работ</string>
+    <string name="map_job">Карта работ</string>
+    <string name="error_load_job_map">Ошибка загрузки карты</string>
+    <string name="no_job_map">Нет данных для карты</string>
 
 
 </resources>

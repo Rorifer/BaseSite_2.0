@@ -49,6 +49,7 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".presentation.mapcoordinates.MapCoordinatesActivity"
+            android:launchMode="singleTop"
             android:label="@string/map_coordinates_tittle" />
         <activity
             android:name=".presentation.message.MessageActivity"

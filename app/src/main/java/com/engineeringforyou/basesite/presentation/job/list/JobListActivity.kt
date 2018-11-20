@@ -6,21 +6,28 @@ import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.Toast
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.models.Job
+import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.presentation.job.create.JobCreateActivity
 import com.engineeringforyou.basesite.presentation.job.details.JobDetailsActivity
+import com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity
 import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_job_list.*
+import java.util.*
 
 interface JobListView {
     fun showRefresh()
     fun hideRefresh()
     fun showJobList(list: List<Job>)
     fun showMessage(@StringRes message: Int)
+    fun showError(@StringRes error: Int)
+    fun showJobMap(jobs: List<Job>, sites: List<Site>?)
 }
 
 class JobListActivity : AppCompatActivity(), JobListView {
@@ -65,14 +72,29 @@ class JobListActivity : AppCompatActivity(), JobListView {
         actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_job_list, menu)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 true
             }
+            R.id.map_job -> {
+                if (adapter.itemCount > 0) {
+                    presenter.clickMapJob()
+                }
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun showJobMap(jobs: List<Job>, sites: List<Site>?) {
+        MapCoordinatesActivity.startJobMap(this, jobs as ArrayList<Job>?, sites as ArrayList<Site>?)
     }
 
     private fun initAdMob() {
@@ -104,6 +126,10 @@ class JobListActivity : AppCompatActivity(), JobListView {
         job_list.visibility = GONE
         message_view.visibility = VISIBLE
         message_view.setText(message)
+    }
+
+    override fun showError(@StringRes error: Int) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
     }
 
     override fun showRefresh() {

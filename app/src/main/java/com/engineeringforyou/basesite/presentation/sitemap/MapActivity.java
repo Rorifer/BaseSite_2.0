@@ -577,3 +577,5 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         }
     }
 }
+
+//линейка на карте http://www.barattalo.it/coding/ruler-for-google-maps-v3-to-measure-distance-on-map/
