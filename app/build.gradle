@@ -28,7 +28,7 @@ android {
         }
     }
     compileSdkVersion 27
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.engineeringforyou.basesite"
         if (gradle.startParameter.taskNames.contains(":app:assembleDebug")) {
