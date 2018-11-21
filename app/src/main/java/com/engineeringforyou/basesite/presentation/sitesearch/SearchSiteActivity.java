@@ -89,12 +89,23 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
                 case R.id.item_rating:
                     openRating();
                     break;
+                case R.id.item_share:
+                    shareApp();
+                    break;
                 case R.id.item_logout:
                     finish();
                     break;
             }
             return true;
         });
+    }
+
+    private void shareApp() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.engineeringforyou.basesite");
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, "Отправить ссылку на приложение"));
     }
 
     private void openAddBs() {
