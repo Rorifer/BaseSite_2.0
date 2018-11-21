@@ -29,8 +29,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.engineeringforyou.basesite.R;
+import com.engineeringforyou.basesite.models.Job;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
+import com.engineeringforyou.basesite.presentation.job.details.JobDetailsActivity;
 import com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateActivity;
 import com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity;
 import com.engineeringforyou.basesite.presentation.sitemap.presenter.MapPresenter;
@@ -192,9 +194,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         mUiSettings.setMapToolbarEnabled(false);
         mUiSettings.isIndoorLevelPickerEnabled();
         enableButtonLocation();
-//        mMap.setLatLngBoundsForCameraTarget(new LatLngBounds(
-//                new LatLng(BORDER_LAT_START, BORDER_LNG_START),
-//                new LatLng(BORDER_LAT_END, BORDER_LNG_END)));
+        mPresenter.showJobs();
         if (mPosition == null) mPresenter.setupMap();
         else {
             moveCamera(mPosition);
@@ -376,6 +376,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
     @Override
     public void clearMap() {
         if (mMap != null) mMap.clear();
+        mPresenter.showJobs();
     }
 
     @Override
@@ -410,6 +411,20 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                         .alpha(0.8f)
                         .icon(iconOperator(site.getOperator())))
                         .setTag(site);
+            }
+        }
+    }
+
+    @Override
+    public void showJob(@NotNull List<Job> jobList) {
+        if (mMap != null) {
+            for (Job job : jobList) {
+                if (job.getLatitude() != null && job.getLongitude() != null)
+                    mMap.addMarker(new MarkerOptions().
+                            position(new LatLng(job.getLatitude(), job.getLongitude()))
+                            .title(job.getName())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                            .setTag(job);
             }
         }
     }
@@ -453,7 +468,8 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        mPresenter.clickSite((Site) marker.getTag());
+        if (marker.getTag() instanceof Site) mPresenter.clickSite((Site) marker.getTag());
+        else JobDetailsActivity.Companion.start(this, (Job) marker.getTag());
     }
 
 

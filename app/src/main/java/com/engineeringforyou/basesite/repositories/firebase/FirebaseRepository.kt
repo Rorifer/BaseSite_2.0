@@ -34,7 +34,7 @@ interface FirebaseRepository {
 
     fun loadListPublicJob(): Single<List<Job>>
 
-    fun loadListUserJob(): Single<List<Job>>
+    fun loadListPrivateJob(): Single<List<Job>>
 
     fun enableStatusNotification(userAndroidId: String): Completable
 

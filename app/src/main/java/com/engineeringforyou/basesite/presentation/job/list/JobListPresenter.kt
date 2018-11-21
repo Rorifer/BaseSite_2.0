@@ -46,24 +46,9 @@ class JobListPresenterImpl(val view: JobListView, val context: Context, private 
     }
 
     override fun clickMapJob() {
-        var jobs = jobList.filter { it.linkSiteUid != null && it.linkSiteOperator!= null }
-        if (jobs.isEmpty()) {
-            view.showError(R.string.no_job_map)
-            return
-        }
-        disposable.clear()
-        disposable.add(interactor.getSiteForJobList(jobs)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { view.showJobMap(jobs, it) },
-                        { t ->
-                            view.showError(R.string.error_load_job_map)
-                            EventFactory.exception(t)
-                        }
-                )
-        )
-
+        val jobs = jobList.filter { it.latitude != null && it.longitude != null }
+        if (jobs.isEmpty()) view.showError(R.string.no_job_map)
+        else view.showJobMap(jobs)
     }
 
     override fun clear() {

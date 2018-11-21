@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.presentation.sitemap.views
 
+import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.models.Site
 import com.google.android.gms.maps.model.LatLng
 
@@ -28,4 +29,6 @@ interface MapView {
     fun moveCamera(position: LatLng)
 
     fun showSitesForCurrentLocation()
+
+    fun showJob(jobList: List<Job>)
 }

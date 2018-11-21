@@ -13,7 +13,6 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.models.Job
-import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.presentation.job.create.JobCreateActivity
 import com.engineeringforyou.basesite.presentation.job.details.JobDetailsActivity
 import com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity
@@ -27,7 +26,7 @@ interface JobListView {
     fun showJobList(list: List<Job>)
     fun showMessage(@StringRes message: Int)
     fun showError(@StringRes error: Int)
-    fun showJobMap(jobs: List<Job>, sites: List<Site>?)
+    fun showJobMap(jobs: List<Job>)
 }
 
 class JobListActivity : AppCompatActivity(), JobListView {
@@ -73,7 +72,7 @@ class JobListActivity : AppCompatActivity(), JobListView {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_job_list, menu)
+        if (!isAdminStatus) menuInflater.inflate(R.menu.menu_job_list, menu)
         return true
     }
 
@@ -93,8 +92,8 @@ class JobListActivity : AppCompatActivity(), JobListView {
         }
     }
 
-    override fun showJobMap(jobs: List<Job>, sites: List<Site>?) {
-        MapCoordinatesActivity.startJobMap(this, jobs as ArrayList<Job>?, sites as ArrayList<Site>?)
+    override fun showJobMap(jobs: List<Job>) {
+        MapCoordinatesActivity.startJobMap(this, jobs as ArrayList<Job>?)
     }
 
     private fun initAdMob() {

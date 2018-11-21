@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.engineeringforyou.basesite.domain.sitemap.MapInteractor;
 import com.engineeringforyou.basesite.domain.sitemap.MapInteractorImpl;
+import com.engineeringforyou.basesite.models.Job;
 import com.engineeringforyou.basesite.models.Operator;
 import com.engineeringforyou.basesite.models.Site;
 import com.engineeringforyou.basesite.presentation.sitemap.views.MapView;
@@ -25,13 +26,16 @@ public class MapPresenterImpl implements MapPresenter {
     private final int COUNT_SHOW_START_MESSAGE = 7;
 
     private CompositeDisposable mDisposable;
+    private CompositeDisposable mJobDisposable;
     private MapInteractor mInteractor;
     private List<Site> mSiteList = new ArrayList<>();
     private Site mSite = null;
     private MapView mView;
+    private List<Job> mJobList = null;
 
     public MapPresenterImpl(Context context) {
         mDisposable = new CompositeDisposable();
+        mJobDisposable = new CompositeDisposable();
         mInteractor = new MapInteractorImpl(context);
     }
 
@@ -40,6 +44,24 @@ public class MapPresenterImpl implements MapPresenter {
         mView = view;
         mSite = site;
         mInteractor.addCountMapCreate();
+        loadJobs();
+    }
+
+    private void loadJobs() {
+        mJobDisposable.add(mInteractor.loadJobs()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(it -> {
+                    mJobList = it;
+                    showJobs();
+                }, EventFactory.INSTANCE::exception));
+    }
+
+    @Override
+    public void showJobs() {
+        if (mJobList != null && mView != null) {
+            mView.showJob(mJobList);
+        }
     }
 
     @Override
@@ -134,6 +156,7 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public void unbindView() {
         mDisposable.dispose();
+        mJobDisposable.dispose();
         mView = null;
     }
 }

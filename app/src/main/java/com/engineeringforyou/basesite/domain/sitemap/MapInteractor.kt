@@ -1,5 +1,6 @@
 package com.engineeringforyou.basesite.domain.sitemap
 
+import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 import io.reactivex.Observable
@@ -26,4 +27,6 @@ interface MapInteractor {
     fun addCountMapCreate()
 
     fun getCountMapCreate(): Int
+
+    fun loadJobs(): Single<List<Job>>
 }

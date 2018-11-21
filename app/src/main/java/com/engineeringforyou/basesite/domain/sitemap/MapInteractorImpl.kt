@@ -5,19 +5,17 @@ import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.repositories.database.DataBaseRepository
 import com.engineeringforyou.basesite.repositories.database.DataBaseRepositoryImpl
+import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
+import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
 import io.reactivex.Observable
 
 class MapInteractorImpl(context: Context) : MapInteractor {
 
-    private val settingsRepository: SettingsRepository
-    private val sitesRepository: DataBaseRepository
-
-    init {
-        settingsRepository = SettingsRepositoryImpl(context)
-        sitesRepository = DataBaseRepositoryImpl()
-    }
+    private val settingsRepository: SettingsRepository = SettingsRepositoryImpl(context)
+    private val sitesRepository: DataBaseRepository = DataBaseRepositoryImpl()
+    private val firebase: FirebaseRepository = FirebaseRepositoryImpl()
 
     override fun saveOperator(operator: Operator) = settingsRepository.saveOperator(operator)
 
@@ -75,4 +73,5 @@ class MapInteractorImpl(context: Context) : MapInteractor {
 
     override fun getCountMapCreate() = settingsRepository.getCountMapCreate()
 
+    override fun loadJobs() = firebase.loadListPublicJob()
 }

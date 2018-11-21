@@ -273,7 +273,7 @@ class FirebaseRepositoryImpl : FirebaseRepository {
         }
     }
 
-    override fun loadListUserJob(): Single<List<Job>> {
+    override fun loadListPrivateJob(): Single<List<Job>> {
         return Single.create<List<Job>> { emitter ->
             firestore.collection(DIRECTORY_JOB)
                     .whereEqualTo(FIELD_UID, FirebaseUtils.getIdCurrentUser()!!)

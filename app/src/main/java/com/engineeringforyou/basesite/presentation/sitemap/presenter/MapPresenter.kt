@@ -34,4 +34,6 @@ interface MapPresenter {
 
     fun getSites(): ArrayList<Site>
 
+    fun showJobs()
+
 }

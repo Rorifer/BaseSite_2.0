@@ -21,9 +21,10 @@ data class Job(
         var dateCreate: String = "",
         val userId: String = "",
         val userAndroidId: String = "",
-        val public: Boolean = false
+        val public: Boolean = false,
+        var latitude: Double? = null,
+        var longitude: Double? = null
 ) : Parcelable {
-
     constructor(context: Context,
                 linkSiteUid: String? = null,
                 linkSiteOperator: Operator? = null,
@@ -52,7 +53,7 @@ data class Job(
             public = true
     )
 
-    fun setupForEdit(id: String): Job{
+    fun setupForEdit(id: String): Job {
         this.id = id
         this.timestamp = Utils.getCurrentTime()
         this.dateCreate = Utils.getCurrentDate()
@@ -62,6 +63,8 @@ data class Job(
     fun setLinkSite(site: Site?) {
         linkSiteUid = site?.uid
         linkSiteOperator = site?.operator
+        latitude = site?.latitude
+        longitude = site?.longitude
     }
 
     constructor(source: Parcel) : this(
@@ -79,7 +82,9 @@ data class Job(
             source.readString(),
             source.readString(),
             source.readString(),
-            1 == source.readInt()
+            1 == source.readInt(),
+            source.readValue(Double::class.java.classLoader) as Double?,
+            source.readValue(Double::class.java.classLoader) as Double?
     )
 
     override fun describeContents() = 0
@@ -100,6 +105,8 @@ data class Job(
         writeString(userId)
         writeString(userAndroidId)
         writeInt((if (public) 1 else 0))
+        writeValue(latitude)
+        writeValue(longitude)
     }
 
     companion object {

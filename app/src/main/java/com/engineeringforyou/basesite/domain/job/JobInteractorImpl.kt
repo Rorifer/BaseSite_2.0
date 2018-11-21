@@ -10,10 +10,8 @@ import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
-import com.engineeringforyou.basesite.utils.EventFactory
 import com.engineeringforyou.basesite.utils.Utils
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
 
 interface JobInteractor {
@@ -26,7 +24,6 @@ interface JobInteractor {
     fun closeJob(id: String): Completable
     fun publicJob(id: String): Completable
     fun editJob(job: Job): Completable
-    fun getSiteForJobList(jobList: List<Job>): Single<List<Site>>
 }
 
 class JobInteractorImpl(val context: Context) : JobInteractor {
@@ -62,7 +59,7 @@ class JobInteractorImpl(val context: Context) : JobInteractor {
 
     override fun loadJobList(isAdminStatus: Boolean): Single<List<Job>> {
         return if (isAdminStatus)
-            firebase.loadListUserJob()
+            firebase.loadListPrivateJob()
         else
             firebase.loadListPublicJob()
     }
@@ -78,15 +75,6 @@ class JobInteractorImpl(val context: Context) : JobInteractor {
 
     override fun getStatusNotification(): Boolean {
         return settings.getStatusNotification()
-    }
-
-    override fun getSiteForJobList(jobList: List<Job>): Single<List<Site>> {
-
-        return Observable.fromIterable(jobList)
-                .flatMapSingle { getLinkSite(it.linkSiteOperator!!, it.linkSiteUid!!) }
-                .doOnError(EventFactory::exception)
-                .onErrorReturnItem(Site())
-                .toList()
     }
 
 }
