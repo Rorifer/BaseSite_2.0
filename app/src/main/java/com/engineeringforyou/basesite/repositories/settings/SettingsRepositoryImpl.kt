@@ -25,6 +25,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         private const val KEY_NAME = "key_name"
         private const val KEY_CONTACT = "key_contact"
         private const val KEY_STATUS_NOTIFICATION = "key_status_notification"
+        private const val KEY_SHOWING_JOB_FUNCTION = "key_showing_job_function"
     }
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -114,4 +115,15 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
             false
         }
     }
+
+    override fun setShowingJobFunction() = prefs.edit().putBoolean(KEY_SHOWING_JOB_FUNCTION, true).apply()
+
+    override fun getShowingJobFunction(): Boolean {
+        return try {
+            prefs.getBoolean(KEY_SHOWING_JOB_FUNCTION, false)
+        } catch (e: ClassCastException) {
+            false
+        }
+    }
+
 }

@@ -14,6 +14,7 @@ interface JobListPresenter {
     fun clickMapJob()
     fun clear()
     fun loadJobList()
+    fun callJobDetails()
 }
 
 class JobListPresenterImpl(val view: JobListView, val context: Context, private val isAdminStatus: Boolean) : JobListPresenter {
@@ -49,6 +50,10 @@ class JobListPresenterImpl(val view: JobListView, val context: Context, private 
         val jobs = jobList.filter { it.latitude != null && it.longitude != null }
         if (jobs.isEmpty()) view.showError(R.string.no_job_map)
         else view.showJobMap(jobs)
+    }
+
+    override fun callJobDetails() {
+        interactor.setShowingJobFunction()
     }
 
     override fun clear() {

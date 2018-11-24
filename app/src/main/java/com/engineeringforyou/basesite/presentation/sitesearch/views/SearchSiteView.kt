@@ -28,4 +28,6 @@ interface SearchSiteView {
 
     fun openMessageForDeveloper()
 
+    fun showFunctionJob()
+
 }

@@ -91,7 +91,7 @@
     <string name="save">Сохранить</string>
     <string name="comment_name">Ваше имя</string>
     <string name="site_number">Номер БС:</string>
-    <string name="number_default">77-1234</string>
+    <string name="number_default">77–1234</string>
     <string name="site_coordinates">Координаты:</string>
     <string name="site_coordinates_necessarily">Координаты*:</string>
     <string name="object_default">башня, ОДН, здание</string>
@@ -175,5 +175,7 @@
     <string name="error_load_job_map">Ошибка загрузки карты</string>
     <string name="no_job_map">Нет данных для карты</string>
     <string name="recommended_share">Рекомендовать приложение</string>
+    <string name="function_job_description">В меню приложения появилась новая функция поиска и предложения работ по проектированию, строительству и модернизации БС.  Там же можно подписаться на получение уведомлений при появлении новой работы.</string>
+    <string name="show">Показать</string>
 
 </resources>

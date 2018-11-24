@@ -111,6 +111,7 @@ class JobListActivity : AppCompatActivity(), JobListView {
     }
 
     private fun clickJob(job: Job) {
+        presenter.callJobDetails()
         if (isAdminStatus) JobCreateActivity.start(this, job)
         else JobDetailsActivity.start(this, job)
     }

@@ -24,6 +24,7 @@ interface JobInteractor {
     fun closeJob(id: String): Completable
     fun publicJob(id: String): Completable
     fun editJob(job: Job): Completable
+    fun setShowingJobFunction()
 }
 
 class JobInteractorImpl(val context: Context) : JobInteractor {
@@ -77,4 +78,5 @@ class JobInteractorImpl(val context: Context) : JobInteractor {
         return settings.getStatusNotification()
     }
 
+    override fun setShowingJobFunction() = settings.setShowingJobFunction()
 }

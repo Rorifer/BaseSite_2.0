@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TextInputLayout;
@@ -133,7 +134,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
     @OnClick(R.id.menu_item)
-    public void clickMenu() {
+    public void openMenu() {
         hideKeyboard();
         mDrawerLayout.openDrawer(GravityCompat.START);
     }
@@ -181,6 +182,24 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         MessageDialog.Companion
                 .getInstance(informationText, null, null, getString(R.string.info), false)
                 .show(getSupportFragmentManager());
+    }
+
+    @Override
+    public void showFunctionJob() {
+        MessageDialog dialog = MessageDialog.Companion.getInstance(
+                getString(R.string.function_job_description),
+                getString(R.string.show),
+                getString(R.string.cancel),
+                getString(R.string.info),
+                true);
+
+        dialog.setPositive(() -> {
+            openMenu();
+            new Handler().postDelayed(this::openWork, 300);
+            return null;
+        });
+
+        dialog.show(getSupportFragmentManager());
     }
 
     @Override

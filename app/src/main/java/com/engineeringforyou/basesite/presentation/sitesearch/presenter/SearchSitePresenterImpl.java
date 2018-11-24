@@ -50,6 +50,16 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         int index = getOperator().ordinal();
         mView.setOperator(index == 4 ? 0 : index);
         refreshSiteBase();
+        showFunctionJobIfNeed();
+    }
+
+    private void showFunctionJobIfNeed() {
+        mDisposableRefresh.add(mInteractor.needingShowJobFunction()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((show) -> {
+                    if (show && mView != null) mView.showFunctionJob();
+                }, EventFactory.INSTANCE::exception));
     }
 
     private void refreshSiteBase() {

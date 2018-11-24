@@ -36,4 +36,8 @@ interface SettingsRepository {
 
     fun getStatusNotification(): Boolean
 
+    fun setShowingJobFunction()
+
+    fun getShowingJobFunction(): Boolean
+
 }
