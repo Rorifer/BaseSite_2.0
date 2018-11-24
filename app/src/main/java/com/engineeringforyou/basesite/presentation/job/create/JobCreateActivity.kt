@@ -13,7 +13,10 @@ import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
+import com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity
+import com.engineeringforyou.basesite.presentation.mapcoordinates.MapCoordinatesActivity.*
 import com.engineeringforyou.basesite.utils.KeyBoardUtils
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_job_create.*
 import kotlinx.android.synthetic.main.view_progress.*
 
@@ -27,6 +30,9 @@ interface JobCreateView {
     fun setLinkBS(site: Site)
     fun showListLinkSearch(list: List<Site>)
     fun close()
+    fun openMap(site: Site?)
+    fun hideMapButton()
+    fun setAddressFromCoordinates(address: String)
 }
 
 class JobCreateActivity : AppCompatActivity(), JobCreateView {
@@ -44,6 +50,7 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
 
     private lateinit var presenter: JobCreatePresenter
     private var job: Job? = null
+    private var addressLoaded: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +104,7 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
         }
 
         site_link_button.setOnClickListener { presenter.clickSiteLink() }
+        coordinates_button.setOnClickListener { presenter.callMap() }
     }
 
     private fun obtainJob() = Job(
@@ -122,6 +130,34 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun openMap(site: Site?) {
+        MapCoordinatesActivity.startForResult(this, site?.latitude, site?.longitude, null)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        if (requestCode == CODE_MAP) {
+            if (resultCode == Activity.RESULT_OK) {
+                val lat = intent!!.getDoubleExtra(LATITUDE, 0.0)
+                val lng = intent.getDoubleExtra(LONGITUDE, 0.0)
+                if (lat == 0.0 && lng != 0.0) {
+                    presenter.setCoordinates(LatLng(lat, lng))
+                }
+            }
+        }
+    }
+
+    override fun hideMapButton() {
+        coordinates_button.visibility = View.GONE
+    }
+
+    override fun setAddressFromCoordinates(address: String) {
+        val currentAddress = site_address.text.toString()
+        if (currentAddress.isEmpty() || addressLoaded != null && addressLoaded == currentAddress) {
+            site_address.setText(address)
+            addressLoaded = address
         }
     }
 

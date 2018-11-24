@@ -4,10 +4,13 @@ import android.content.Context
 import com.engineeringforyou.basesite.R
 import com.engineeringforyou.basesite.domain.job.JobInteractor
 import com.engineeringforyou.basesite.domain.job.JobInteractorImpl
+import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractor
+import com.engineeringforyou.basesite.domain.sitedetails.SiteDetailsInteractorImpl
 import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.models.Operator
 import com.engineeringforyou.basesite.models.Site
 import com.engineeringforyou.basesite.utils.EventFactory
+import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -22,16 +25,37 @@ interface JobCreatePresenter {
     fun closeJob(id: String)
     fun editJob(job: Job)
     fun publicJob(id: String)
+    fun callMap()
+    fun setCoordinates(coordinates: LatLng)
 }
 
 class JobCreatePresenterImpl(val view: JobCreateView?, val context: Context) : JobCreatePresenter {
 
     private val interactor: JobInteractor = JobInteractorImpl(context)
+    private val addressInteractor: SiteDetailsInteractor = SiteDetailsInteractorImpl(context)
     private val disposable = CompositeDisposable()
     private var linkSite: Site? = null
 
     init {
         view?.setContact(interactor.getContact())
+    }
+
+    override fun callMap() {
+        view?.openMap(linkSite)
+    }
+
+    override fun setCoordinates(coordinates: LatLng) {
+        if (linkSite == null) linkSite = Site()
+        linkSite!!.latitude = coordinates.latitude
+        linkSite!!.longitude = coordinates.longitude
+        loadAddressFromCoordinates(coordinates)
+    }
+
+    private fun loadAddressFromCoordinates(coordinates: LatLng) {
+        disposable.add(addressInteractor.loadAddress(coordinates.latitude, coordinates.longitude)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ view?.setAddressFromCoordinates(it) }, EventFactory::exception))
     }
 
     override fun clickSiteLink() {
@@ -41,6 +65,7 @@ class JobCreatePresenterImpl(val view: JobCreateView?, val context: Context) : J
     override fun setLinkSite(site: Site) {
         this.linkSite = site
         view?.setFieldLinkSite(site)
+        view?.hideMapButton()
     }
 
     override fun setLinkSite(linkSiteOperator: Operator?, linkSiteUid: String?) {
