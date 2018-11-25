@@ -11,6 +11,7 @@ import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
+import com.engineeringforyou.basesite.utils.EventFactory
 import io.reactivex.Completable
 import java.util.*
 
@@ -24,6 +25,7 @@ class SiteCreateInteractorImpl(private val context: Context) : SiteCreateInterac
         saveName(userName)
         val comment = Comment(site, "БС добавлена пользователем $userName", User(context, "автоматический"))
         comment.timestamp = site.timestamp
+        EventFactory.saveSite(site, comment.userAndroidId)
         return firebase.saveSite(site, comment, photoUriList)
     }
 
@@ -31,14 +33,17 @@ class SiteCreateInteractorImpl(private val context: Context) : SiteCreateInterac
         saveName(userName)
         val com = Comment(site, comment, User(context, "автоматический"))
         com.timestamp = site.timestamp
+        EventFactory.editSite(site, com.userAndroidId)
         return firebase.editSiteAndComment(site, oldSite, com)
     }
 
     override fun savePhotos(photoUriList: List<Uri>, site: Site, userName: String): Completable {
         saveName(userName)
         val text = "Пользователь $userName добавил ${if (photoUriList.size > 1) "фотографии" else "фотографию"}"
+        val comment = Comment(site, text, User(context, "автоматический"));
+        EventFactory.addPhoto(site, comment.userAndroidId)
         return firebase.savePhotos(photoUriList, site)
-                .andThen(firebase.saveComment(Comment(site, text, User(context, "автоматический"))))
+                .andThen(firebase.saveComment(comment))
     }
 
     override fun refreshDataBase(): Completable {

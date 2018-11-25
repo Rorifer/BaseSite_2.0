@@ -5,6 +5,7 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.crashlytics.android.answers.LoginEvent
+import com.engineeringforyou.basesite.models.Comment
 import com.engineeringforyou.basesite.models.Job
 import com.engineeringforyou.basesite.models.Site
 import java.text.SimpleDateFormat
@@ -68,8 +69,57 @@ object EventFactory {
     fun openStreetView(site: Site) {
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentType("StreetView")
-                .putContentName("$site.operator $site.number")
+                .putContentName("${site.operator} ${site.number}")
                 .putContentId(site.uid))
+    }
+
+    fun openSiteDetails(site: Site) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentType("SiteDetails")
+                .putContentName("${site.operator} ${site.number}")
+                .putContentId(site.uid))
+    }
+
+    fun clickRouteBS(site: Site) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentType("RouteBS")
+                .putContentName("${site.operator} ${site.number}")
+                .putContentId(site.uid))
+    }
+
+    fun clickEnableNotification(uid: String) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentType("ClickEnableNotification")
+                .putContentName(uid))
+    }
+
+    fun writeComment(comment: Comment) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentType("WriteComment")
+                .putContentName("${comment.operatorId} ${comment.siteId}")
+                .putContentId(comment.userAndroidId))
+    }
+
+    fun saveSite (site: Site, uid: String?) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentType("SaveSite")
+                .putContentName("${site.operator} ${site.number}")
+                .putContentId(uid))
+    }
+
+
+    fun editSite (site: Site, uid: String?) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentType("EditSite")
+                .putContentName("${site.operator} ${site.number}")
+                .putContentId(uid))
+    }
+
+    fun addPhoto(site: Site, uid: String?) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentType("AddPhoto")
+                .putContentName("${site.operator} ${site.number}")
+                .putContentId(uid))
     }
 
 }

@@ -115,6 +115,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     private boolean isShowPhoto;
 
     public static void start(Activity activity, Site site) {
+        EventFactory.INSTANCE.openSiteDetails(site);
         Intent intent = new Intent(activity, SiteDetailsActivity.class);
         intent.putExtra(KEY_SITE, site);
         activity.startActivity(intent);
@@ -312,6 +313,7 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     }
 
     private void openRoute() {
+        EventFactory.INSTANCE.clickRouteBS(mSite);
         Double lat = mSite.getLatitude();
         Double lng = mSite.getLongitude();
         try {

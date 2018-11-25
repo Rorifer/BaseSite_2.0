@@ -10,6 +10,7 @@ import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
+import com.engineeringforyou.basesite.utils.EventFactory
 import com.engineeringforyou.basesite.utils.Utils
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -66,10 +67,12 @@ class JobInteractorImpl(val context: Context) : JobInteractor {
     }
 
     override fun setStatusNotification(isEnabled: Boolean): Completable {
+        val uid = Utils.getAndroidId(context)
+        if (isEnabled) EventFactory.clickEnableNotification(uid)
         val switch = if (isEnabled)
-            firebase.enableStatusNotification(Utils.getAndroidId(context))
+            firebase.enableStatusNotification(uid)
         else
-            firebase.disableStatusNotification(Utils.getAndroidId(context))
+            firebase.disableStatusNotification(uid)
         return switch
                 .doOnComplete { settings.saveStatusNotification(isEnabled) }
     }
