@@ -22,6 +22,7 @@ class JobSettingsPresenterImpl(val view: JobSettingsView, val context: Context) 
 
     override fun checkState() {
         view.setCheckedNotificationSwitch(interactor.getStatusNotification())
+        view.enableCheckListener()
     }
 
     override fun switchNotification(checked: Boolean) {

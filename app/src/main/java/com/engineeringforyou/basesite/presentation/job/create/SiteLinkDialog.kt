@@ -42,7 +42,7 @@ class SiteLinkDialog : DialogFragment() {
         dialog.setTitle(R.string.dialog_site_link_title)
 
         val site = arguments.getParcelable<Site?>("site")
-        if (site != null) {
+        if (site?.operator != null) {
             v.site_search.setText(site.number)
             v.operators_group.check(v.operators_group.getChildAt(site.operator!!.ordinal).id)
         }

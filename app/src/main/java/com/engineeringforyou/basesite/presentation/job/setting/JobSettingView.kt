@@ -7,4 +7,5 @@ interface JobSettingsView {
     fun hideProgress()
     fun setCheckedNotificationSwitch(isChecked: Boolean)
     fun showError(@StringRes error: Int)
+    fun enableCheckListener()
 }

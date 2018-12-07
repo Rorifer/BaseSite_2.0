@@ -153,7 +153,7 @@ public class MapCoordinatesActivity extends AppCompatActivity implements OnMapRe
             if (job.getLatitude() != null && job.getLongitude() != null) {
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(job.getLatitude(), job.getLongitude()))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
                         .title(job.getName()))
                         .setTag(job);
             }

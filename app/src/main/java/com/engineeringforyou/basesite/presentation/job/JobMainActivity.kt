@@ -40,6 +40,9 @@ class JobMainActivity : AppCompatActivity(), JobSettingsView {
         post_job.setOnClickListener { PhoneAuthActivity.start(this) }
         user_job_list.setOnClickListener { openAdminJobList() }
         logout.setOnClickListener { logout() }
+    }
+
+    override fun enableCheckListener() {
         notification_switch.setOnCheckedChangeListener { _, isChecked ->
             presenter.switchNotification(isChecked)
         }

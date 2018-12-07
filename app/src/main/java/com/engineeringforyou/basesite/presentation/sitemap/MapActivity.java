@@ -404,7 +404,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
         } else {
             if (!isInitIcon) initOperatorIcon();
             for (Site site : siteList) {
-                mMap.addMarker(new MarkerOptions().
+                mMap.addMarker(new MarkerOptions().   // TODO Подкотовка Маркеров в отдельном потоке  ???
                         position(new LatLng(site.getLatitude(), site.getLongitude()))
                         .title(site.getNumber())
                         .snippet(site.getOperator().getLabel())
@@ -423,7 +423,7 @@ public class MapActivity extends AppCompatActivity implements MapView, OnMapRead
                     mMap.addMarker(new MarkerOptions().
                             position(new LatLng(job.getLatitude(), job.getLongitude()))
                             .title(job.getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)))
                             .setTag(job);
             }
         }

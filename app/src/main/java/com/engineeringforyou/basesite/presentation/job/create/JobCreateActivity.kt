@@ -142,7 +142,7 @@ class JobCreateActivity : AppCompatActivity(), JobCreateView {
             if (resultCode == Activity.RESULT_OK) {
                 val lat = intent!!.getDoubleExtra(LATITUDE, 0.0)
                 val lng = intent.getDoubleExtra(LONGITUDE, 0.0)
-                if (lat == 0.0 && lng != 0.0) {
+                if (lat != 0.0 && lng != 0.0) {
                     presenter.setCoordinates(LatLng(lat, lng))
                 }
             }

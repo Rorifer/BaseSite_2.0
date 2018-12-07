@@ -62,29 +62,25 @@ object EventFactory {
     fun openJob(job: Job) {
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentName(job.name)
-                .putContentType("JobDetails")
-                .putContentId(job.id))
+                .putContentType("JobDetails"))
     }
 
     fun openStreetView(site: Site) {
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentType("StreetView")
-                .putContentName("${site.operator} ${site.number}")
-                .putContentId(site.uid))
+                .putContentName("${site.operator} ${site.number}"))
     }
 
     fun openSiteDetails(site: Site) {
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentType("SiteDetails")
-                .putContentName("${site.operator} ${site.number}")
-                .putContentId(site.uid))
+                .putContentName("${site.operator} ${site.number}"))
     }
 
     fun clickRouteBS(site: Site) {
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentType("RouteBS")
-                .putContentName("${site.operator} ${site.number}")
-                .putContentId(site.uid))
+                .putContentName("${site.operator} ${site.number}"))
     }
 
     fun clickEnableNotification(uid: String) {

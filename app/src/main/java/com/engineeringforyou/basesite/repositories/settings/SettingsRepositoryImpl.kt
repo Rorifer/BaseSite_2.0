@@ -13,7 +13,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         const val INDEX_DEFAULT = 0
         const val RADIUS_DEFAULT = 3
         //        const val TIMESTAMP_DEFAULT =  0L
-        const val TIMESTAMP_DEFAULT = 1540472974548L
+        const val TIMESTAMP_DEFAULT = 1544206506428L
         const val MAP_TYPE_DEFAULT = MAP_TYPE_NORMAL
         const val MAP_TYPE_MAX = MAP_TYPE_HYBRID
         private const val KEY_RADIUS = "key_radius"
@@ -21,7 +21,6 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         private const val KEY_OPERATOR = "key_operator"
         private const val KEY_MAP_COUNTER = "key_map_counter"
         private const val KEY_SITES_TIMESTAMP = "key_sites_timestamp"
-        private const val KEY_TIME_ADVERTISING = "key_time_advertising"
         private const val KEY_NAME = "key_name"
         private const val KEY_CONTACT = "key_contact"
         private const val KEY_STATUS_NOTIFICATION = "key_status_notification"

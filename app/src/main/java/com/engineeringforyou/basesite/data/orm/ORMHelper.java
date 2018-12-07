@@ -15,7 +15,6 @@ import com.engineeringforyou.basesite.models.SiteTELE;
 import com.engineeringforyou.basesite.models.SiteVMK;
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl;
 import com.engineeringforyou.basesite.utils.EventFactory;
-import com.j256.ormlite.android.AndroidConnectionSource;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.stmt.PreparedQuery;
@@ -36,8 +35,8 @@ import static com.engineeringforyou.basesite.repositories.settings.SettingsRepos
 
 public class ORMHelper extends OrmLiteSqliteOpenHelper {
 
-    private static final int DATABASE_VERSION = 5;
-    private static final String DB_NAME = "ORM_SITES_02.db";
+    private static final int DATABASE_VERSION = 6;
+    private static final String DB_NAME = "ORM_SITES_04.db";
 
     private final String FIELD_SITE = "SITE";
     private final String FIELD_ADDRESS = "Addres";
@@ -77,7 +76,8 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
                 outputStream.flush();
                 outputStream.close();
                 inputStream.close();
-//                deleteOldFiles();
+                new SettingsRepositoryImpl(mContext).saveSitesTimestamp(TIMESTAMP_DEFAULT);
+                deleteOldFiles();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -87,9 +87,9 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
     private void deleteOldFiles() {
         String[] databaseList = mContext.databaseList();
         for (String base : databaseList) {
-            if (base.contains("DB_SITE")) {
+            if (base.contains("DB_SITE_02")) {
                 mContext.deleteDatabase(base);
-                EventFactory.INSTANCE.message("deleteOldFiles = " + base);
+                EventFactory.INSTANCE.message("delete DB_SITE_02 = " + base);
             }
         }
     }
@@ -148,15 +148,15 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
 //            new SettingsRepositoryImpl(mContext).saveSitesTimestamp(1531501662154L);
 //        }
 
-        if (oldVer < 5) {
-            this.connectionSource.close();
-            mContext.deleteDatabase(DB_NAME);
-            createDB();
-            SQLiteDatabase dbb = mContext.openOrCreateDatabase(DB_NAME, 0, null);
-            this.connectionSource = new AndroidConnectionSource(dbb);
-
-            new SettingsRepositoryImpl(mContext).saveSitesTimestamp(TIMESTAMP_DEFAULT);
-        }
+//        if (oldVer < 5) {
+//            this.connectionSource.close();
+//            mContext.deleteDatabase(DB_NAME);
+//            createDB();
+//            SQLiteDatabase dbb = mContext.openOrCreateDatabase(DB_NAME, 0, null);
+//            this.connectionSource = new AndroidConnectionSource(dbb);
+//
+//            new SettingsRepositoryImpl(mContext).saveSitesTimestamp(TIMESTAMP_DEFAULT);
+//        }
     }
 
     public void saveSites(List<Site> sites) throws SQLException {
@@ -412,17 +412,15 @@ public class ORMHelper extends OrmLiteSqliteOpenHelper {
         for (int i = 0; i < sites.size(); i++) {
             Site site = sites.get(i);
             Log.v("LogAddress", "i= " + i);
-            if (site.getAddress().equals("нет данных")) {
                 interactor.loadAddress(site.getLatitude(), site.getLongitude())
                         .subscribe(s -> {
                             UpdateBuilder<? extends Site, Integer> updateBuilder = dao.updateBuilder();
-                            updateBuilder.where().eq("SITE", site.getNumber());
+                            updateBuilder.where().eq("_id", site.getId());
                             updateBuilder.updateColumnValue("Addres", s);
                             updateBuilder.update();
                             Log.v("LogAddress", "Site: " + site.getNumber() + "  " + s);
                         }, t -> Log.v("LogAddress", "Site: " + site.getNumber() + " ERROR ", t));
             }
-        }
     }
 
     public String getStatistic() throws SQLException {

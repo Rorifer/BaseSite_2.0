@@ -50,8 +50,10 @@ class SiteCreateInteractorImpl(private val context: Context) : SiteCreateInterac
         val timestamp = Date().time
         return firebase.loadSites(settings.getSitesTimestamp())
                 .filter { it.isNotEmpty() }
-                .flatMapCompletable { sites -> dataBase.saveSites(sites) }
-                .doOnComplete { settings.saveSitesTimestamp(timestamp) }
+                .flatMapCompletable { sites ->
+                    dataBase.saveSites(sites)
+                            .doOnComplete { settings.saveSitesTimestamp(timestamp) }
+                }
     }
 
     override fun refreshDataBaseIfNeed(): Completable {
