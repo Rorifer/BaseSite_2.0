@@ -31,6 +31,7 @@ import com.engineeringforyou.basesite.presentation.sitesearch.presenter.SearchSi
 import com.engineeringforyou.basesite.presentation.sitesearch.views.SearchSiteView;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
 import com.engineeringforyou.basesite.utils.MessageDialog;
+import com.engineeringforyou.basesite.utils.ShareUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -102,11 +103,7 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     }
 
     private void shareApp() {
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.engineeringforyou.basesite");
-        sendIntent.setType("text/plain");
-        startActivity(Intent.createChooser(sendIntent, "Отправить ссылку на приложение"));
+        ShareUtils.Companion.shareApp(this);
     }
 
     private void openAddBs() {
