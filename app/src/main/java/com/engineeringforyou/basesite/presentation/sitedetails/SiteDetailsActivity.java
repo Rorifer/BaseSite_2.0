@@ -45,6 +45,7 @@ import com.engineeringforyou.basesite.presentation.sitemap.MapActivity;
 import com.engineeringforyou.basesite.presentation.streetview.StreetViewActivity;
 import com.engineeringforyou.basesite.utils.EventFactory;
 import com.engineeringforyou.basesite.utils.KeyBoardUtils;
+import com.engineeringforyou.basesite.utils.ShareUtils;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -66,7 +67,7 @@ import static com.engineeringforyou.basesite.presentation.sitecreate.SiteCreateA
 
 public class SiteDetailsActivity extends AppCompatActivity implements SiteDetailsView, PhotoDetailsAdapter.OnPhotoClickListener {
 
-    private static final String KEY_SITE = "key_site";
+    public static final String KEY_SITE = "key_site";
     private static final String SHOW_PHOTO = "show_photo";
 
     @BindView(R.id.ad_mob_details)
@@ -116,6 +117,15 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
 
     public static void start(Activity activity, Site site) {
         EventFactory.INSTANCE.openSiteDetails(site);
+        startIntent(activity, site);
+    }
+
+    public static void startFromLink(Activity activity, Site site) {
+        EventFactory.INSTANCE.openSiteDetailsFromLink(site);
+        startIntent(activity, site);
+    }
+
+    private static void startIntent(Activity activity, Site site) {
         Intent intent = new Intent(activity, SiteDetailsActivity.class);
         intent.putExtra(KEY_SITE, site);
         activity.startActivity(intent);
@@ -282,6 +292,11 @@ public class SiteDetailsActivity extends AppCompatActivity implements SiteDetail
     public void clickMapEdit() {
         showProgress();
         SiteCreateActivity.startForEditSite(this, mSite);
+    }
+
+    @OnClick({R.id.button_share})
+    public void clickShare() {
+        ShareUtils.Companion.shareSite(this, mSite);
     }
 
     @Override

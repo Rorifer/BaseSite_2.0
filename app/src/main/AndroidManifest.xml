@@ -32,6 +32,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".presentation.link.LinkActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="play.google.com"
+                    android:pathPattern="/details?id=com.engineeringforyou.basesite&amp;link.*/"
+                    android:pathPrefix="/store/apps"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.engineeringforyou.basesite.presentation.sitedetails.SiteDetailsActivity"
             android:theme="@style/SignTheme" />

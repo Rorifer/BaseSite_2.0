@@ -77,6 +77,12 @@ object EventFactory {
                 .putContentName("${site.operator} ${site.number}"))
     }
 
+    fun openSiteDetailsFromLink(site: Site) {
+        Answers.getInstance().logContentView(ContentViewEvent()
+                .putContentType("SiteDetailsFromLink")
+                .putContentName("${site.operator} ${site.number}"))
+    }
+
     fun clickRouteBS(site: Site) {
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentType("RouteBS")
@@ -96,13 +102,13 @@ object EventFactory {
                 .putContentId(comment.userAndroidId))
     }
 
+
     fun saveSite (site: Site, uid: String?) {
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentType("SaveSite")
                 .putContentName("${site.operator} ${site.number}")
                 .putContentId(uid))
     }
-
 
     fun editSite (site: Site, uid: String?) {
         Answers.getInstance().logContentView(ContentViewEvent()
