@@ -3,7 +3,7 @@
     <string name="site_search">№ БС или адрес</string>
     <string name="title">Поиск базовых станций\nМосквы и Московской области</string>
     <string name="search">ПОИСК</string>
-    <string name="Check">Помотреть на карте</string>
+    <string name="Check">Поcмотреть на карте</string>
     <string name="title_activity_maps">Карта</string>
     <string name="searchHere">Искать БС на карте</string>
     <string name="nearestBS">ближайшие БС Оператора</string>
