@@ -47,7 +47,7 @@ class SearchSiteInteractorImpl(context: Context) : SearchSiteInteractor {
 
     override fun getInfo() =
             sitesRepository.getStatistic()
-                    .map { "$it\nПоследняя синхронизация: ${DateUtils.parseDateHourMinuteDay(settingsRepository.getSitesTimestamp())}" }
+                    .map { "$it\nБаза актуальна на: ${DateUtils.parseDateHourMinuteDay(settingsRepository.getSitesTimestamp())}" }
 
     override fun needingShowJobFunction(): Maybe<Boolean> {
         return Single.fromCallable { settingsRepository.getShowingJobFunction() }
