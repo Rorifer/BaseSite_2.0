@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 
 import com.engineeringforyou.basesite.R;
@@ -57,6 +58,8 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
     DrawerLayout mDrawerLayout;
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
+    @BindView(R.id.sync_item)
+    ImageView mSyncImage;
 
     private SearchSitePresenter mPresenter;
 
@@ -231,6 +234,11 @@ public class SearchSiteActivity extends AppCompatActivity implements SearchSiteV
         showProgress();
         hideKeyboard();
         MapActivity.start(this, null);
+    }
+
+    @Override
+    public void showSync(boolean isShow) {
+        mSyncImage.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
     @Override

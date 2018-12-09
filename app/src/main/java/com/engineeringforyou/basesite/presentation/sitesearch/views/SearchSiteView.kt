@@ -30,4 +30,6 @@ interface SearchSiteView {
 
     fun showFunctionJob()
 
+    fun showSync(isShow: Boolean)
+
 }

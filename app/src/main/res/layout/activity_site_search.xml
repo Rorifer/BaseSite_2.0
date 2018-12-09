@@ -33,6 +33,18 @@
                     android:padding="16dp"
                     app:srcCompat="@drawable/ic_menu" />
 
+                <ImageView
+                    android:id="@+id/sync_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:layout_gravity="end"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:padding="16dp"
+                    android:alpha="0.2"
+                    app:srcCompat="@drawable/ic_sync" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

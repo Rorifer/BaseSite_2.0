@@ -11,6 +11,7 @@ import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepository
 import com.engineeringforyou.basesite.repositories.firebase.FirebaseRepositoryImpl
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepository
 import com.engineeringforyou.basesite.repositories.settings.SettingsRepositoryImpl
+import com.engineeringforyou.basesite.utils.DateUtils
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -44,7 +45,9 @@ class SearchSiteInteractorImpl(context: Context) : SearchSiteInteractor {
 
     override fun refreshSiteBase() = sitesDataBase.refreshDataBaseIfNeed()
 
-    override fun getInfo() = sitesRepository.getStatistic()
+    override fun getInfo() =
+            sitesRepository.getStatistic()
+                    .map { "$it\nПоследняя синхронизация: ${DateUtils.parseDateHourMinuteDay(settingsRepository.getSitesTimestamp())}" }
 
     override fun needingShowJobFunction(): Maybe<Boolean> {
         return Single.fromCallable { settingsRepository.getShowingJobFunction() }

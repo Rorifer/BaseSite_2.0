@@ -56,7 +56,11 @@ public class SearchSitePresenterImpl implements SearchSitePresenter {
         mDisposableRefresh.add(mInteractor.refreshSiteBase()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnEvent(throwable -> showFunctionJobIfNeed())
+                .doOnSubscribe(s -> mView.showSync(true))
+                .doOnEvent(throwable -> {
+                    mView.showSync(false);
+                    showFunctionJobIfNeed();
+                })
                 .subscribe(() -> {
                 }, EventFactory.INSTANCE::exception));
     }
