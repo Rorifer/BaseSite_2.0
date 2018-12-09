@@ -15,16 +15,16 @@ class ShareUtils {
 
     companion object {
         private const val APP_LINK: String = "https://play.google.com/store/apps/details?id=com.engineeringforyou.basesite"
-        private const val LINK_CONNECTOR: String = "&link="
+        private const val SHARE_LINK: String = "https://goo.gl/KPXwSu?link="
 
         fun shareApp(context: Context) =
                 share(context, APP_LINK, "Отправить ссылку на приложение")
 
         fun shareSite(context: Context, site: Site) =
-                share(context, "$APP_LINK$LINK_CONNECTOR${encode(site)}", "Отправить ссылку на БС")
+                share(context, SHARE_LINK + encode(site), "Отправить ссылку на БС")
 
         fun getSiteFromUri(uri: Uri): Site? {
-            val code = uri.toString().removePrefix("$APP_LINK$LINK_CONNECTOR")
+            val code = uri.toString().removePrefix(SHARE_LINK)
             val shortSite = decode(code)
             return if (shortSite != null) {
                 val siteList = ORMHelperFactory.getHelper().searchSitesByUid(shortSite.operator, shortSite.uid)

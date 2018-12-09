@@ -43,9 +43,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="play.google.com"
-                    android:pathPattern="/details?id=com.engineeringforyou.basesite&amp;link.*/"
-                    android:pathPrefix="/store/apps"
+                    android:host="goo.gl"
+                    android:pathPrefix="/KPXwSu"
                     android:scheme="https" />
             </intent-filter>
         </activity>
